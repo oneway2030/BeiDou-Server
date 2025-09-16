@@ -1,6 +1,6 @@
 ## 开发准备
 ### 数据库准备
-
+//test 测试上传
 如果数据库用户不是root用户，该用户需要拥有这些额外权限
 
 performance_schema库user_variables_by_thread表的select权限
