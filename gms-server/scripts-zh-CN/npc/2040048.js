@@ -52,11 +52,11 @@ function action(mode, type, selection) {
             if (selection == 0 || selection == 1) {
                 check = selection;
                 if (selection == 0) {
-                    msg = "You want to pay #b" + pay + " mesos#k and leave for #m110000000#?";
+                    msg = "你将会支付#b" + pay + "金币#k去#m110000000#?";
                 } else if (selection == 1) {
-                    msg = "So you have #b#t" + ticket + "##k? You can always head over to #m110000000# with that.";
+                    msg = "你有#b#t" + ticket + "##k?你可以随时去#m110000000#.";
                 }
-                cm.sendYesNo(msg + " Okay!! Please beware that you may be running into some monsters around there though, so make sure not to get caught off-guard. Okat, would you like to head over to #m110000000# right now?");
+                cm.sendYesNo(msg + " 好的!!请注意，你可能会在那里遇到一些怪物,一定做好准备. 现在就要出发去#m110000000#吗?");
             } else if (selection == 2) {
                 cm.sendNext("你一定对#b#t" + ticket + "##k很好奇。是的，我能理解。#t" + ticket + "#是一种物品，只要你拥有它，就可以免费前往#m110000000#。这是一种非常稀有的物品，我们甚至不得不购买，但不幸的是，我在几个星期前的一个长周末丢失了我的。");
                 status = 3;
@@ -64,7 +64,7 @@ function action(mode, type, selection) {
         } else if (status == 2) {
             if (check == 0) {
                 if (cm.getPlayer().getMeso() < pay) {
-                    cm.sendOk("我觉得你缺少冒险币。你知道，有很多方法可以赚钱，比如……卖掉你的盔甲……打败怪物……做任务……你知道我在说什么。");
+                    cm.sendOk("我觉得你缺少金币。你知道，有很多方法可以赚钱，比如……卖掉你的盔甲……打败怪物……做任务……你知道我在说什么。");
                     cm.dispose();
                 } else {
                     cm.gainMeso(-pay);
@@ -86,7 +86,7 @@ function action(mode, type, selection) {
         } else if (status == 3) {
             cm.sendNext("你一定对#b#t" + ticket + "##k很好奇。是的，我能理解。#t" + ticket + "#是一种物品，只要你拥有它，就可以免费前往#m110000000#。这是一种非常稀有的物品，我们甚至不得不购买，但不幸的是，我在几个星期前的一个长周末丢失了我的。");
         } else if (status == 4) {
-            cm.sendPrev("I came back without it, and it just feels awful not having it. Hopefully someone picked it up and put it somewhere safe. Anyway this is my story and who knows, you may be able to pick it up and put it to good use. If you have any questions, feel free to ask");
+            cm.sendPrev("我回来时没有带它，没有它感觉很糟糕。希望有人把它捡起来放在安全的地方。不管怎样，这是我的故事，谁知道呢，你也许可以把它捡起来好好利用。如果您有任何问题，请随时提问。");
         } else if (status == 5) {
             cm.dispose();
         }

@@ -50,7 +50,7 @@ function action(mode, type, selection) {
                             % 10));
                     }
                 }
-                cm.sendStyle("Hahaha~all you need is #bAriant hair style coupon(VIP)#k to change up your hairstyle. Choose the new style, and let me do the rest.", hairnew);
+                cm.sendStyle("哈哈哈~你只需要#b阿里安特美发会员卡(VIP)#k来改变你的发型。你只需选择新的发型，剩下的交给我。", hairnew);
             } else if (selection == 1) {
                 beauty = 2;
                 haircolor = Array();
@@ -59,7 +59,7 @@ function action(mode, type, selection) {
                 for (var i = 0; i < 8; i++) {
                     pushIfItemExists(haircolor, current + i);
                 }
-                cm.sendStyle("Every once in a while, it doesn't hurt to change up your hair color... it's fun. Allow me, the great Mazra, to dye your hair, so you just bring me #bAriant hair color coupon(VIP)#k, and choose your new hair color.", haircolor);
+                cm.sendStyle("每隔一段时间改变你的头发颜色并没有坏处。。。这很有趣。请允许我伟大的玛兹拉给你染发，你只需要带来#b阿里安特染发会员卡(VIP)#k，然后选择您的新发色。", haircolor);
             }
         } else if (status == 2) {
             cm.dispose();
@@ -69,7 +69,7 @@ function action(mode, type, selection) {
                     cm.setHair(hairnew[selection]);
                     cm.sendOk("享受你的新发型吧！");
                 } else {
-                    cm.sendNext("我以为我告诉过你了，你需要优惠券我才能给你的头发做魔法，再检查一下。");
+                    cm.sendNext("我以为我告诉过你了，你需要会员卡我才能给你的头发施展魔法，再检查一下。");
                 }
             }
             if (beauty == 2) {
@@ -78,7 +78,7 @@ function action(mode, type, selection) {
                     cm.setHair(haircolor[selection]);
                     cm.sendOk("享受你的新发色吧！");
                 } else {
-                    cm.sendNext("我以为我告诉过你了，你需要优惠券才能让我为你的头发施展魔法，再检查一下。");
+                    cm.sendNext("我以为我告诉过你了，你需要会员卡才能让我为你的头发施展魔法，再检查一下。");
                 }
             }
         }

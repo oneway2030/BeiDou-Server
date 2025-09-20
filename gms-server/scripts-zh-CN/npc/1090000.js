@@ -68,9 +68,9 @@ function start() {
     } else if (parseInt(cm.getJobId() / 100) == jobType && cm.canSpawnPlayerNpc(GameConstants.getHallOfFameMapid(cm.getJob()))) {
         spawnPnpc = true;
 
-        var sendStr = "You have walked a long way to reach the power, wisdom and courage you hold today, haven't you? What do you say about having right now #ra NPC on the Hall of Fame holding the current image of your character#k? Do you like it?";
+        var sendStr = "经过不懈的努力,你才能达到你今天所拥有的力量、智慧和勇气，对吧？有什么比进入名人堂更吸引人呢?想试试吗?";
         if (spawnPnpcFee > 0) {
-            sendStr += " I can do it for you, for the fee of #b " + cm.numberWithCommas(spawnPnpcFee) + " mesos.#k";
+            sendStr += "给我#b " + cm.numberWithCommas(spawnPnpcFee) + "金币,我可以让你进入名人堂.#k";
         }
 
         cm.sendYesNo(sendStr);
@@ -87,7 +87,7 @@ function start() {
             }
         } else if (actionx["3thJobI"] || (cm.getPlayer().gotPartyQuestItem("JB3") && cm.getLevel() >= 70 && cm.getJobId() % 10 == 0 && parseInt(cm.getJobId() / 100) == 5 && !cm.getPlayer().gotPartyQuestItem("JBP"))) {
             actionx["3thJobI"] = true;
-            cm.sendNext("你来了。几天前，奥西里亚的#b#p2020013##k跟我谈到了你。我看到你对于成为海盗职业的第三次转职很感兴趣。为了实现这个目标，我需要测试一下你的实力，看看你是否配得上这个晋升。金银岛上有一个洞穴中的开口，会通往一个秘密通道。一旦进入，你将面对我的分身。你的任务是打败他，并带着#b#t4031059##k回来。");
+            cm.sendNext("你来了。几天前，冰封雪域的#b#p2020013##k跟我谈到了你。我看到你对于成为海盗职业的第三次转职很感兴趣。为了实现这个目标，我需要测试一下你的实力，看看你是否配得上这个晋升。金银岛上有一个洞穴中的开口，会通往一个秘密通道。一旦进入，你将面对我的分身。你的任务是打败他，并带着#b#t4031059##k回来。");
         } else if (cm.getPlayer().gotPartyQuestItem("JBP") && !cm.haveItem(4031059)) {
             cm.sendNext("请把#b#t4031059##k带给我。");
             cm.dispose();
@@ -270,7 +270,7 @@ function action(mode, type, selection) {
         } else if (status == 5) {
             cm.sendNextPrev("我也给了你一点 #bSP#k。打开左下角的 #b技能菜单#k。你可以提升新获得的二级技能。不过要注意，你不能一次性提升它们。有些技能只有在学会其他技能后才能使用。记得要牢记这一点。");
         } else if (status == 6) {
-            cm.sendNextPrev((job == 510 ? "Brawlers" : "Gunslingers") + " need to be strong. But remember that you can't abuse that power and use it on a weakling. Please use your enormous power the right way, because... for you to use that the right way, that is much harden than just getting stronger. Please find me after you have advanced much further. I'll be waiting for you.");
+            cm.sendNextPrev((job == 510 ? "拳手" : "枪手") + " 必须坚强。但请记住，你不能滥用这种力量在在弱者身上。请以正确的方式使用你的巨大力量，因为对你来说，以正确的方式使用它，这比仅仅变得更强要重要得多。请在你取得更大进步后找到我。我会等你的。");
         }
     } else if (actionx["3thJobI"]) {
         if (status == 0) {
@@ -278,7 +278,7 @@ function action(mode, type, selection) {
                 cm.getPlayer().removePartyQuestItem("JB3");
                 cm.getPlayer().setPartyQuestItemObtained("JBP");
             }
-            cm.sendNextPrev("因为他是我的克隆，所以你可以期待一场艰难的战斗。他使用了许多特殊的攻击技能，与你以往所见的完全不同，你的任务是成功地与他一对一地战斗。在秘密通道中有一个时间限制，所以你必须在规定时间内打败他。祝你好运，希望你带着#b#t4031059##k。");
+            cm.sendNextPrev("因为他是我的分身，所以你可以期待一场艰难的战斗。他使用了许多特殊的攻击技能，与你以往所见的完全不同，你的任务是成功地与他一对一地战斗。在秘密通道中有一个时间限制，所以你必须在规定时间内打败他。祝你好运，希望你带着#b#t4031059##k。");
         }
     } else if (actionx["3thJobC"]) {
         cm.getPlayer().removePartyQuestItem("JBP");

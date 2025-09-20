@@ -37,9 +37,9 @@ var status = 0;
 
 function start() {
     if (cm.getPlayer().getMap().getId() != 540000000) {
-        text = "Hey I'm #p9201135#, your tour guide here in #rMalaysia#k. Where would you like to travel?\n\n";
+                text = "你好,我是#p9201135#,你在马来西亚的旅游向导,你想去什么地方?\n\n";
     } else {
-        text = "Hey I'm #p9201135#, a tour guide on #rMalaysia#k. Since you're not registered in our special travel package with our partner #bMaple Travel Agency#k, the ride will be significantly more expensive. So, would you like to ride now?\n\n";
+        text = "你好,我是#p9201135#,你在马来西亚的旅游向导.由于您没有在我们的合作伙伴#bMaple旅行社#k的特殊旅行套餐中注册,因此乘坐费用会高得多. 那么,您现在想乘坐吗?\n\n";
         startedTravel = true;
     }
 
@@ -62,10 +62,10 @@ function start() {
         var costs = cost[location];
 
         for (var i = 0; i < maps.length; i++) {
-            text += "\t\r\n#b#L" + i + "##m" + maps[i] + "# " + (costs[i] > 0 ? "(" + costs[i] + "mesos)" : "") + "#l";
+            text += "\t\r\n#b#L" + i + "##m" + maps[i] + "# " + (costs[i] > 0 ? "(" + costs[i] + "金币)" : "") + "#l";
         }
     } else {
-        text += "\t\r\n#b#L0##m" + toMap[location] + "# " + (cost[location] > 0 ? "(" + cost[location] + "mesos)" : "") + "#l";
+        text += "\t\r\n#b#L0##m" + toMap[location] + "# " + (cost[location] > 0 ? "(" + cost[location] + "金币)" : "") + "#l";
     }
 
     text += "#k";

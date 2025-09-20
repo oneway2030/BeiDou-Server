@@ -46,10 +46,10 @@ function action(mode, type, selection) {
         }
 
         if (status == 0) {
-            cm.sendAcceptDecline("This Magic Pentagram is incomplete. Would you like to finish off the drawing of the Magic Pentagram?");
+            cm.sendAcceptDecline("这个魔法五芒星是不完整的, 你想把魔法五芒星画完吗?");
             return;
         } else if (status == 1) {
-            cm.weakenAreaBoss(8090000, "The Magic Pentagram has been completed. The spell to eliminate Deet and Roi has been summoned.");
+            cm.weakenAreaBoss(8090000, "魔法五芒星已经完成, 消灭迪特和罗伊的咒语已被召唤.");
         }
 
         cm.dispose();

@@ -68,19 +68,19 @@ function action(mode, type, selection) {
         }
 
         if (status == 0) {
-            var questionStr = ["How can I engage someone?", "How can I marry?", "How can I divorce?"]
+            var questionStr = ["我怎样才能吸引到某人?", "我怎么能结婚?", "我怎么能离婚?"]
 
             if (!(!cm.getPlayer().isMarried() && getWeddingRingItemId(cm.getPlayer()))) {
-                questionStr.push("I want a divorce...");
+                questionStr.push("我想要离婚...");
             } else {
-                questionStr.push("I wanna remove my old wedding ring...");
+                questionStr.push("我想拿掉我的旧结婚戒指...");
             }
 
-            cm.sendSimple("你好，欢迎来到#b阿莫利亚#k，这是一个美丽的地方，枫叶冒险家可以在这里找到爱情，甚至如果足够激动人心，还可以结婚。你对阿莫利亚有任何问题吗？跟我说说吧。#b\r\n\r\n" + "生成选择菜单("+questionStr+")");
+            cm.sendSimple("你好，欢迎来到#b婚礼村#k，这是一个美丽的地方，枫叶冒险家可以在这里找到爱情，甚至如果足够激动人心，还可以结婚。你对阿莫利亚有任何问题吗？跟我说说吧。#b\r\n\r\n" + generateSelectionMenu(questionStr));
         } else if (status == 1) {
             switch (selection) {
                 case 0:
-                    cm.sendOk("订婚流程非常简单。从#bring maker, #p9201000#那里接受一个预请求，然后在整个冒险岛世界中收集#b#t4031367#。完成后，你就可以制作一枚订婚戒指。拿着戒指向你喜欢的人表白，希望对方也有同样的感觉。");
+                    cm.sendOk("订婚流程非常简单。从#b戒指制作商人#k#p9201000#那里预约制作，然后在整个冒险岛世界中收集#b#t4031367##k。完成后，你就可以制作一枚订婚戒指。拿着戒指向你喜欢的人表白，希望对方也有同样的感觉。");
                     cm.dispose();
                     break;
 
@@ -105,7 +105,7 @@ function action(mode, type, selection) {
                         } else if (hasEquippedWeddingRing(cm.getPlayer())) {
                             cm.sendOk("如果你想要移除你的旧婚戒，请在和我对话之前先将它卸下。");
                         } else {
-                            cm.sendOk("你不需要离婚才能要求离婚。");
+                            cm.sendOk("你没有结婚，不需要离婚。");
                         }
 
                         cm.dispose();

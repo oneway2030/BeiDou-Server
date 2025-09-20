@@ -29,25 +29,25 @@ var map;
 
 function start() {
     if (cm.haveItem(4001020)) {
-        cm.sendSimple("你可以使用#b伊欧斯之石卷轴#k来激活#b第三个伊欧斯之石#k。你想要传送到这些石头中的哪一个？#b\r\n#L0#第二个伊欧斯之石（71楼）#l\r\n#L1#第四个伊欧斯之石（1楼）#l");
+        cm.sendSimple("使用#b#z4001020##k可以开启#b#p2040026##k.可以传送到相连的其他魔法石?#b\r\n#L0##p2040025#(71层)#l\r\n#L1##p2040027#(1层)#l");
     } else {
-        cm.sendOk("有一块岩石可以让你传送到#b第二个伊欧斯岩石或第四个伊欧斯岩石#k，但如果没有卷轴是无法激活它的。");
+        cm.sendOk("需要#z4001020#才可以使用魔法石");
         cm.dispose();
     }
 }
 
 function action(mode, type, selection) {
-    if (mode < 1) {
+    if (mode < 1)
         cm.dispose();
-    } else {
+    else {
         status++;
         if (status == 1) {
             if (selection == 0) {
-                cm.sendYesNo("您可以使用#b伊欧斯之石卷轴#k来激活#b第三个伊欧斯之石#k。您要传送到第71层的#b第二个伊欧斯之石#k吗？");
                 map = 221022900;
+                cm.sendYesNo("确定要去#p2040025#(71层)吗?");
             } else {
-                cm.sendYesNo("您可以使用#b伊欧斯之石卷轴#k来激活#b第三个伊欧斯之石#k。您要传送到一楼的#b第四个伊欧斯之石#k吗？");
                 map = 221020000;
+                cm.sendYesNo("确定要去#p2040027#(1层)吗?");
             }
         } else if (status == 2) {
             cm.gainItem(4001020, -1);

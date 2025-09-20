@@ -3,7 +3,7 @@ var zones = 0;
 var cost = 1000;
 
 function start() {
-    cm.sendNext("嗨，我是售票员。");
+    cm.sendNext("我是#p1052006#，地铁售票员。");
     if (cm.isQuestStarted(2055) || cm.isQuestCompleted(2055)) {
         zones++;
     }
@@ -25,9 +25,9 @@ function action(mode, type, selection) {
         if (zones == 0) {
             cm.dispose();
         } else {
-            var selStr = "Which ticket would you like?#b";
+            var selStr = "你想去哪里?#b";
             for (var i = 0; i < zones; i++) {
-                selStr += "\r\n#L" + i + "#Construction site B" + (i + 1) + " (" + cost + " mesos)#l";
+                selStr += "\r\n#L" + i + "#地铁B" + (i + 1) + " (" + cost + "金币)#l";
             }
             cm.sendSimple(selStr);
         }

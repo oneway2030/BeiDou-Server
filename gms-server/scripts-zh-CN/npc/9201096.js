@@ -48,10 +48,10 @@ function action(mode, type, selection) {
     }
 
     if (status == 0) {
-        var selStr = "Hey, are you aware about the expeditions running right now at the Crimsonwood Keep? So, there is a great opportunity for one to improve themselves, one can rack up experience and loot pretty fast there.";
+        var selStr = "嘿，你知道绯红要塞现在正在进行的远征活动吗？这可是个提升自己的绝佳机会，你可以在那里快速积累经验和战利品。";
         cm.sendNext(selStr);
     } else if (status == 1) {
-        var selStr = "Said so, methinks making use of some strong utility potions can potentially create some differential on the front, and by this I mean to start crafting #b#t2022284##k's to help on the efforts. So, getting right down to business, I'm currently pursuing #rplenty#k of those items: #r#t4032010##k, #r#t4032011##k, #r#t4032012##k, and some funds to support the cause. Would you want to get some of these boosters?";
+        var selStr = "话虽如此，我认为使用一些强力的实用药水可能会在前线产生一些优势，我的意思是开始制作#b#t2022284##k来帮助这一努力。那么，言归正传，我目前正在追求#r大量#k的这些物品：#r#t4032010##k、#r#t4032011##k、#r#t4032012##k，以及一些资金来支持这一事业。你想要一些这些增强剂吗";
         cm.sendYesNo(selStr);
     } else if (status == 2) {
         //selectedItem = selection;
@@ -66,20 +66,20 @@ function action(mode, type, selection) {
         matQty = matQtySet[selectedItem];
         cost = costSet[selectedItem];
 
-        var prompt = "Ok, I'll be crafting some #t" + item + "#. In that case, how many of those do you want me to make?";
+        var prompt = "好的，我会制作一些#t" + item + "#，那么，你想要我制作多少个呢？";
         cm.sendGetNumber(prompt, 1, 1, 100)
     } else if (status == 3) {
         qty = (selection > 0) ? selection : (selection < 0 ? -selection : 1);
         last_use = false;
 
-        var prompt = "So, you want me to make ";
+        var prompt = "你想我为你制作";
         if (qty == 1) {
-            prompt += "a #t" + item + "#?";
+            prompt += "一个#t" + item + "#?";
         } else {
-            prompt += qty + " #t" + item + "#?";
+            prompt += qty + "个#t" + item + "#?";
         }
 
-        prompt += " In that case, I'm going to need specific items from you in order to make it. And make sure you have room in your inventory!#b";
+        prompt += "这样的话，我需要你提供一些特定物品才能制作。另外请确保你的背包有足够的空间！#b";
 
         if (mats instanceof Array) {
             for (var i = 0; i < mats.length; i++) {
@@ -99,7 +99,7 @@ function action(mode, type, selection) {
         if (cm.getMeso() < cost * qty) {
             cm.sendOk("嗯，我确实说过我需要一些资金来制作它，不是吗？");
         } else if (!cm.canHold(item, qty)) {
-            cm.sendOk("你在制作之前没有检查你的背包是否有空余的槽位，对吗？");
+            cm.sendOk("你在制作之前没有检查你的背包是否有空余的栏位，对吗？");
         } else {
             if (mats instanceof Array) {
                 for (var i = 0; complete && i < mats.length; i++) {
@@ -114,7 +114,7 @@ function action(mode, type, selection) {
             }
 
             if (!complete) {
-                cm.sendOk("您的库存中资源不足。请再次检查。");
+                cm.sendOk("您的背包中资源不足。请再次检查。");
             } else {
                 if (mats instanceof Array) {
                     for (var i = 0; i < mats.length; i++) {

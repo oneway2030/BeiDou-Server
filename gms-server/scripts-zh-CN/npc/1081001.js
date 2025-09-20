@@ -53,7 +53,7 @@ function action(mode, type, selection) {
     } else if (mode == 1) {
         status++;
         if (status == 1) {
-            cm.sendYesNo("Are you sure you want to return to #b#m" + returnmap + "##k? Alright, we'll have to get going fast. Do you want to head back to #m" + returnmap + "# now?")
+            cm.sendYesNo("确定要回到#b#m" + returnmap + "##k？好吧，我们得快点走。")
         } else {
             cm.getPlayer().getSavedLocation("FLORINA");
             cm.warp(returnmap);

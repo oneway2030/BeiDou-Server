@@ -29,8 +29,8 @@ var questionNum;
 
 function start() {
     status = -1;
-    questions = ["Which of these items does the Flaming Raccoon NOT drop?", "Which NPC is responsible for transporting travellers from Kerning City to Zipangu, and back?", "Which of the items sold at the Mushroom Shrine increases your attack power?", "Which of these items do the Extras NOT drop?", "Which of these items DO NOT exist??", "What's the name of the vegetable store owner in Showa Town?", "Which of these items DO exist?", "What is the name of the strongest boss in the Mushroom Shrine?", "Which one of these items has a mis-matched class or level description?", "Which of these noodles are NOT being sold by Robo at the Mushroom Shrine?", "Which of these NPCs do NOT stand in front of Showa Movie Theater?"]
-    answers = [["Raccoon Firewood", "Solid Horn", "Red Brick"], ["Peli", "Spinel", "Poli"], ["Takoyaki", "Yakisoba", "Tempura"], ["Extra A's Badge", "Extra B's Corset", "Extra C's Necklace"], ["Frozen Tuna", "Fan", "Fly Swatter"], ["Sami", "Kami", "Umi"], ["Cloud Fox's Tooth", "Ghost's Bouquet", "Dark Cloud Fox's Tail"], ["Black Crow", "Blue Mushmom", "Himegami"], ["Bamboo Spear - Warrior-only Weapon", "Pico-Pico Hammer - One-handed Sword", "Mystic Cane - Level 51 equip"], ["Kinoko Ramen (Pig Skull)", "Kinoko Ramen (Salt)", "Mushroom Miso Ramen"], ["Skye", "Furano", "Shinta"]];
+    questions = ["下面物品不是狸猫所掉出的物品?","古代神社中，写有『香菇』的地方有几处？","古代神社的贩卖物品里，何者是提升攻击力的？?","下列物品中，那个物品是存在的东西？?","那个物品不存在??","在昭和镇蔬菜店老板叫什么名字?","这些物品的那个存在?","昭和村卖鱼的铺子外面写着哪几个字?","哪种道具的说明有错误？?","何者不是古代神社的元泰卖的拉面？?","昭和电影院门前的NPC 是谁？"];
+    answers = [["狸猫柴火","独角狮的硬角","红色的砖"], ["6","5","4"], ["章鱼烧","福建面","面粉"], ["流氓A的徽章", "流氓B的胸衣", "流氓C的项链"], ["冻冻鱼","寒冰破魔枪","苍蝇拍"], ["萨米","卡米","由美"], ["云狐的牙齿","花束","狐狸的尾巴"], ["商荣繁盛","全场一折","欢迎光临"], ["木精灵枪-战士专用武器","橡皮榔头-单手剑","龙背刃-双手剑"], ["蛋炒面","日本炒面","蘑菇特制拉面"], ["武大郎","樱桃小丸子","绘里香"]];
     correctAnswer = [1, 1, 0, 1, 2, 2, 2, 0, 0, 2, 2];
     action(1, 0, 0);
 }
@@ -48,7 +48,7 @@ function action(mode, type, selection) {
             if (cm.isQuestStarted(8012) && !cm.haveItem(4031064)) { //quest in progress
                 cm.sendYesNo("你都找到了吗？你打算尝试回答我所有的问题吗？");
             } else { //quest not started or already completed
-                //cm.sendOk("喵喵喵！");//lol what's this?
+                cm.sendOk("喵喵喵！");//lol what's this?
                 cm.dispose();
             }
         } else if (status == 1 && mode == 1) {
@@ -65,10 +65,10 @@ function action(mode, type, selection) {
             }
         } else if (status == 7 && mode == 1) { //2-6 are the questions
             if (selection != correctAnswer.pop()) {
-                cm.sendNext("Hmmm...all humans make mistakes anyway! If you want to take another crack at it, then bring me 300 Fried Chicken.")
+                cm.sendNext("嗯...不管怎么样人总会出错! 如果想再试试,再给我300个炸鸡.")
                 cm.dispose();
             } else {
-                cm.sendNext("Dang, you answered all the questions right. I may not like humans in general, but I HATE breaking a promise, so, as promised, here's the Orange Marble.")
+                cm.sendNext("口当,你都答对了.虽然我不喜欢人类,但是我承诺的, 给你#b#z4031064#.")
             }
         } else if (status == 8 && mode == 1) { //gain marble
             cm.gainItem(4031064, 1);
@@ -78,7 +78,7 @@ function action(mode, type, selection) {
             var cont = true;
             if (status > 2) {
                 if (selection != correctAnswer.pop()) {
-                    cm.sendNext("Hmmm...all humans make mistakes anyway! If you want to take another crack at it, then bring me 300 Fried Chicken.")
+                    cm.sendNext("嗯...不管怎么样人总会出错! 如果想再试试,再给我300个炸鸡.")
                     cm.dispose();
                     cont = false;
                 }
@@ -99,7 +99,7 @@ function action(mode, type, selection) {
                 }
                 var question = questions.pop();
                 var answer = answers.pop();
-                var prompt = "Question no." + (status - 1) + ": " + question;
+                var prompt = "第" + (status - 1) + "题: " + question;
                 for (var i = 0; i < answer.length; i++) {
                     prompt += "\r\n#b#L" + i + "#" + answer[i] + "#l#k";
                 }

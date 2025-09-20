@@ -26,7 +26,9 @@ function action(mode, type, selection) {
     } else if (status == 2) {
         cm.sendNextPrev("当然，掉落在那里的物品永远不会消失。一旦你通过里面的雪人离开那里，你在那张地图上掉落的所有物品都会回到你身边，所以你离开那个地方之前不必捡起所有这些物品。是不是很方便呢？");
     } else if (status == 3) {
-        cm.sendPrev("Well then, go see #p2002001#, buy some Christmas ornaments there, and then decorate the tree with those~ Oh yeah! The biggest, the most beautiful ornament cannot be bought from him. It's probably ... taken by a monster ... huh huh ..");
+        cm.sendPrev("那么，去看看#r#p2002001##k，在那里买些圣诞装饰品，然后用那些装饰圣诞树~哦耶！最大、最漂亮的装饰品是买不到的。可能是。。。被怪物带走。。。啊哈。。");
         cm.dispose();
-    }
+    } else {
+            cm.dispose();
+	}
 }

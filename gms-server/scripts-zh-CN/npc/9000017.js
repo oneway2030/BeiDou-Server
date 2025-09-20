@@ -58,10 +58,10 @@ function action(mode, type, selection) {
             return;
         }
 
-        var selStr = "Hey traveler! Come, come closer... We offer a #bhuge opportunity of business#k to you. If you want to know what it is, keep listening...";
+        var selStr = "嘿，旅行者！过来，靠近一点...我们为您提供#b一个大商机#k。如果你想知道它是什么，请继续听...";
         cm.sendNext(selStr);
     } else if (status == 1) {
-        var selStr = "We've got here the knowledge to synthetize the mighty #b#t2049100##k! Of course, making one is not an easy task... But worry not! Just gather some material to me and a fee of #b1,200,000 mesos#k for our services to #bobtain it#k. You still want to do it?";
+        var selStr = "我们已经掌握了合成强大的#b#t2049100##k的知识！当然，制作一个并非易事。..但别担心！只需为我收集一些材料，并支付#b200000金币#k，用于我们的服务来获得它。你还想这样做吗？";
         cm.sendYesNo(selStr);
     } else if (status == 2) {
         //selectedItem = selection;
@@ -76,20 +76,20 @@ function action(mode, type, selection) {
         matQty = matQtySet[selectedItem];
         cost = costSet[selectedItem];
 
-        var prompt = "So, you want us to make some #t" + item + "#? In that case, how many do you want us to make?";
+        var prompt = "所以，你想让我们做一些#t" + item + "#?那样的话，你想让我们做多少？";
         cm.sendGetNumber(prompt, 1, 1, 100)
     } else if (status == 3) {
         qty = (selection > 0) ? selection : (selection < 0 ? -selection : 1);
         last_use = false;
 
-        var prompt = "You want us to make ";
+        var prompt = "你想我们制造";
         if (qty == 1) {
-            prompt += "a #t" + item + "#?";
+            prompt += "一张#t" + item + "#？";
         } else {
-            prompt += qty + " #t" + item + "#?";
+            prompt += qty + "张#t" + item + "#？";
         }
 
-        prompt += " In that case, we're going to need specific items from you in order to make it. Make sure you have room in your inventory, though!#b";
+        prompt += "我们需要您提供特定的物品才能完成。另外，请确保您的背包中有足够的空间。#b";
 
         if (mats instanceof Array) {
             for (var i = 0; i < mats.length; i++) {
@@ -100,7 +100,7 @@ function action(mode, type, selection) {
         }
 
         if (cost > 0) {
-            prompt += "\r\n#i4031138# " + cost * qty + " meso";
+            prompt += "\r\n#i4031138# " + cost * qty + "金币";
         }
         cm.sendYesNo(prompt);
     } else if (status == 4) {

@@ -105,31 +105,31 @@ function action(mode, type, selection) {
             qnt = 25;
         }
 
-        cm.sendYesNo("让我看看，你想用我的东西交换你的 #b" + qnt + " #t" + requiredItem + "##k，对吧？在交易之前，请确保你的消耗品或其他物品栏有空位。现在，你想和我交易吗？");
+        cm.sendYesNo("让我看看，你想用我的东西交换你的 #b" + qnt + "个#t" + requiredItem + "##k，对吧？在交易之前，请确保你的消耗品或其他物品栏有空位。现在，你想和我交易吗？");
     } else if (status == 4) {
         itemSet = (Math.floor(Math.random() * eQuestPrizes[lastSelection].length));
         reward = eQuestPrizes[lastSelection];
         prizeItem = reward[itemSet][0];
         prizeQuantity = reward[itemSet][1];
         if (!cm.haveItem(requiredItem, qnt)) {
-            cm.sendOk("“嗯... 你确定你有 #b" + qnt + " #t" + requiredItem + "##k 吗？如果是的话，请检查一下你的物品栏是否已满。”");
+            cm.sendOk("“嗯... 你确定你有 #b" + qnt + "个#t" + requiredItem + "##k 吗？如果是的话，请检查一下你的物品栏是否已满。”");
         } else if (prizeItem == 0) {
             cm.gainItem(requiredItem, -qnt);
             cm.gainMeso(prizeQuantity);
-            cm.sendOk("对于你的 #b" + qnt + " #t" + requiredItem + "##k，这里有 #b" + prizeQuantity + " 金币#k。你觉得怎么样？你喜欢我给你的物品吗？我打算在这里待一段时间，所以如果你收集更多物品，我随时可以交易…");
+            cm.sendOk("对于你的 #b" + qnt + "个#t" + requiredItem + "##k，这里有 #b" + prizeQuantity + "金币#k。你觉得怎么样？你喜欢我给你的物品吗？我打算在这里待一段时间，所以如果你收集更多物品，我随时可以交易…");
         } else if (!cm.canHold(prizeItem)) {
             cm.sendOk("你的使用等等物品栏似乎已经满了。你需要腾出空间才能和我交易！清理一下，然后找到我。");
         } else {
             cm.gainItem(requiredItem, -qnt);
             cm.gainItem(prizeItem, prizeQuantity);
-            cm.sendOk("对于你的 #b" + qnt + " #t" + requiredItem + "##k，这是我的 #b" + prizeQuantity + " #t" + prizeItem + "##k。你觉得怎么样？你喜欢我给你的回报物品吗？我打算在这里待一段时间，所以如果你收集到更多物品，我随时可以交易…");
+            cm.sendOk("对于你的 #b" + qnt + "个#t" + requiredItem + "##k，这是我的 #b" + prizeQuantity + " #t" + prizeItem + "##k。你觉得怎么样？你喜欢我给你的回报物品吗？我打算在这里待一段时间，所以如果你收集到更多物品，我随时可以交易…");
         }
         cm.dispose();
     }
 }
 
 function makeChoices(a) {
-    var result = "Ok! First you need to choose the item that you'll trade with. The better the item, the more likely the chance that I'll give you something much nicer in return.\r\n";
+    var result = "好的！首先，你需要选择你要交换的物品。物品越好，我回赠给你更棒东西的可能性就越大。\r\n";
     var qnty = [50, 25];
 
     for (var x = 0; x < a.length; x++) {

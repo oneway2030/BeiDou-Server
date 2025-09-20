@@ -49,7 +49,7 @@ function action(mode, type, selection) {
                 cm.warp(cm.getPlayer().getSavedLocation("EVENT"));
                 cm.dispose();
             } else {
-                cm.sendNext("我认为你的杂项窗口已经满了。请腾出空间，然后和我交谈。");
+                cm.sendNext("我认为你的背包其他栏已经满了。请腾出空间，然后和我交谈。");
             }
         } else if (status == 4) {
             cm.dispose();

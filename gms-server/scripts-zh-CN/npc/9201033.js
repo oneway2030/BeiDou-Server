@@ -55,12 +55,12 @@ function action(mode, type, selection) {
         if (status == 0) {
             if (cm.getMapId() == hv) {
                 tst = 1; //to shalom temple
-                cm.sendYesNo("“沙龙神殿与快乐村的其他地方都不一样，你想前往 #b沙龙神殿#k 吗？”"); //not GMS lol
+                cm.sendYesNo("“和平礼堂与幸福村的其他地方都不一样，你想前往 #b和平礼堂#k 吗？”"); //not GMS lol
             } else if (cm.getMapId() == smap) {
                 b2h = 1; //back to happyville
-                cm.sendYesNo("你想回到快乐村吗？");
-            }
-        } else if (status == 1) {
+				cm.sendYesNo("想返回#m209000000#吗?");
+			}
+		} else if (status == 1) {
             if (tst == 1) {
                 cm.warp(smap, 0);
                 cm.dispose();

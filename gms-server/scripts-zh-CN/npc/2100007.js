@@ -22,9 +22,9 @@ function action(mode, type, selection) {
             status--;
         }
         if (status == 0) {
-            cm.sendNext("Hohoh~ 欢迎欢迎。欢迎来到阿里安特护肤中心。你已经踏入了一家著名的护肤店，甚至连女王本人都经常光顾这个地方。如果你带着 #b阿里安特护肤优惠券#k，我们会照顾好你的其余事项。今天让我们来护理一下你的肌肤吧？");
+            cm.sendNext("Hohoh~ 欢迎欢迎。欢迎来到阿里安特护肤中心。你已经踏入了一家著名的护肤店，甚至连王妃本人都经常光顾这个地方。如果你带着 #b#z5153007##i5153007##k，剩下的就交给我们了.今天就来做个皮肤护理怎么样？");
         } else if (status == 1) {
-            cm.sendStyle("With our specialized machine, you can see yourself after the treatment in advance. What kind of skin-treatment would you like to do? Choose the style of your liking...", skin);
+            cm.sendStyle("使用我们这台先进的机器,你可以提前知道你护肤之后的效果.你想要什么样的效果呢...", skin);
         } else if (status == 2) {
             cm.dispose();
             if (cm.haveItem(5153007) == true) {
@@ -32,7 +32,7 @@ function action(mode, type, selection) {
                 cm.setSkin(skin[selection]);
                 cm.sendOk("享受你的新肤色吧！");
             } else {
-                cm.sendNext("嗯...我觉得你没有我们的护肤券。没有券，我就不能给你护理服务。");
+                cm.sendNext("嗯...我觉得你没有我们的会员卡，我就不能给你护理服务。");
             }
         }
     }

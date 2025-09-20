@@ -69,7 +69,7 @@ function action(mode, type, selection) {
                 var state = eim.getIntProperty("statusStg" + stage);
 
                 if (state == -1) {           // preamble
-                    cm.sendOk("嗨。欢迎来到#bstage#k。这是第二阶段，但每个人都必须合作。这里有6个传送门。一个被无法战胜的怪物守卫着，一个非常高。我希望你和你的队伍分别进入每一个，并打破里面的箱子。带回掉落物品——应该有24个。");
+                    cm.sendOk("嗨，欢迎来到第#b" + stage + "#k关。这是第二阶段，但每个人都必须合作。这里有6个传送门。一个被无法战胜的怪物守卫着，一个非常高。我希望你和你的队伍分别进入每一个，并打破里面的箱子。带回掉落物品——应该有24个。");
                     eim.setProperty("statusStg" + stage, 0);
                 } else {       // check stage completion
                     if (cm.haveItem(4001022, 24)) {

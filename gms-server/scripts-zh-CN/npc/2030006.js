@@ -105,13 +105,13 @@ function action(mode, type, selection) {
             if (cm.getPlayer().gotPartyQuestItem("JBQ") && !cm.haveItem(4031058, 1)) {
                 if (cm.haveItem(4005004, 1)) {
                     if (!cm.canHold(4031058)) {
-                        cm.sendNext("接受此试炼前，请确保有一个空闲的ETC槽位。");
+                        cm.sendNext("接受此试炼前，请确保你的背包其他栏有1个以上的空位。");
                         cm.dispose();
                     } else {
-                        cm.sendNext("好的...我将在这里测试你的智慧。回答所有问题正确，你就会通过测试，但是，如果你有一次说谎，那么你就得重新开始，好吗，我们开始吧。");
+                        cm.sendNext("好的...我将在这里测试你的智慧。回答正确我的问题, 你就可以顺利通过测试。如果你答错了, 那我们将重新开始测试，我们开始吧。");
                     }
                 } else {
-                    cm.sendNext("给我带来一个 #b#t4005004##k 以继续进行试炼。");
+                    cm.sendNext("先给我带来一个 #b#t4005004##k 以继续进行试炼。");
                     cm.dispose();
                 }
             } else {
@@ -132,7 +132,7 @@ function action(mode, type, selection) {
             cm.sendSimple(questionHead + questionEntry + "\r\n\r\n#b" + questionOptions + "#k");
         } else if (status >= 2 && status <= 5) {
             if (!evaluateAnswer(selection)) {
-                cm.sendNext("你已经失败了这个问题。");
+                cm.sendNext("挑战失败了，请重新尝试。");
                 cm.dispose();
                 return;
             }
@@ -148,16 +148,16 @@ function action(mode, type, selection) {
             cm.sendSimple(questionHead + questionEntry + "\r\n\r\n#b" + questionOptions + "#k");
         } else if (status == 6) {
             if (!evaluateAnswer(selection)) {
-                cm.sendNext("你已经失败了这个问题。");
+                cm.sendNext("挑战失败了，请重新尝试。");
                 cm.dispose();
                 return;
             }
 
-            cm.sendOk("好的。你的所有答案都被证明是真实的。你的智慧得到了验证。拿着这条项链回去吧。");
+            cm.sendOk("恭喜你答对了所有的问题。你的智慧得到了验证。\r\n拿着这条项链回去吧。");
             cm.gainItem(4031058, 1);
             cm.dispose();
         } else {
-            cm.sendOk("意外的分支。");
+            cm.sendOk("脚本出错了。");
             cm.dispose();
         }
     }
@@ -168,7 +168,7 @@ function evaluateAnswer(selection) {
 }
 
 function generateQuestionHeading() {
-    return "Here's the " + (status) + (status == 1 ? "st" : status == 2 ? "nd" : status == 3 ? "rd" : "th") + " question. ";
+    return "这是第 " + (status) + (status == 1 ? "st" : status == 2 ? "nd" : status == 3 ? "rd" : "th") + " 个问题. ";
 }
 
 function shuffleArray(array) {

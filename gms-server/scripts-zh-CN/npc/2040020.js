@@ -41,9 +41,9 @@ var stimID = 4130000;
 function start() {
     cm.getPlayer().setCS(true);
 
-    var selStr = "你好，欢迎来到卢比克姆手套店。今天有什么可以帮您的吗？#b"
-    var options = ["What's a stimulator?", "Create a Warrior glove", "Create a Bowman glove", "Create a Magician glove", "Create a Thief glove",
-        "Create a Warrior glove with a Stimulator", "Create a Bowman glove with a Stimulator", "Create a Magician glove with a Stimulator", "Create a Thief glove with a Stimulator"];
+    var selStr = "你好，欢迎来到玩具城手套制作店。今天有什么可以帮您的吗？#b"
+    var options = ["什么是辅助剂?", "做一双战士手套", "做一双弓箭手手套", "做一双法师手套", "做一双飞侠手套",
+                "做一双战士手套使用辅助剂", "做一双弓箭手手套使用辅助剂", "做一双法师手套使用辅助剂", "做一双飞侠手套使用辅助剂"];
     for (var i = 0; i < options.length; i++) {
         selStr += "\r\n#L" + i + "# " + options[i] + "#l";
     }
@@ -65,63 +65,63 @@ function action(mode, type, selection) {
             stimulator = false;
         }
         if (selectedType == 0) { //What's a stim?
-            cm.sendNext("A stimulator is a special potion that I can add into the process of creating certain items. It gives it stats as though it had dropped from a monster. However, it is possible to have no change, and it is also possible for the item to be below average. There's also a 10% chance of not getting any item when using a stimulator, so please choose wisely.")
+            cm.sendNext("辅助剂是一种特殊的药水，我可以在创建某些物品的过程中添加。据统计它是从怪物身上掉下来的。制作时使用它，有可能没有变化，也有可能属性低于平均水平。使用辅助剂时，也有10%的可能性无法获得任何物品，因此请明智选择。")
             cm.dispose();
         } else if (selectedType == 1) { //warrior glove
-            var selStr = "Warrior glove? Sure thing, which kind?#b";
-            var items = ["Bronze Missel#k - Warrior Lv. 30#b", "Steel Briggon#k - Warrior Lv. 35#b", "Iron Knuckle#k - Warrior Lv. 40#b", "Steel Brist#k - Warrior Lv. 50#b"];
+            var selStr = "那么你想做哪一个战士手套？#b";
+            var items = ["#z1082007##k - 战士 等级. 30#b", "#z1082008##k - 战士 等级. 35#b", "#z1082023##k - 战士 等级. 40#b", "#z1082009##k - 战士 等级. 50#b"];
             for (var i = 0; i < items.length; i++) {
                 selStr += "\r\n#L" + i + "# " + items[i] + "#l";
             }
             cm.sendSimple(selStr);
         } else if (selectedType == 2) { //bowman glove
-            var selStr = "Bowman glove? Sure thing, which kind?#b";
-            var items = ["Brown Marker#k - Bowman Lv. 30#b", "Bronze Scaler#k - Bowman Lv. 35#b", "Aqua Brace#k - Bowman Lv. 40#b", "Blue Willow#k - Bowman Lv. 50#b"];
+            var selStr = "那么你想做哪一个弓箭手手套？#b";
+            var items = ["#z1082048##k - 弓箭手 等级. 30#b", "#z1082068##k - 弓箭手 等级. 35#b", "#z1082071##k - 弓箭手 等级. 40#b", "#z1082084##k - 弓箭手 等级. 50#b"];
             for (var i = 0; i < items.length; i++) {
                 selStr += "\r\n#L" + i + "# " + items[i] + "#l";
             }
             cm.sendSimple(selStr);
         } else if (selectedType == 3) { //magician glove
-            var selStr = "Magician glove? Sure thing, which kind?#b";
-            var items = ["Red Lutia#k - Magician Lv. 30#b", "Red Noel#k - Magician Lv. 35#b", "Red Arten#k - Magician Lv. 40#b", "Red Pennance#k - Magician Lv. 50#b"];
+            var selStr = "那么你想做哪一个法师手套？#b";
+            var items = ["#z1082051##k - 法师 等级. 30#b", "#z1082054##k - 法师 等级. 35#b", "#z1082062##k - 法师 等级. 40#b", "#z1082081##k - 法师 等级. 50#b"];
             for (var i = 0; i < items.length; i++) {
                 selStr += "\r\n#L" + i + "# " + items[i] + "#l";
             }
             cm.sendSimple(selStr);
         } else if (selectedType == 4) { //thief glove
-            var selStr = "Thief glove? Sure thing, which kind?#b";
-            var gloves = ["Steel Sylvia#k - Thief Lv. 30#b", "Steel Arbion#k - Thief Lv. 35#b", "Red Cleave#k - Thief Lv. 40#b", "Blue Moon Glove#k - Thief Lv. 50#b"];
+            var selStr = "那么你想做哪一个飞侠手套？#b";
+            var gloves = ["#z1082042##k - 飞侠 等级. 30#b", "#z1082046##k - 飞侠 等级. 35#b", "#z1082075##k - 飞侠 等级. 40#b", "#z1082065##k - 飞侠 等级. 50#b"];
             for (var i = 0; i < gloves.length; i++) {
                 selStr += "\r\n#L" + i + "# " + gloves[i] + "#l";
             }
             cm.sendSimple(selStr);
         } else if (selectedType == 5) { //warrior glove w/ Stim
-            var selStr = "Warrior glove with a stimulator? Sure thing, which kind?#b";
-            var crystals = ["Steel Missel#k - Warrior Lv. 30#b", "Orihalcon Missel#k - Warrior Lv. 30#b", "Yellow Briggon#k - Warrior Lv. 35#b", "Dark Briggon#k - Warrior Lv. 35#b",
-                "Adamantium Knuckle#k - Warrior Lv. 40#b", "Dark Knuckle#k - Warrior Lv. 40#b", "Mithril Brist#k - Warrior Lv. 50#b", "Gold Brist#k - Warrior Lv. 50#b"];
+            var selStr = "那么你想使用辅助剂来做哪一个战士手套？#b";
+            var crystals = ["#z1082005##k - 战士 等级. 30#b", "#z1082006##k - 战士 等级. 30#b", "#z1082035##k - 战士 等级. 35#b", "#z1082036##k - 战士 等级. 35#b",
+                    "#z1082024##k - 战士 等级. 40#b", "#z1082025##k - 战士 等级. 40#b", "#z1082010##k - 战士 等级. 50#b", "#z1082011##k - 战士 等级. 50#b"];
             for (var i = 0; i < crystals.length; i++) {
                 selStr += "\r\n#L" + i + "# " + crystals[i] + "#l";
             }
             cm.sendSimple(selStr);
         } else if (selectedType == 6) { //bowman glove w/ stim
-            var selStr = "Bowman glove with a stimulator? Sure thing, which kind?#b";
-            var crystals = ["Green Marker#k - Bowman Lv. 30#b", "Black Marker#k - Bowman Lv. 30#b", "Mithril Scaler#k - Bowman Lv. 35#b", "Gold Scaler#k - Bowman Lv. 35#b", "Gold Brace#k - Bowman Lv. 40#b", "Dark Brace#k - Bowman Lv. 40#b", "Red Willow#k - Bowman Lv. 50#b", "Dark Willow#k - Bowman Lv. 50#b"];
+            var selStr = "那么你想使用辅助剂来做哪一个弓箭手手套？#b";
+            var crystals = ["#z1082049##k - 弓箭手 等级. 30#b", "#z1082050##k - 弓箭手 等级. 30#b", "#z1082069##k - 弓箭手 等级. 35#b", "#z1082070##k - 弓箭手 等级. 35#b", "#z1082072##k - 弓箭手 等级. 40#b", "#z1082073##k - 弓箭手 等级. 40#b", "#z1082085##k - 弓箭手 等级. 50#b", "#z1082083##k - 弓箭手 等级. 50#b"];
             for (var i = 0; i < crystals.length; i++) {
                 selStr += "\r\n#L" + i + "# " + crystals[i] + "#l";
             }
             cm.sendSimple(selStr);
         } else if (selectedType == 7) { //magician glove w/ stim
-            var selStr = "Magician glove with a stimulator? Sure thing, which kind?#b";
-            var items = ["Blue Lutia#k - Magician Lv. 30#b", "Black Lutia#k - Magician Lv. 30#b", "Blue Noel#k - Magician Lv. 35#b", "Dark Noel#k - Magician Lv. 35#b",
-                "Blue Arten#k - Magician Lv. 40#b", "Dark Arten#k - Magician Lv. 40#b", "Blue Pennance#k - Magician Lv. 50#b", "Dark Pennance#k - Magician Lv. 50#b"];
+            var selStr = "那么你想使用辅助剂来做哪一个法师手套？#b";
+            var items = ["#z1082052##k - 法师 等级. 30#b", "#z1082053##k - 法师 等级. 30#b", "#z1082055##k - 法师 等级. 35#b", "#z1082056##k - 法师 等级. 35#b",
+                    "#z1082063##k - 法师 等级. 40#b", "#z1082064##k - 法师 等级. 40#b", "#z1082082##k - 法师 等级. 50#b", "#z1082080##k - 法师 等级. 50#b"];
             for (var i = 0; i < items.length; i++) {
                 selStr += "\r\n#L" + i + "# " + items[i] + "#l";
             }
             cm.sendSimple(selStr);
         } else if (selectedType == 8) { //thief glove w/ stim
-            var selStr = "Thief glove with a stimulator? Sure thing, which kind?#b";
-            var gloves = ["Silver Sylvia#k - Thief Lv. 30#b", "Gold Sylvia#k - Thief Lv. 30#b", "Orihalcon Arbion#k - Thief Lv. 35#b", "Gold Arbion#k - Thief Lv. 35#b", "Gold Cleave#k - Thief Lv. 40#b",
-                "Dark Cleave#k - Thief Lv. 40#b", "Red Moon Glove#k - Thief Lv. 50#b", "Brown Moon Glove#k - Thief Lv. 50#b"];
+            var selStr = "那么你想使用辅助剂来做哪一个飞侠手套？#b";
+            var gloves = ["#z1082043##k - 飞侠 等级. 30#b", "#z1082044##k - 飞侠 等级. 30#b", "#z1082047##k - 飞侠 等级. 35#b", "#z1082045##k - 飞侠 等级. 35#b", "#z1082076##k - 飞侠 等级. 40#b",
+                    "#z1082074##k - 飞侠 等级. 40#b", "#z1082067##k - 飞侠 等级. 50#b", "#z1082066##k - 飞侠 等级. 50#b"];
             for (var i = 0; i < gloves.length; i++) {
                 selStr += "\r\n#L" + i + "# " + gloves[i] + "#l";
             }
@@ -204,7 +204,7 @@ function action(mode, type, selection) {
             matQty = matQtySet[selectedItem];
             cost = costSet[selectedItem];
         }
-        var prompt = "You want me to make a #t" + item + "#? In that case, I'm going to need specific items from you in order to make it. Make sure you have room in your inventory, though!#b";
+        var prompt = "你想要做一双 #t" + item + "#? 在这种情况下，为了要做出好品质的装备。请确保您有空间在您的装备栏！#b";
         if (stimulator) {
             prompt += "\r\n#i" + stimID + "# 1 #t" + stimID + "#";
         }
@@ -216,7 +216,7 @@ function action(mode, type, selection) {
             prompt += "\r\n#i" + mats + "# " + matQty + " #t" + mats + "#";
         }
         if (cost > 0) {
-            prompt += "\r\n#i4031138# " + cost + " meso";
+            prompt += "\r\n#i4031138# " + cost + "金币";
         }
         cm.sendYesNo(prompt);
     } else if (status == 3) {
@@ -227,7 +227,7 @@ function action(mode, type, selection) {
             cm.dispose();
             return;
         } else if (cm.getMeso() < cost) {
-            cm.sendOk("抱歉，我们只接受黄金币。");
+            cm.sendOk("抱歉，我们只接受金币。");
             cm.dispose();
             return;
         } else {
@@ -262,13 +262,13 @@ function action(mode, type, selection) {
                 var deleted = Math.floor(Math.random() * 10);
                 if (deleted != 0) {
                     cm.gainRandomItem(newItem);
-                    cm.sendOk("手套已经准备好了。小心，它们还很烫。");
+                    cm.sendOk("手套已经准备好了，请小心使用。");
                 } else {
-                    cm.sendOk("哎呀！我想我不小心加了太多的刺激剂，嗯，整个东西现在都不能用了……抱歉，但我不能退款。");
+                    cm.sendOk("哎呀！我想我不小心加了太多的辅助剂，嗯，整个东西现在都不能用了……抱歉，但我不能退款。");
                 }
             } else {
                 cm.gainItem(item, 1);
-                cm.sendOk("手套已经准备好了。小心，它们还很烫。");
+                cm.sendOk("手套已经准备好了，请小心使用。");
             }
         }
         cm.dispose();

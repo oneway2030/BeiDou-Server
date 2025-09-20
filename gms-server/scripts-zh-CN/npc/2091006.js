@@ -30,7 +30,7 @@ var status = -2;
 var readNotice = 0;
 
 function start() {
-    cm.sendSimple("#e< 注意 >#n\r\n如果有人有勇气挑战武陵道场，请来武陵道场。 - 武功 -\r\n\r\n\r\n#b#L0#挑战武陵道场。#l\r\n#L1#更详细地阅读通知。#l");
+    cm.sendSimple("#e< 警告 >#n\r\n如果有任何人有勇气挑战武陵道场,放马过来. - 武公 -\r\n\r\n\r\n#b#L0#挑战武陵道场。#l\r\n#L1#更详细地阅读通知。#l");
 }
 
 function action(mode, type, selection) {
@@ -42,18 +42,18 @@ function action(mode, type, selection) {
         if (selection == 1 || readNotice == 1) {
             if (status == -1) {
                 readNotice = 1;
-                cm.sendNext("#e< 注意：接受挑战！ >#n\r\n我的名字是慕容，慕龙道场的主人。自古以来，我一直在慕龙修炼，直到我的技能达到了巅峰。从今天开始，我将接受所有对慕龙道场的申请者。慕龙道场的权利将只赋予最强大的人。\r\n如果有人希望向我学习，随时来挑战吧！如果有人希望挑战我，也欢迎。我会让你充分意识到自己的弱点。");
+                cm.sendNext("#e< 注意：接受挑战！ >#n\r\n我的名字是武公, 我建造了武陵塔. 从很久以前，我一直在武陵训练,现在我的技能达到了顶峰. 从今天开始，我将接受任何挑战. 武陵道场将给最强的人奖励。\r\n如果有任何人想找我切磋,随时来挑战就行了!我会让你了解自己的弱点.");
             } else if (status == 0) {
-                cm.sendPrev("PS:You can challenge me on your own. But if you don't have that kind of courage, go ahead and call all your friends.");
+                cm.sendPrev("PS:你可以独自挑战我,但是如果你没有那个勇气,你也可以叫上朋友一起来挑战我.");
             } else {
                 cm.dispose();
             }
         } else {
             if (status == -1 && mode == 1) {
-                cm.sendYesNo("（当我把手放在公告板上时，一股神秘的能量开始包围着我。）\r\n\r\n你想去勇士部落道场吗？");
+                cm.sendYesNo("(当我把手放在布告栏上时，一股神秘的能量开始笼罩着我。)\r\n\r\n想去武陵道场吗?");
             } else if (status == 0) {
                 if (mode == 0) {
-                    cm.sendNext("当我把手从公告板上拿开时，覆盖在我身上的神秘能量也消失了。");
+                    cm.sendNext("当我把手从布告栏上拿开时，覆盖在我身上的神秘能量也消失了。");
                 } else {
                     cm.getPlayer().saveLocation("MIRROR");
                     cm.warp(925020000, 4);
