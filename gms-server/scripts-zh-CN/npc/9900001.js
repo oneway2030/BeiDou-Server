@@ -23,9 +23,10 @@
 /**
  * @description 拍卖行中心脚本
  */
-var OldTitle ="\t\t\t\t\t#e欢迎来到#rBeiDou#k脚本中心#n\t\t\t\t\r\n";
+var OldTitle = "\t\t\t\t\t#e欢迎来到#rBeiDou#k脚本中心#n\t\t\t\t\r\n";
 var status = -1;
 var i = 0;
+
 function start() {
     action(1, 0, 0)
 }
@@ -39,10 +40,9 @@ function action(mode, type, selection) {
         cm.dispose();
         return;
     }
-
     if (status === 0) {
 
-		let text = OldTitle;
+        let text = OldTitle;
         text += "当前点券：" + cm.getPlayer().getCashShop().getCash(1) + "\r\n";
         text += "当前抵用券：" + cm.getPlayer().getCashShop().getCash(2) + "\r\n";
         text += "当前信用券：" + cm.getPlayer().getCashShop().getCash(4) + "\r\n";
@@ -50,31 +50,36 @@ function action(mode, type, selection) {
         text += "#b  注：点击NPC无反应可输入 @dispose 来解卡#k\r\n\r\n";
         text += "#d  【随着等级提升，将自动开放更多便捷功能】#k\r\n";
 
+        text += "\r\n                          #L999 ##b自由市场#n#l\r\n";
+
+
+        text += " \r\n";
+        text += " \r\n";
         text += "#L0#新人福利#l \t #L1#每日签到#l\t #L2#在线奖励#l\r\n";
 
-        if (cm.getPlayer().getLevel()>=15) {
-        text += "#L15#随身仓库#l\t #L4#皇家发型#l\t #L5#时尚点装#l\r\n";
+        if (cm.getPlayer().getLevel() >= 15) {
+            text += "#L3##r万能传送#l\t #L4 ##d皇家发型#l\t #L5#时尚点装#l\r\n";
         }
 
-        if (cm.getPlayer().getLevel()>=20) {
-        text += "#L9#快速转职#l\t #L12#血衣合成#l \t #L16#删除道具#l\r\n";
-       }
+        if (cm.getPlayer().getLevel() >= 20) {
+            text += "#L15##r随身仓库#l\t #L12##d血衣合成#l \t #L16#删除道具#l\r\n";
+        }
 
-        if (cm.getPlayer().getLevel()>=30) {
-        text += "#L6#便利商店#l \t #L25#怪物卡戒#l\t #L11#爆率一览#l\r\n";
-       }
+        if (cm.getPlayer().getLevel() >= 30) {
+            text += "#L6##r便利商店#l\t #L25##d怪物卡戒#l\t #L11#爆率一览#l\r\n";
+        }
 
-        if (cm.getPlayer().getLevel()>=50) {
-        text += "#L3#万能传送#l \t #L14#金币兑换#l\t #L10#三宠技能#l\r\n";
-       }
+        if (cm.getPlayer().getLevel() >= 50) {
+            text += "#L9#快速转职#l\t #L14#金币兑换#l\t #L10#三宠技能#l\r\n";
+        }
 
-        if (cm.getPlayer().getLevel()>=70) {
-        text += "#L13#物品兑换#l\t #L7#卷轴商店#l\t #L17#益智答题#l\r\n";
-       }
+        if (cm.getPlayer().getLevel() >= 70) {
+            text += "#L13#物品兑换#l\t #L7#卷轴商店#l\t #L17#益智答题#l\r\n";
+        }
 
-        if (cm.getPlayer().getLevel()>=120) {
-        text += "#L8#大药商店#l\t #L22#技能全满#l \t #L23#更换职业#l\r\n"; 
-       }
+        if (cm.getPlayer().getLevel() >= 120) {
+            text += "#L8#大药商店#l\t #L22#技能全满#l \t #L23#更换职业#l\r\n";
+        }
 
 
         //text += " \r\n 以下是暂不支持的脚本：\r\n";
@@ -86,8 +91,8 @@ function action(mode, type, selection) {
             text += "\r\n";
             text += "\t\t\t\t#r=====以下内容仅GM可见=====\r\n";
             text += "#L62#GM商店集合      #l \t #L63#整容集合#l\r\n";
-	text += "#L65#一键删除道具#l \t     #L66#一键刷道具#l\r\n";
-	text += "#L67#有状态脚本示例#l \t #L68#NextLevel脚本示例#l";
+            text += "#L65#一键删除道具#l \t     #L66#一键刷道具#l\r\n";
+            text += "#L67#有状态脚本示例#l \t #L68#NextLevel脚本示例#l";
         }
         cm.sendSimple(text);
     } else if (status === 1) {
@@ -100,11 +105,16 @@ function action(mode, type, selection) {
 function doSelect(selection) {
     switch (selection) {
         // 非GM功能
- //       case 0:
- //           cm.getPlayer().saveLocation("FREE_MARKET");
- //           cm.warp(910000000, "out00");
- //           break;
- // 脚本移植注意编码改为UTF-8
+        //       case 0:
+        //           cm.getPlayer().saveLocation("FREE_MARKET");
+        //           cm.warp(910000000, "out00");
+        //           break;
+        // 脚本移植注意编码改为UTF-8
+        case 999://去自由
+            cm.getPlayer().saveLocationOnWarp();
+            cm.warp(910000000);
+            cm.dispose();
+            break;
         case 0:
             openNpc("新人福利");
             break;
@@ -140,7 +150,7 @@ function doSelect(selection) {
             openNpc("快速转职");
             break;
         case 10:
-            openNpc("三宠技能"); 
+            openNpc("三宠技能");
             break;
         case 11:
             openNpc("爆率一览");
@@ -163,26 +173,26 @@ function doSelect(selection) {
         case 17:
             openNpc("益智答题");
             break;
- //       case 18:
- //           openNpc("矿石仓库");
- //           break;
- //       case 19:
- //           openNpc("道具抽奖");
- //           break;
-  //       case 20:
-  //           openNpc("音乐点播"); 
-  //           break;
-   //      case 21:
-    //         openNpc("战力系统"); 
-    //         break;
+        //       case 18:
+        //           openNpc("矿石仓库");
+        //           break;
+        //       case 19:
+        //           openNpc("道具抽奖");
+        //           break;
+        //       case 20:
+        //           openNpc("音乐点播");
+        //           break;
+        //      case 21:
+        //         openNpc("战力系统");
+        //         break;
         case 22:
-            openNpc("技能全满"); 
+            openNpc("技能全满");
             break;
         case 23:
-            openNpc("更换职业"); 
+            openNpc("更换职业");
             break;
         case 24:
-            openNpc("一键转生"); 
+            openNpc("一键转生");
             break;
 
         case 25:
@@ -191,7 +201,7 @@ function doSelect(selection) {
 
         // GM功能
         case 62:
-            openNpc("GM商店"); 
+            openNpc("GM商店");
             break;
         case 63:
             openNpc("Salon");

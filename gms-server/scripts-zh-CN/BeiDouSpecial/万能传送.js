@@ -221,10 +221,10 @@ function start()
  */
 function levelStart() {
     let text = "尊贵的大人，您想去哪里呢？（100级后可使用高级BOSS传送）\r\n";
-    text += "#L0#城镇地图#l\r\n";
-    text += "#L1#组队和跳跳地图#l\r\n";
-    text += "#L2#练级地图#l\r\n";
-    text += "#L3#低级BOSS地图#l\r\n";
+    text += "#L0##b城镇地图#l\r\n";
+    text += "#L1##d组队和跳跳地图#l\r\n";
+    text += "#L2##r练级地图#l\r\n";
+    text += "#L3##d低级BOSS地图#l\r\n";
         if (cm.getPlayer().getLevel()>=100) {
     text += "#L4#高级BOSS地图#l\r\n";
        }
