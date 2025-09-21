@@ -32,6 +32,7 @@ import org.gms.constants.id.ItemId;
 import org.gms.constants.inventory.ItemConstants;
 import org.gms.net.AbstractPacketHandler;
 import org.gms.net.packet.InPacket;
+import org.gms.scripting.item.ItemScriptManager;
 import org.gms.server.ItemInformationProvider;
 import org.gms.server.StatEffect;
 import org.gms.util.I18nUtil;
@@ -95,11 +96,20 @@ public final class UseItemHandler extends AbstractPacketHandler {
                 return;
             }
 
-            remove(c, slot);
 
-            if (toUse.getItemId() != ItemId.HAPPY_BIRTHDAY) {
+            if (toUse.getItemId() == ItemId.SHORTCUT_MENU) {
+                //快捷菜单物品，直接调转打开NPC
+                ItemScriptManager ism = ItemScriptManager.getInstance();
+                ItemInformationProvider.ScriptedItem info = ii.getScriptedItemInfo(itemId);
+                if (info == null) {
+                    return;
+                }
+                ism.runItemScript(c, info);
+            } else if (toUse.getItemId() != ItemId.HAPPY_BIRTHDAY) {
+                remove(c, slot);
                 ii.getItemEffect(toUse.getItemId()).applyTo(chr);
             } else {
+                remove(c, slot);
                 StatEffect mse = ii.getItemEffect(toUse.getItemId());
                 for (Character player : chr.getMap().getCharacters()) {
                     mse.applyTo(player);

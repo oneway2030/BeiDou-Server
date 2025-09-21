@@ -120,7 +120,6 @@ public class NPCScriptManager extends AbstractScriptManager {
                 dispose(c);
             }
             if (c.canClickNPC()) {
-                cms.put(c, cm);
                 ScriptEngine engine = null;
                 if (!itemScript) {
                     if (fileName != null) {
@@ -135,10 +134,12 @@ public class NPCScriptManager extends AbstractScriptManager {
                     }
                 }
                 if (engine == null) {
+                    //npc节点取的是cm，不添加会报错
+                    engineName="cm";
                     engine = getInvocableScriptEngine("npc/" + npc + ".js", c);
                     cm.resetItemScript();
                 }
-
+                cms.put(c, cm);
                 if (engine == null) {
                     dispose(c);
                     return false;

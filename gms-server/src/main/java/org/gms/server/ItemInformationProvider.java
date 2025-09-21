@@ -1593,7 +1593,7 @@ public class ItemInformationProvider {
         if (scriptedItemCache.containsKey(itemId)) {
             return scriptedItemCache.get(itemId);
         }
-        if ((itemId / 10000) != 243) {
+        if ((itemId / 10000) != 243 && itemId != ItemId.SHORTCUT_MENU) {
             return null;
         }
         Data itemInfo = getItemData(itemId);
