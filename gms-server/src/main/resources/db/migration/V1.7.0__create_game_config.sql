@@ -86,7 +86,7 @@ values ('world', '0', 'java.lang.Integer', 'flag', '0', '0=普通大区，1=活�
        ('server', 'Game Mechanics', 'java.lang.Boolean', 'use_map_ownership_system', 'false', '是否开启玩家地图所有权(on/off map ownership system)'),
        ('server', 'Game Mechanics', 'java.lang.Boolean', 'use_fishing_system', 'false', '是否开启钓鱼系统(on/off fishing system)'),
        ('server', 'Game Mechanics', 'java.lang.Boolean', 'use_old_gms_styled_pq_npcs', 'true', '跳过组队任务介绍信息，立即开始任务(Skip info about the PQs and immediately tries to register the party in.)'),
-       ('server', 'Game Mechanics', 'java.lang.Boolean', 'use_enable_solo_expeditions', 'false', '副本任务允许单人进入(Enables start expeditions with any number of players.)'),
+       ('server', 'Game Mechanics', 'java.lang.Boolean', 'use_enable_solo_expeditions', 'true', '副本任务允许单人进入(Enables start expeditions with any number of players.)'),
        ('server', 'Game Mechanics', 'java.lang.Boolean', 'use_enable_daily_expeditions', 'false', '是否限制远征次数，不同远征副本会按日/周限制次数(Enables daily/weekly entry limitations in expeditions.)'),
        ('server', 'Game Mechanics', 'java.lang.Boolean', 'use_enable_recall_event', 'false', '玩家重连是否继续上次未完成的事件(Enables a disconnected player to reaccess the last event instance they were in before logging out.)'),
        ('server', 'Game Mechanics', 'java.lang.Long', 'respawn_interval', '10000', '怪物刷新间隔，毫秒(mob respawn interval, millisecond)'),
