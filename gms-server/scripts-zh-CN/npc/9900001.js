@@ -49,13 +49,9 @@ function action(mode, type, selection) {
         text += " \r\n";
         text += "#b  注：点击NPC无反应可输入 @dispose 来解卡#k\r\n\r\n";
         text += "#d  【随着等级提升，将自动开放更多便捷功能】#k\r\n";
-
         text += "\r\n                          #L999 ##b自由市场#n#l\r\n";
-
-
         text += " \r\n";
-        text += " \r\n";
-        text += "#L0#新人福利#l \t #L1#每日签到#l\t #L2#在线奖励#l\r\n";
+        text += "#L0#新人点我#l \t #L1#每日签到#l\t #L2#在线奖励#l\r\n";
 
         if (cm.getPlayer().getLevel() >= 15) {
             text += "#L3##r万能传送#l\t #L4 ##d皇家发型#l\t #L5#时尚点装#l\r\n";
@@ -116,7 +112,7 @@ function doSelect(selection) {
             cm.dispose();
             break;
         case 0:
-            openNpc("新人福利");
+            openNpc("新人点我");
             break;
         case 1:
             openNpc("每日签到");

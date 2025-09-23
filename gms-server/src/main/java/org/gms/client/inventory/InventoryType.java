@@ -30,10 +30,15 @@ import org.gms.util.I18nUtil;
 @Getter
 public enum InventoryType {
     UNDEFINED(0, I18nUtil.getMessage("InventoryType.UNDEFINED")),
+    //装备
     EQUIP(1, I18nUtil.getMessage("InventoryType.EQUIP")),
+    //消耗
     USE(2, I18nUtil.getMessage("InventoryType.USE")),
+    //设置
     SETUP(3, I18nUtil.getMessage("InventoryType.SETUP")),
+    //其他
     ETC(4, I18nUtil.getMessage("InventoryType.ETC")),
+    //特殊
     CASH(5, I18nUtil.getMessage("InventoryType.CASH")),
     CANHOLD(6, I18nUtil.getMessage("InventoryType.CANHOLD")),   //Proof-guard for inserting after removal checks
     EQUIPPED(-1, I18nUtil.getMessage("InventoryType.EQUIPPED")); //Seems nexon screwed something when removing an item T_T

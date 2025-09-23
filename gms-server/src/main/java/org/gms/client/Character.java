@@ -1229,6 +1229,19 @@ public class Character extends AbstractCharacterObject {
         sendPacket(packet);
     }
 
+
+    /**
+     * 新增一个技能到键盘上
+     *
+     * @param keyCode 键盘按键编码
+     * @param SkillId 技能ID
+     */
+    public void addSkillToKeyboard(int keyCode, int SkillId) {
+        //这里的type=1不太清楚是什么，试出来的
+        keymap.put(keyCode, new KeyBinding(1, SkillId));
+//        log.info("keyCode=: " + keyCode + " SkillId=" + SkillId);
+    }
+
     public void changeKeybinding(int key, KeyBinding keybinding) {
         if (keybinding.getType() != 0) {
             keymap.put(key, keybinding);
@@ -4668,6 +4681,30 @@ public class Character extends AbstractCharacterObject {
     public Inventory getInventory(InventoryType type) {
         return inventory[type.ordinal()];
     }
+
+    /**
+     * 背包是否满了
+     * @param type 背包类型:1 装备 2 消耗 3 设置 4 其他 5 特殊
+     * @param count 查询的格子数量,最少1格
+     * @return
+     */
+    public boolean isFull(int type, int count) {
+        count = count > 1 ? count - 1 : 0;
+        boolean freeSpace = true;
+        if (type == 1) {
+            freeSpace = getInventory(InventoryType.EQUIP).isFull(count);
+        } else if (type == 2) {
+            freeSpace = getInventory(InventoryType.USE).isFull(count);
+        } else if (type == 3) {
+            freeSpace = getInventory(InventoryType.SETUP).isFull(count);
+        } else if (type == 4) {
+            freeSpace = getInventory(InventoryType.ETC).isFull(count);
+        } else if (type == 5) {
+            freeSpace = getInventory(InventoryType.CASH).isFull(count);
+        }
+        return freeSpace;
+    }
+
 
     public boolean haveItemWithId(int itemid, boolean checkEquipped) {
         return (inventory[ItemConstants.getInventoryType(itemid).ordinal()].findById(itemid) != null)
