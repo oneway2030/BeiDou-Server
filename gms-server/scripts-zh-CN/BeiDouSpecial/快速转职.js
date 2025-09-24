@@ -362,11 +362,6 @@ var Job_list_Map = {
             {id: 4201003, max_Level: 20},
             {id: 4201004, max_Level: 30},
             {id: 4201005, max_Level: 30},
-        ], [
-            {job_id: 430, name: "见习刀客", level: 20, js: ""},
-            {id: 4300000, max_Level: 20},
-            {id: 4301001, max_Level: 10},
-            {id: 4301002, max_Level: 20},
         ]
     ],
     410: [//刺客 - 三转
