@@ -5,6 +5,8 @@ import org.gms.client.Job;
 import org.gms.config.GameConfig;
 import org.gms.constants.id.MapId;
 import org.gms.constants.skills.Aran;
+import org.gms.constants.skills.Hermit;
+import org.gms.constants.skills.ILWizard;
 import org.gms.provider.*;
 import org.gms.provider.wz.WZFiles;
 import org.gms.server.maps.FieldLimit;
@@ -527,7 +529,10 @@ public class GameConstants {
 
     public static boolean isInJobTree(int skillId, int jobId) {
         int skillJob = skillId / 10000;
-
+        //isSpecialSkills 过滤掉快速移动和二段跳，让其他职业也能保存到键盘上
+        if(isSpecialSkills(skillId)){
+            return true;
+        }
         if (!isInBranchJobTree(skillJob, jobId, 0)) {
             for (int i = 1; i <= 3; i++) {
                 if (hasDivergedBranchJobTree(skillJob, jobId, i)) {
@@ -554,6 +559,10 @@ public class GameConstants {
 
     public static boolean isGMSkills(final int skill) {
         return skill >= 9001000 && skill <= 9101008 || skill >= 8001000 && skill <= 8001001;
+    }
+
+    public static boolean isSpecialSkills(final int skill) {
+        return skill == Hermit.FLASH_JUMP ||skill == ILWizard.TELEPORT;
     }
 
     public static boolean isFreeMarketRoom(int mapid) {

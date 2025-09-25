@@ -7,7 +7,7 @@
 
 var status;
 var textMsg;
-var Title = "#e注意事项:#r请确保Y按键上没有技能或者其他物品，#b领取技能后切换频道或者重新登陆游戏，#r键盘上即可显示该技能#n\r\n";
+var Title = "#e注意事项:#r请确保Y按键上没有技能或者其他物品，#b领取后在键盘Y键上自动生成该技能\r\n";
 //Start
 function start() {
     status = -1;
@@ -47,7 +47,7 @@ function doSelect(selection) {
         default:
             cm.dispose();
     }
-    cm.sendOk("恭喜你，获取技能成功，请切换频道或重启生效！");
+    cm.sendOk("恭喜你，获取技能成功！");
     cm.dispose();
 }
 

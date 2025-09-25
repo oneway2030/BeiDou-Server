@@ -1239,6 +1239,7 @@ public class Character extends AbstractCharacterObject {
     public void addSkillToKeyboard(int keyCode, int SkillId) {
         //这里的type=1不太清楚是什么，试出来的
         keymap.put(keyCode, new KeyBinding(1, SkillId));
+        sendKeymap();
 //        log.info("keyCode=: " + keyCode + " SkillId=" + SkillId);
     }
 
