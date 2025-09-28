@@ -73,8 +73,8 @@ function action(mode, type, selection) {
             text += "#L13#物品兑换#l\t #L7#卷轴商店#l\t #L17#益智答题#l\r\n";
         }
 
-        if (cm.getPlayer().getLevel() >= 120) {
-            text += "#L8#大药商店#l\t #L22#技能全满#l \t #L23#更换职业#l\r\n";
+        if (cm.getPlayer().getLevel() >= 160) {
+            text += "#L22#技能全满#l \t #L23#更换职业#l\\r\\n";
         }
 
 
@@ -169,9 +169,9 @@ function doSelect(selection) {
         case 17:
             openNpc("益智答题");
             break;
-        //       case 18:
-        //           openNpc("矿石仓库");
-        //           break;
+              case 18:
+                  openNpc("矿石仓库");
+                  break;
         //       case 19:
         //           openNpc("道具抽奖");
         //           break;

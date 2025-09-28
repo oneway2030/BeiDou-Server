@@ -864,7 +864,7 @@ function action(mode, type, selection) {
             }
             cm.sendSimple(text);
         } else {
-            cm.sendOk("#d啊哈... 伟大的 #r[#h #]#k ,你已经通过一个漫长而充满挑战的道路,终于成为了风起云涌的人物.但这个世界阴暗的深处,被 #r[管理员]#k #d封印的魔王正蠢蠢欲动,它的残忍无人能及,你需要修炼的更加强大才能拯救所有的居民!");
+            cm.sendOk("#d啊哈... 伟大的 #r[#h #]#k ,您的等级不够或已4转!");
             cm.dispose();
         }
     } else if (status == 1) {
@@ -873,7 +873,11 @@ function action(mode, type, selection) {
         for (var i = 1; i < Job_list[job_list_sel].length; i++) {
             s_text += "#s" + Job_list[job_list_sel][i].id + "# ";
         }
-        var text = "#d你选择的职业是：#b" + Job_list[job_list_sel][0].name + " #d最低等级要求：#r#e" + Job_list[job_list_sel][0].level + "#d#n\r\n\t" + Job_list[job_list_sel][0].js + "\r\n\t技能：" + s_text + "#k\r\n" + (maxSkills ? "\t#b#e转职之后将为你全满技能#n\r\n\r\n" : "\r\n") + "#r\t是否要继续完成转职？";
+        let  jonId=Job_list[job_list_sel][0].job_id
+        if (is4Zhuan(Job_list[job_list_sel][0].job_id)) {
+            maxSkills = false
+        }
+        var text = "#d你选择的职业是：#b" + Job_list[job_list_sel][0].name + " #d最低等级要求：#r#e" + Job_list[job_list_sel][0].level + "#d#n\r\n\t" + Job_list[job_list_sel][0].js + "\r\n\t技能：" + s_text + "#k\r\n" + (maxSkills ? "\t#b#e转职之后将为你全满技能#n\r\n\r\n" : "#b\t4转再提供满技能服务\r\n\r\n") + "#r\t是否要继续完成转职？";
         cm.sendYesNo(text);
     } else if (status == 2) {
         if (cm.getPlayer().getLevel() >= Job_list[job_list_sel][0].level) {
@@ -887,6 +891,10 @@ function action(mode, type, selection) {
         cm.dispose();
     }
 
+}
+
+function is4Zhuan(id) {
+    return id === 112 || id === 122 || id === 132 || id === 212 || id === 222 || id === 232 || id === 312 || id === 322 || id === 412 || id === 422 || id === 512 || id === 522 || id === 2112
 }
 
 function jobChange(jobId) {
@@ -926,12 +934,12 @@ function jobChange(jobId) {
             cm.gainItem(2330000, 1000);
             cm.resetStats();
         }
-    }else{
+    } else {
         cm.changeJobById(jobId);
     }
     // cm.resetStats();
     for (var i = 1; i < Job_list[job_list_sel].length; i++) {
-        cm.teachSkill(Job_list[job_list_sel][i].id, maxSkills ? Job_list[job_list_sel][i].max_Level : 0, Job_list[job_list_sel][i].max_Level,-1);
+        cm.teachSkill(Job_list[job_list_sel][i].id, maxSkills ? Job_list[job_list_sel][i].max_Level : 0, Job_list[job_list_sel][i].max_Level, -1);
     }
     // cm.worldMessage(6, "[转职系统]: 恭喜 [" + cm.getPlayer().getName() + "] 成为 [" + Job_list[job_list_sel][0].name + "] 快速转职成功！");
     cm.sendOk("转职成功！加油锻炼，当你变的强大的时候记的来找我哦！");
