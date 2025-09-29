@@ -55,12 +55,12 @@ function action(mode, type, selection) {
                 return;
             }
 
-            var levelLimit = !cm.getPlayer().isCygnus() ? 160 : 110;
-            var selStr = "勋章排名系统当前不可用，但是...\r\n我提供#e#b装备吸收#k#n服务! ";
+            var levelLimit = !cm.getPlayer().isCygnus() ? 250 : 220;  //这两个数字分别为其他职业和骑士团的等级要求，大于200级即为关闭，可根据需要修改等级要求以开放
+            var selStr = "勋章排名系统当前不可用，但是...我提供#e#b装备吸收#k#n服务!\r\n";
 
             const MakerProcessor = Java.type('org.gms.client.processor.action.MakerProcessor');
             if (!GameConfig.getServerBoolean("use_starter_merge") && (cm.getPlayer().getLevel() < levelLimit || MakerProcessor.getMakerSkillLevel(cm.getPlayer()) < 3)) {
-                selStr += "然而, 你必须拥有#r3级锻造#k并且#r160级(骑士团110级)#k以上,支付#r" + cm.numberWithCommas(mergeFee) + "金币#k才可以使用这个服务.";
+                selStr += "然而, 你必须拥有#r3级锻造#k并且#r160级(骑士团110级)#k以上,支付#r" + cm.numberWithCommas(mergeFee) + "金币#k才可以使用这个服务.\r\n#e(此功能不限次数，影响较大因此默认关闭，如需开放请修改脚本9000040.js)#n";
                 cm.sendOk(selStr);
                 cm.dispose();
             } else if (cm.getMeso() < mergeFee) {
