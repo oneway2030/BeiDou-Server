@@ -483,6 +483,10 @@ public class Character extends AbstractCharacterObject {
     private static final AccountService accountService = ServerManager.getApplicationContext().getBean(AccountService.class);
     private static final HpMpAlertService hpMpAlertService = ServerManager.getApplicationContext().getBean(HpMpAlertService.class);
     private static final InventoryService inventoryService = ServerManager.getApplicationContext().getBean(InventoryService.class);
+    @Getter
+    private int mxjMaxLevel;//冒险家最高等级
+    @Getter
+    private int qstMaxLevel;//其实团最高等级
 
     private Character() {
         super.setListener(new CharacterListener(this));
@@ -4810,7 +4814,19 @@ public class Character extends AbstractCharacterObject {
     }
 
     public int getMaxClassLevel() {
-        return isCygnus() ? 120 : 200;
+        if (mxjMaxLevel == 0) {
+            mxjMaxLevel = GameConfig.getServerInt("mxj_max_level");
+            if (mxjMaxLevel <= 0) {
+                mxjMaxLevel = 200;
+            }
+        }
+        if (qstMaxLevel == 0) {
+            qstMaxLevel = GameConfig.getServerInt("qst_max_level");
+            if (qstMaxLevel <= 0) {
+                qstMaxLevel = 120;
+            }
+        }
+        return isCygnus() ? qstMaxLevel : mxjMaxLevel;
     }
 
     public int getMaxLevel() {
@@ -9466,6 +9482,93 @@ public class Character extends AbstractCharacterObject {
         changeJob(job);
         setLevel(0);
         levelUp(true);
+    }
+
+    /**
+     * 转生处理
+     *
+     * @param isClearSkill 是否清除技能
+     * @param returnSp     是否返还sp,返还的sp根据重生后的等级计算
+     */
+    public void rebirth(boolean isClearSkill, boolean returnSp, int jobId) {
+        // 1. 初始化转生基础参数（从配置获取或使用默认值）
+        int baseRebirthLevel = GameConfig.getServerInt("rebirth_level");
+        int rebirthLevel = Math.max(1, baseRebirthLevel); // 确保最低为1级
+        changeJobAndLevel(rebirthLevel, isClearSkill, returnSp, jobId);
+    }
+
+    public void changeJobAndLevel(int level, boolean isClearSkill, boolean returnSp, int jobId) {
+        if (level <= 0) {
+            level = 1;
+        }
+        level = Math.min(level, getMaxClassLevel()); // 限制不超过职业最大等级
+        // 5. 技能与SP重置逻辑
+        if (isClearSkill) {
+            resetSkillsAndResetSP(returnSp, level);
+        }
+        Job job = null;
+        if (jobId > 0) {
+            job = Job.getById(jobId);
+        }
+        if (job == null) {
+            job = Job.changeJobByLevel(getJob(), level);
+        }
+        changeJob(job);
+        // 2. 处理转生次数与等级重置
+        addReborns(); // 增加转生次数
+        loseExp(getExp(), false, false); // 清除当前经验
+        setLevel(level - 1); // 设置转生后等级
+        resetPlayerRates(); // 重置玩家倍率
+        // 3. 应用等级相关倍率配置
+        if (GameConfig.getServerBoolean("use_add_rates_by_level")) {
+            setPlayerRates();
+        }
+        setWorldRates();
+        // 4. 触发等级提升相关逻辑（更新状态等）
+        levelUp(true);
+    }
+
+    /**
+     * 重置所有技能并根据参数决定是否返还SP
+     *
+     * @param returnSp     是否返还技能点（true:返还SP；false:不返还并清除对应SP）
+     * @param rebirthLevel
+     */
+    private void resetSkillsAndResetSP(boolean returnSp, int rebirthLevel) {
+        // 复制技能集合的键集，避免遍历中修改原集合导致异常
+        Set<Skill> skillList = new HashSet<>(getSkills().keySet());
+        if (skillList.isEmpty()) {
+            return;
+        }
+        int totalSp = 0;
+        // 使用迭代器遍历复制后的集合（即使原集合被修改，复制的集合也不受影响）
+        Iterator<Skill> iterator = skillList.iterator();
+        while (iterator.hasNext()) {
+            Skill skill = iterator.next();
+            byte currentLevel = getSkillLevel(skill);
+            if (currentLevel <= 0) {
+                continue;
+            }
+            // 重置技能等级（可能会修改原技能集合，但当前遍历的是复制的集合，避免异常）
+            changeSkillLevel(skill, (byte) -1, -1, -1);
+            totalSp += currentLevel;
+        }
+        //返还sp或清除sp
+        int realSp = 0;
+        if (returnSp) {
+            realSp= getRemainingSp();
+            //根据职业返还sp
+            int spLevel = rebirthLevel - 8;
+            if (spLevel > 0) {
+                int diffSp = spLevel * 3 - realSp + 5;
+                if (diffSp > 0) {
+                    realSp = diffSp;
+                }
+            }
+        } else {
+            realSp = 0;
+        }
+        gainSp(realSp, GameConstants.getSkillBook(job.getId()), true);
     }
 
     //EVENTS

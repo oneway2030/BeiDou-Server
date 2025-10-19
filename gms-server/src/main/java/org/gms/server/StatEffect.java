@@ -1229,7 +1229,11 @@ public class StatEffect {
     }
 
     public int getBuffLocalDuration() {
-        return !GameConfig.getServerBoolean("use_buff_everlasting") ? duration : Integer.MAX_VALUE;
+        if (skill) {
+            return !GameConfig.getServerBoolean("use_buff_everlasting") ? duration : Integer.MAX_VALUE;
+        }else{
+            return duration;
+        }
     }
 
     public void silentApplyBuff(Character chr, long localStartTime) {

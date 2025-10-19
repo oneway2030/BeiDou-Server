@@ -685,6 +685,18 @@ public class Equip extends Item {
     }
 
     /**
+     * 获取转生后的装备最大升级次数
+     */
+    private int getEquipmentMaxLevelUp(Client c, int equipMaxLevel) {
+//        int equipMaxLevel = Math.min(30, Math.max(ii.getEquipLevel(this.getItemId(), true), GameConfig.getServerInt("use_equipment_level_up")));// 计算装备的最大等级
+        int reborn = c.getPlayer().getReborns();
+        //每次转生装备可升级的次数
+        int addLevelUp = GameConfig.getServerInt("each_time_reborn_equipment_add_level_up");
+        int incremental = reborn * addLevelUp;
+        return equipMaxLevel + incremental;
+    }
+
+    /**
      * 处理装备经验值的增加逻辑（Ronan 的装备经验值获取方法）
      * @param c 客户端对象
      * @param gain 获得的经验值
@@ -734,14 +746,13 @@ public class Equip extends Item {
         c.getPlayer().forceUpdateItem(this);// 通知客户端更新装备状态
     }
 
-    private boolean reachedMaxLevel() {
+    private boolean reachedMaxLevel(Client c, int maxLevel) {
         if (isElemental) {
             if (itemLevel < ItemInformationProvider.getInstance().getEquipLevel(getItemId(), true)) {
                 return false;
             }
         }
-
-        return itemLevel >= GameConfig.getServerInt("use_equipment_level_up");
+        return itemLevel >= maxLevel;
     }
 
     public String showEquipFeatures(Client c) {
@@ -749,11 +760,11 @@ public class Equip extends Item {
         if (!ii.isUpgradeable(this.getItemId())) {
             return "";
         }
-
+        int equipMaxLevel = Math.min(30, Math.max(ii.getEquipLevel(this.getItemId(), true), GameConfig.getServerInt("use_equipment_level_up")));// 计算装备的最大等级
+        int maxLevel = getEquipmentMaxLevelUp(c, equipMaxLevel);
         String eqpName = ii.getName(getItemId());
-        String eqpInfo = reachedMaxLevel() ? " #e#rMAX LEVEL#k#n" : (" EXP: #e#b" + (int) itemExp + "#k#n / " + ExpTable.getEquipExpNeededForLevel(itemLevel));
-
-        return "'" + eqpName + "' -> LV: #e#b" + itemLevel + "#k#n    " + eqpInfo + "\r\n";
+        String eqpInfo = reachedMaxLevel(c,maxLevel) ? " #e#rMAX LEVEL = "+maxLevel+"#k#n" : (" EXP: #e#b" + (int) itemExp + "#k#n / " + ExpTable.getEquipExpNeededForLevel(itemLevel)+"   #e#rMAX LEVEL ="+maxLevel);
+        return "#k'" + eqpName + "' -> LV: #e#b" + itemLevel + "#k#n    " + eqpInfo + "\r\n";
     }
 
     public void setItemExp(int exp) {

@@ -32,12 +32,18 @@ import org.gms.util.BCrypt;
 import org.gms.util.DatabaseConnection;
 import org.gms.util.HexTool;
 import org.gms.util.PacketCreator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.Calendar;
 
 public final class LoginPasswordHandler implements PacketHandler {
+
+    // 配置同一个IP或MAC允许的最大账号数量
+    private int MAX_ACCOUNTS_PER_IP_OR_MAC = 0;
+    private static final Logger log = LoggerFactory.getLogger(Client.class);
 
     @Override
     public boolean validateState(Client c) {
@@ -62,17 +68,34 @@ public final class LoginPasswordHandler implements PacketHandler {
         int loginok = c.login(login, pwd, hwid);
 
         if (GameConfig.getServerBoolean("automatic_register") && loginok == 5) {
-            try (Connection con = DatabaseConnection.getConnection();
-                 PreparedStatement ps = con.prepareStatement("INSERT INTO accounts (name, password, birthday, tempban) VALUES (?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS)) { //Jayd: Added birthday, tempban
-                ps.setString(1, login);
-                ps.setString(2, GameConfig.getServerBoolean("bcrypt_migration") ? BCrypt.hashpw(pwd, BCrypt.gensalt(12)) : BCrypt.hashpwSHA512(pwd));
-                ps.setDate(3, Date.valueOf(DefaultDates.getBirthday()));
-                ps.setTimestamp(4, Timestamp.valueOf(DefaultDates.getTempban()));
-                ps.executeUpdate();
+            try {
+                // 获取客户端IP和MAC地址
+                String clientIp = remoteHost;
+                String clientMac = c.getMacs().isEmpty() ? "" : c.getMacs().iterator().next();
 
-                try (ResultSet rs = ps.getGeneratedKeys()) {
-                    rs.next();
-                    c.setAccID(rs.getInt(1));
+                // 检查IP和MAC的注册数量限制
+                if (!isAllowedRegistration(clientIp, clientMac)) {
+                    log.info("该IP或者Mac注册账号已达上线 ");
+                    c.sendPacket(PacketCreator.getLoginFailed(10)); // 超过注册限制
+                    return;
+                }
+                // 执行账号注册
+                try (Connection con = DatabaseConnection.getConnection();
+//                    PreparedStatement ps = con.prepareStatement("INSERT INTO accounts (name, password, birthday, tempban) VALUES (?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS)) { //Jayd: Added birthday, tempban
+                     PreparedStatement ps = con.prepareStatement(
+                             "INSERT INTO accounts (name, password, birthday, tempban, ip, macs) " + "VALUES (?, ?, ?, ?, ?, ?);",
+                             Statement.RETURN_GENERATED_KEYS)) {
+                    ps.setString(1, login);
+                    ps.setString(2, GameConfig.getServerBoolean("bcrypt_migration") ? BCrypt.hashpw(pwd, BCrypt.gensalt(12)) : BCrypt.hashpwSHA512(pwd));
+                    ps.setDate(3, Date.valueOf(DefaultDates.getBirthday()));
+                    ps.setTimestamp(4, Timestamp.valueOf(DefaultDates.getTempban()));
+                    ps.setString(5, clientIp);  // 存入注册IP
+                    ps.setString(6, clientMac); // 存入注册MAC
+                    ps.executeUpdate();
+                    try (ResultSet rs = ps.getGeneratedKeys()) {
+                        rs.next();
+                        c.setAccID(rs.getInt(1));
+                    }
                 }
             } catch (SQLException | NoSuchAlgorithmException e) {
                 c.setAccID(-1);
@@ -118,6 +141,43 @@ public final class LoginPasswordHandler implements PacketHandler {
             login(c);
         } else {
             c.sendPacket(PacketCreator.getLoginFailed(7));
+        }
+    }
+
+    /**
+     * 检查IP和MAC的注册数量是否超过限制
+     */
+    private boolean isAllowedRegistration(String ip, String mac) throws SQLException {
+        MAX_ACCOUNTS_PER_IP_OR_MAC = GameConfig.getServerInt("max_accounts_per_ip_or_mac");
+        if (MAX_ACCOUNTS_PER_IP_OR_MAC <= 0) {
+            return true;
+        }
+        try (Connection con = DatabaseConnection.getConnection()) {
+            // 检查IP注册数量
+            try (PreparedStatement ps = con.prepareStatement(
+                    "SELECT COUNT(*) FROM accounts WHERE ip = ?")) {
+                ps.setString(1, ip);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next() && rs.getInt(1) >= MAX_ACCOUNTS_PER_IP_OR_MAC) {
+                        return false;
+                    }
+                }
+            }
+
+            // 检查MAC注册数量
+            if (mac != null && !mac.isEmpty()) {
+                try (PreparedStatement ps = con.prepareStatement(
+                        "SELECT COUNT(*) FROM accounts WHERE macs = ?")) {
+                    ps.setString(1, mac);
+                    try (ResultSet rs = ps.executeQuery()) {
+                        if (rs.next() && rs.getInt(1) >= MAX_ACCOUNTS_PER_IP_OR_MAC) {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
         }
     }
 

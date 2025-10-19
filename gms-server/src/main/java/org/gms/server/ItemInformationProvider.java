@@ -1589,11 +1589,95 @@ public class ItemInformationProvider {
         return untradeableOnEquip;
     }
 
+    /**
+     * 判断两个物品是否属于同一个部件（基于 getItemPathStr 方法的路径分类）
+     * @param itemId1 第一个物品ID
+     * @param itemId2 第二个物品ID
+     * @return 若属于同一部件则返回 true，否则返回 false
+     */
+    public boolean isSamePart(int itemId1, int itemId2) {
+        // 获取两个物品的路径字符串
+        String path1 = getItemPathStr(itemId1);
+        String path2 = getItemPathStr(itemId2);
+        // 若任一路径为 "null"（未匹配到分类），则不属于同一部件
+        if ("null".equals(path1) || "null".equals(path2)) {
+            return false;
+        }
+        // 路径字符串相同则为同一部件
+        return path1.equals(path2);
+    }
+    /**
+     * 获取物品的路径
+     * @param itemId
+     */
+    private String getItemPathStr(int itemId) {
+        String cat = "null";
+        if ((itemId >= 1010000 && itemId < 1040000) || (itemId >= 1122000 && itemId < 1123000) || (itemId >= 1132000 && itemId < 1133000) || (itemId >= 1142000 && itemId < 1143000)) {
+            cat = "Eqp/Accessory";
+        } else if (itemId >= 1000000 && itemId < 1010000) {
+            cat = "Eqp/Cap";
+        } else if (itemId >= 1102000 && itemId < 1103000) {
+            cat = "Eqp/Cape";
+        } else if (itemId >= 1040000 && itemId < 1050000) {
+            cat = "Eqp/Coat";
+        } else if (ItemConstants.isFace(itemId)) {
+            cat = "Eqp/Face";
+        } else if (itemId >= 1080000 && itemId < 1090000) {
+            cat = "Eqp/Glove";
+        } else if (ItemConstants.isHair(itemId)) {
+            cat = "Eqp/Hair";
+        } else if (itemId >= 1050000 && itemId < 1060000) {
+            cat = "Eqp/Longcoat";
+        } else if (itemId >= 1060000 && itemId < 1070000) {
+            cat = "Eqp/Pants";
+        } else if (itemId >= 1802000 && itemId < 1842000) {
+            cat = "Eqp/PetEquip";
+        } else if (itemId >= 1112000 && itemId < 1120000) {
+            cat = "Eqp/Ring";
+        } else if (itemId >= 1092000 && itemId < 1100000) {
+            cat = "Eqp/Shield";
+        } else if (itemId >= 1070000 && itemId < 1080000) {
+            cat = "Eqp/Shoes";
+        } else if (itemId >= 1900000 && itemId < 2000000) {
+            cat = "Eqp/Taming";
+        } else if (itemId >= 1300000 && itemId < 1800000) {
+            cat = "Eqp/Weapon";
+        } else if (itemId >= 4000000 && itemId < 5000000) {
+            cat = "Etc";
+        } else {
+            return cat;
+        }
+        return cat;
+    }
+
+
+    /**
+     * 通过节点判断物品是否是现金道具
+     */
+    public boolean isCashItem(int ItemId) {
+        Data itemData = getItemData(ItemId);
+        Data childByPath = itemData.getChildByPath("info/cash");
+        if (childByPath == null) {
+            childByPath = childByPath.getChildByPath("cash");
+        }
+        if (childByPath == null) {
+            return false;
+        }
+        return DataTool.getInt(childByPath) == 1;
+    }
+
+    /**
+     * 通过节点判断物品是否需要倍移除
+     */
+    public boolean isRemove(int itemId) {
+        return DataTool.getInt("spec/remove", getItemData(itemId), 0) == 1;
+    }
+
     public ScriptedItem getScriptedItemInfo(int itemId) {
         if (scriptedItemCache.containsKey(itemId)) {
             return scriptedItemCache.get(itemId);
         }
-        if ((itemId / 10000) != 243 && itemId != ItemId.SHORTCUT_MENU) {
+        if ((itemId / 10000) != 243 && (itemId / 10000) != 202) {
             return null;
         }
         Data itemInfo = getItemData(itemId);

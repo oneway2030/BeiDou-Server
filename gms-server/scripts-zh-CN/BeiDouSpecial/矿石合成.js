@@ -35,30 +35,27 @@ function action(mode, type, selection) {
         status--;
     }
 
+    // 直接从选择冶炼类型开始，跳过初始确认
     if (status == 0) {
-        cm.sendYesNo("你是来这里冶炼矿石母矿或宝石母矿的吧？不论有多少母矿，只有经过我这样的冶炼大师之手，才能让它们重现世间。怎么样，你想要开始冶炼它们吗？");
-    }
-    if (status == 1 && mode == 1) {
         var selStr = "我喜欢你的作风！我们现在就开工吧。你想要冶炼哪种母矿？ #b";
-        var options = ["冶炼矿石母矿","冶炼宝石母矿","冶炼水晶母矿"];
+        var options = ["冶炼矿石母矿", "冶炼宝石母矿", "冶炼水晶母矿", "高级矿石合成"];
         for (var i = 0; i < options.length; i++) {
-            selStr += "\r\n#L" + i + "# " + options[i] + "#l";
+            selStr += "\r\n#L" + i + "# " + options[i] + "#l \r\n";
         }
         cm.sendSimple(selStr);
-    } else if (status == 2 && mode == 1) {
+    } else if (status == 1 && mode == 1) {
         selectedType = selection;
-
         if (selectedType == 0) { //mineral refine
-            var selStr = "你想要冶炼哪种矿石？#b";
-            var minerals = ["青铜","钢铁","锂矿石","朱矿石","银","紫矿石","黄金","锂"];
+            var selStr = "那么，你想要提炼哪种矿石？#b";
+            var minerals = ["#i4011000##t4011000#", "#i4011001##t4011001#", "#i4011002##t4011002#", "#i4011003##t4011003#", "#i4011004##t4011004#", "#i4011005##t4011005#", "#i4011006##t4011006#", "#i4011008##t4011008#"];
             for (var i = 0; i < minerals.length; i++) {
                 selStr += "\r\n#L" + i + "# " + minerals[i] + "#l";
             }
             cm.sendSimple(selStr);
             equip = false;
         } else if (selectedType == 1) { //jewel refine
-            var selStr = "你想要冶炼哪种宝石？#b";
-            var jewels = ["石榴石","紫水晶","海蓝石","祖母绿","蛋白石","蓝宝石","黄晶","钻石","黑水晶"];
+            var selStr = "那么，你想要提炼哪种宝石？#b";
+            var jewels = ["#i4021000##t4021000#", "#i4021001##t4021001#", "#i4021002##t4021002#", "#i4021003##t4021003#", "#i4021004##t4021004#", "#i4021005##t4021005#", "#i4021006##t4021006#", "#i4021007##t4021007#", "#i4021008##t4021008#"];
             for (var i = 0; i < jewels.length; i++) {
                 selStr += "\r\n#L" + i + "# " + jewels[i] + "#l";
             }
@@ -66,16 +63,18 @@ function action(mode, type, selection) {
             equip = false;
         } else if (selectedType == 2) { //Crystal refine
             var selStr = "水晶？这可真是稀有。别担心，我冶炼它们的手艺就像对矿石和宝石那样熟练。你想要冶炼哪种水晶？#b";
-            var crystals = ["力量水晶","智慧水晶","敏捷水晶","幸运水晶"];
+            var crystals = ["#i4005000##t4005000#", "#i4005000##t4005000#", "#i4005002##t4005002#", "#i4005003##t4005003#"];
             for (var i = 0; i < crystals.length; i++) {
                 selStr += "\r\n#L" + i + "# " + crystals[i] + "#l";
             }
             cm.sendSimple(selStr);
             equip = false;
+        }else if (selectedType == 3) { //Crystal refine
+            cm.dispose();
+            cm.openNpc(9900001, "高等宝石兑换");
         }
-    } else if (status == 3 && mode == 1) {
+    } else if (status == 2 && mode == 1) {
         selectedItem = selection;
-
         if (selectedType == 0) { //mineral refine
             var itemSet = [4011000, 4011001, 4011002, 4011003, 4011004, 4011005, 4011006, 4011008];
             var matSet = [4010000, 4010001, 4010002, 4010003, 4010004, 4010005, 4010006, 4010007];
@@ -107,7 +106,7 @@ function action(mode, type, selection) {
 
         var prompt = "想要制作#t" + item + "#，对吗？那么，你想制作多少？";
         cm.sendGetNumber(prompt, 1, 1, 100)
-    } else if (status == 4 && mode == 1) {
+    } else if (status == 3 && mode == 1) {
         if (equip) {
             selectedItem = selection;
             qty = 1;
@@ -137,7 +136,7 @@ function action(mode, type, selection) {
         }
 
         cm.sendYesNo(prompt);
-    } else if (status == 5 && mode == 1) {
+    } else if (status == 4 && mode == 1) {
         var complete = true;
         var recvItem = item, recvQty;
 
@@ -177,7 +176,6 @@ function action(mode, type, selection) {
                     complete = false;
                 }
             }
-
             if (!complete) {
                 cm.sendOk("请确保材料足够，并且有足够的其他栏空间。");
             } else {

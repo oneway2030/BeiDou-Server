@@ -7,6 +7,7 @@ import lombok.Data;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 public class FileTreeNodeDTO {
@@ -22,5 +23,26 @@ public class FileTreeNodeDTO {
         this.key = key;
         this.children = file.isDirectory() ? Collections.emptyList() : null;
         this.leaf = !file.isDirectory();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof FileTreeNodeDTO that)) return false;
+        return Objects.equals(title, that.title);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, key, children, leaf);
+    }
+
+    @Override
+    public String toString() {
+        return "FileTreeNodeDTO{" +
+                "title='" + title + '\'' +
+                ", key='" + key + '\'' +
+                ", children=" + children +
+                ", leaf=" + leaf +
+                '}';
     }
 }

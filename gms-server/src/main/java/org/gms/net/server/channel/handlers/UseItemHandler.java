@@ -99,12 +99,14 @@ public final class UseItemHandler extends AbstractPacketHandler {
 
             if (toUse.getItemId() == ItemId.SHORTCUT_MENU) {
                 //快捷菜单物品，直接调转打开NPC
-                ItemScriptManager ism = ItemScriptManager.getInstance();
                 ItemInformationProvider.ScriptedItem info = ii.getScriptedItemInfo(itemId);
                 if (info == null) {
                     return;
                 }
-                ism.runItemScript(c, info);
+                if (ii.isRemove(itemId)) {
+                    remove(c, slot);
+                }
+                ItemScriptManager.getInstance().runItemScript(c, info);
             } else if (toUse.getItemId() != ItemId.HAPPY_BIRTHDAY) {
                 remove(c, slot);
                 ii.getItemEffect(toUse.getItemId()).applyTo(chr);

@@ -35,7 +35,19 @@ public class FileController {
     @Operation(summary = "读取文件树")
     @PostMapping("/" + ApiConstant.LATEST + "/tree")
     public ResultBody<List<FileTreeNodeDTO>> tree(@RequestBody SubmitBody<FileTreeDTO> request) {
-        return ResultBody.success(request, fileTreeService.tree(request.getData().getCurrentKey()));
+        //对文件进行倒叙排序
+        List<FileTreeNodeDTO> tree = fileTreeService.tree(request.getData().getCurrentKey());
+        tree.sort((a1, a2) -> {
+            String title1 = a1.getTitle().replace(".js","");
+            String title2 = a2.getTitle().replace(".js","");
+            boolean isNum1 = title1.matches("\\d+");
+            boolean isNum2 = title2.matches("\\d+");
+            if (isNum1 && !isNum2) return -1;
+            if (!isNum1 && isNum2) return 1;
+            if (isNum1 && isNum2) return Long.compare(Long.parseLong(title2), Long.parseLong(title1));
+            return title1.compareToIgnoreCase(title2);
+        });
+        return ResultBody.success(request, tree);
     }
 
 }

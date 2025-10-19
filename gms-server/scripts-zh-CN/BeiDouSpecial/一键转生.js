@@ -23,14 +23,23 @@
  */
 
 var cost;
-var ptcost = 100;  //普通职业转生消耗枫叶
-var qscost = 50; //骑士团转生消耗枫叶
+var ptcost = 1;  //普通职业转生消耗枫叶
+var qscost = 1; //骑士团转生消耗枫叶
+//消耗的金币，单位W
+var meso = 1;
 
 var relevel;
-var relevela = 200;  //普通职业转生等级
-var relevelb = 120; //骑士团转生等级
-var status;
-var selecta;
+var relevela = 250;  //普通职业转生等级
+var relevelb = 250; //骑士团转生等级
+var text
+//重生后的等级，由服务器字段控制 rebirth_level
+var rebirthLevel = 1;
+//重生后是否可以选择职业
+var is_change_job = false;
+//重生次数
+var reborns;
+//转生后的职业id, -1代表职业不变
+var jobId = 0;
 
 var 职业 = Array(Array("战士", 100, 10, 0), //	Array("战士", 100, 30, 100),
 //	Array("战士", 100, 70, 110),
@@ -94,112 +103,73 @@ var 职业 = Array(Array("战士", 100, 10, 0), //	Array("战士", 100, 30, 100)
 //	Array("战神", 2100, 120, 2111));
     Array("战神", 2100, 10, 2000));
 
-var  sLevelCommand= Java.type('org.gms.client.command.commands.gm2.LevelCommand');//导入 怪物信息 类
+
 function start() {
+    cost = ptcost;    //默认是普通职业
+    relevel = relevela;
+    if (Math.floor(cm.getJobId() / 1000) == 1) {  //判断为骑士团职业
+        cost = qscost;
+        relevel = relevelb;
+    }
+
+    const GameConfig = Java.type('org.gms.config.GameConfig');
+    let baseRebirthLevel = GameConfig.getServerInt("rebirth_level");
+    rebirthLevel = Math.max(1, baseRebirthLevel); // 确保最低为1级
+    rebirthLevel = Math.min(rebirthLevel, cm.getPlayer().getMaxClassLevel()); // 限制不超过职业最大等级
+    reborns = cm.getChar().getReborns();
+
     var level = cm.getLevel();
-    var job = cm.getJobId();
-    var text = "你已达到" + relevel + "级，可以消耗黄金枫叶" + cost + "个转生，\r\n#e#d#r转生后等级会变为10级（能力点重置，技能保留）#k#n。\r\n"
-    // for (var i = 0; i < 职业.length; i++) {
-    //     //if(job == 职业[i][3] && level >= relevel && cm.haveItem(4000313, cost)) {
-    //     if (level >= relevel && cm.haveItem(4000313, cost)) {
-    //         aaa = true;
-    //         text += "#L" + 职业[i][1] + "##r" + 职业[i][0] + "#k#l\r\n";
-    //     }
-    //     aaa = true;
-    // }
-    if (level >= 1) {
-        levelStart();
+    var isCan = level >= relevel && cm.haveItem(4000313, cost) && cm.getMeso() >= meso * 10000;
+    text = "#e#k当前已转生#e#r" + reborns + "#k次\r\n";
+    text += "#e#k当您达到#e#r" + relevel + "#k级， #v4000313##e#r " + cost + " 个和" + meso + "W金币#k进行转生\r\n";
+    if (!is_change_job) {
+        text += "#b注意：转生后等级会变为" + rebirthLevel + "级,职业不会改变,\r\n #k如需改变职业请使用#e#r[更换职业]#k功能。\r\n"
+    }
+    if (isCan) {
+        if (is_change_job) {
+            text += "\r\n\r\n"
+            text += "请从下面选择你要转生的职业，转生后将会从之前的职业变为您现在选择的职业\r\n";
+            for (var i = 0; i < 职业.length; i++) {
+                if (level >= relevel && cm.haveItem(4000313, cost)) {
+                    text += "#L" + 职业[i][1] + "##r" + 职业[i][0] + "#k#l\r\n";
+                }
+            }
+        }
+        if (is_change_job) {
+            cm.sendNextSelectLevel("SelectEnquire", text);
+        } else {
+            cm.sendNextLevel("Enquire", text);
+        }
+
     } else {
-        cm.sendOk("我可以让你转生为任意职业，#e#d#r等级变为10级（能力点重置，技能保留）#k#n。\r\n如果你想要转生，需要#r等级" + relevela + "#k级，#r黄金枫叶" + ptcost + "个#k。\r\n注意：如果你是骑士团则需要#r等级" + relevelb + "#k级，#r黄金枫叶" + qscost + "个#k。\r\n");
+        text += "\r\n\r\n"
+        text += "#e#r您不满足以上转生条件,无法转生"
+        // cm.sendOk("我可以让你转生为任意职业，#e#d#r等级变为200级（能力点重置，技能保留）#k#n。\r\n如果你想要转生，需要#r等级" + relevela + "#k级，#r黄金枫叶" + ptcost + "个#k。\r\n注意：如果你是骑士团则需要#r等级" + relevelb + "#k级，#r黄金枫叶" + qscost + "个#k。\r\n");
+        cm.sendOk(text);
         cm.dispose();
     }
 }
 
-function levelStart() {
-    let text = "请从下面选择你要转生的职业，转生后将会从之前的职业变为您现在选择的职业\r\n\r\n";
-    for (let i = 0; i <职业.length; i++) {
-        // text+="#L"+i+"##i"+职业[i][0]+"\r\n";
-        text += "#L" + i + "##r" + 职业[i][0] + "#l\r\n";
-    }
-    cm.sendNextSelectLevel("SelectJob",text);
+function levelSelectEnquire(id) {
+    jobId = parseInt(id);
+    cm.sendNextLevel("Rebirth", "#r#e当前已转生" + reborns + "次,转生后将变成" + rebirthLevel + "级确定转生吗？");
 }
 
-function levelSelectJob(index) {
-   let  jobId=职业[index][1]
-    let  level=职业[index][2]
-            // cm.gainMeso(-cost);
-            // cm.gainItem(4000313, -cost);
-            // cm.changeJobById(jobId);
-            // cm.getPlayer().setLevel(21);
-            cm.getPlayer.setNewLevel(10);
-            cm.resetStats();   // 重置属性点
-            cm.getPlayer().equipChanged();
-            cm.sendOk("转生成功！");
-            cm.dispose();
+function levelEnquire() {
+    cm.sendNextLevel("Rebirth", "#r#e当前已转生" + reborns + "次,转生后将变成" + rebirthLevel + "级确定转生吗？");
 }
 
+function levelRebirth() {
+    //重生
+    let isClear = jobId ===0
+    cm.getPlayer().rebirth(false, false, jobId);
+    //重置状态
+    cm.resetStats();
+    //装备变更广播
+    cm.getPlayer().equipChanged();
+    cm.gainMeso(-meso * 10000);
+    cm.gainItem(4000313, -cost);
+    cm.sendOk("#r恭喜你，转生成功！");
+    cm.dispose();
+}
 
-
-//
-// function action(mode, type, selection) {
-//     if (mode == -1) {
-//         cm.dispose();
-//     } else {
-//         if (mode == 0 && type > 0) {
-//             cm.dispose();
-//             return;
-//         }
-//         if (mode == 1)
-//             status++;
-//         else
-//             status--;
-//
-//         if (status == 0) {
-//             cost = ptcost;    //默认是普通职业
-//             relevel = relevela;
-//             if (Math.floor(cm.getJobId() / 1000) == 1) {  //判断为骑士团职业
-//                 cost = qscost;
-//                 relevel = relevelb;
-//             }
-//             var level = cm.getLevel();
-//             var job = cm.getJobId();
-//             var aaa = false;
-//             var text = "你已达到" + relevel + "级，可以消耗黄金枫叶" + cost + "个转生，\r\n#e#d#r转生后等级会变为10级（能力点重置，技能保留）#k#n。\r\n"
-//             for (var i = 0; i < 职业.length; i++) {
-//                 //if(job == 职业[i][3] && level >= relevel && cm.haveItem(4000313, cost)) {
-//                 if (level >= relevel && cm.haveItem(4000313, cost)) {
-//                     aaa = true;
-//                     text += "#L" + 职业[i][1] + "##r" + 职业[i][0] + "#k#l\r\n";
-//                 }
-//                 aaa = true;
-//             }
-//             if (aaa) {
-//                 cm.sendSimple(text);
-//             } else {
-//                 cm.sendOk("我可以让你转生为任意职业，#e#d#r等级变为10级（能力点重置，技能保留）#k#n。\r\n如果你想要转生，需要#r等级" + relevela + "#k级，#r黄金枫叶" + ptcost + "个#k。\r\n注意：如果你是骑士团则需要#r等级" + relevelb + "#k级，#r黄金枫叶" + qscost + "个#k。\r\n");
-//                 cm.dispose();
-//             }
-//         } else if (status == 1) {
-//
-//             cm.sendYesNo("现在可以让你转生，\r\n请注意#e#d#r等级会变为10级#k#n。\r\n请确认是否要转生？");
-//             // cm.dispose();
-//         } else if (status == 2) { //再次检查物品是否足够，避免玩家中途将物品丢出去从而不消耗物品
-//             // cm.gainMeso(-cost);
-//             // cm.gainItem(4000313, -cost);
-//             cm.changeJobById(200);
-//             cm.getChar().executeRebornBM(10);  // 等级变为10级，北冥自定义脚本，北斗不支持
-//             cm.resetStats();   // 重置属性点
-//             cm.getPlayer().equipChanged();
-//             cm.sendOk("转生成功！");
-//             cm.dispose();
-//
-//         } else {
-//             if (status == 2) {
-//                 cm.sendOk("转生失败。");
-//                 cm.dispose();
-//             } else {
-//                 cm.dispose();
-//             }
-//         }
-//     }
-// }

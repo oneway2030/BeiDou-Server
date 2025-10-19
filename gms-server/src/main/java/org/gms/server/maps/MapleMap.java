@@ -193,6 +193,8 @@ public class MapleMap {
 
     // due to the nature of loadMapFromWz (synchronized), sole function that calls 'generateMapDropRangeCache', this lock remains optional.
     private static final Lock bndLock = new ReentrantLock(true);
+    //是否随机刷新位置
+    private boolean mIsRandomRefresh;
 
     public MapleMap(int mapid, int world, int channel, int returnMapId, float monsterRate) {
         this.mapid = mapid;
@@ -213,6 +215,7 @@ public class MapleMap {
         objectWLock = objectLock.writeLock();
 
         aggroMonitor = new MonsterAggroCoordinator();
+        mIsRandomRefresh = GameConfig.getServerBoolean("use_monster_random_refresh_position");
     }
 
     public void setEventInstance(EventInstanceManager eim) {
@@ -3724,7 +3727,9 @@ public class MapleMap {
         int numShouldSpawn = getNumShouldSpawn(numPlayers);
         if (numShouldSpawn > 0) {
             List<SpawnPoint> randomSpawn = new ArrayList<>(getMonsterSpawn());
-            Collections.shuffle(randomSpawn);
+            if (mIsRandomRefresh) {
+                Collections.shuffle(randomSpawn);
+            }
             short spawned = 0;
             for (SpawnPoint spawnPoint : randomSpawn) {
                 if (spawnPoint.shouldSpawn()) {
