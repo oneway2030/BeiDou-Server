@@ -29,6 +29,7 @@ import org.gms.client.creator.CharacterFactoryRecipe;
 import org.gms.client.inventory.*;
 import org.gms.client.inventory.Equip.StatUpgrade;
 import org.gms.client.inventory.manipulator.InventoryManipulator;
+import org.gms.client.inventory.manipulator.ExtraStorageUtil;
 import org.gms.client.keybind.KeyBinding;
 import org.gms.client.keybind.QuickslotBinding;
 import org.gms.client.processor.action.PetAutopotProcessor;
@@ -509,6 +510,7 @@ public class Character extends AbstractCharacterObject {
         }
         quests = new LinkedHashMap<>();
         setPosition(new Point(0, 0));
+        initExtraStorage();
     }
 
     public Job getJobStyle(byte opt) {
@@ -9800,4 +9802,44 @@ public class Character extends AbstractCharacterObject {
     public void enableActions() {
         sendPacket(PacketCreator.enableActions());
     }
+
+
+    private ExtraStorage mExtraStorage;
+    private ExtraStorageUtil mExtraStorageUtil;
+
+    public void initExtraStorage() {
+        // 基于角色ID和账号ID初始化
+        this.mExtraStorage = new ExtraStorage(getAccountId(), getId());
+        // 从数据库加载已有矿石数据
+        this.mExtraStorage.loadFromDB();
+        mExtraStorageUtil = new ExtraStorageUtil();
+    }
+
+    public ExtraStorage getExtraStorage() {
+        return mExtraStorage;
+    }
+
+    /**
+     * 存入物品到仓库
+     *
+     * @param itemId
+     * @param quantity
+     * @param type
+     */
+    public boolean storeExtraItem(int itemId, int quantity, int type) {
+        return mExtraStorageUtil.storeItem(getClient(), itemId, quantity, type);
+    }
+
+    /**
+     * 从数据库取出物品到背包
+     *
+     * @param itemId
+     * @param quantity
+     * @param type
+     */
+    public boolean takeOutExtraItem(int itemId, int quantity, int type) {
+        return mExtraStorageUtil.takeOutItem(getClient(), itemId, quantity, type);
+    }
+
+
 }

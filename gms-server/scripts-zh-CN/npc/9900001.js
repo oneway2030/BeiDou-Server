@@ -63,7 +63,8 @@ function action(mode, type, selection) {
         text += " \r\n";
         text += "#L5#"+icon+"时装暖暖#l\t#L16#各种兑换#l\t#L17#爆率一览#l\t#L18#删除道具#l\r\n";
         text += " \r\n";
-        text += "#L333#任务大厅#l \t #L444#主线任务#l\r\n";
+        text += "#L19#"+icon+"额外仓库#l\t#L333#任务大厅#l\t#L444#装备中心#l\r\n";
+        text += " \r\n";
         //
         // text += "#L0#新人点我#l \t #L1#每日签到#l\t #L2#在线奖励#l\r\n";
         //
@@ -128,7 +129,7 @@ function doSelect(selection) {
             cm.dispose();
             break;
         case 444://主线任务
-            openNpc("主线任务");
+            openNpc("装备中心");
             break;
         case 333://主线任务
             openNpc("任务大厅");
@@ -146,7 +147,7 @@ function doSelect(selection) {
             openNpc("新人福利");
             break;
         case 1:
-            openNpc("矿石仓库");
+            openNpc("万能传送");
             break;
         case 2:
             openNpc("随身仓库");
@@ -208,7 +209,8 @@ function doSelect(selection) {
             openNpc("删除道具");
             break;
         case 19:
-            openNpc("益智答题");
+            openNpc("物品仓库系统");
+            // openNpc("益智答题");
             break;
         case 20:
         //           openNpc("音乐点播");

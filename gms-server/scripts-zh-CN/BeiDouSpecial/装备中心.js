@@ -23,7 +23,7 @@
 /**
  * @description 拍卖行中心脚本
  */
-var OldTitle = "\t\t\t\t\t#e#k欢迎来到#r[任务大厅]#k系统#n\t\t\t\t\r\n";
+var OldTitle = "\t\t\t\t\t#e#k欢迎来到#r[装备中心]#k系统#n\t\t\t\t\r\n";
 var status = -1;
 var i = 0;
 
@@ -43,11 +43,7 @@ function action(mode, type, selection) {
     if (status === 0) {
         let text = OldTitle;
         text += " \r\n";
-        text += "#L1#血衣合成#l\t\r\n\r\n";
-        text += "#L2#怪物卡戒#l\t\r\n\r\n";
-        text += "#L3#主线任务#l\t\r\n\r\n";
-        text += "#L0#每日任务成#l\t\r\n\r\n";
-        text += "#L4#世界任务#l\t\r\n\r\n";
+        text += "#L0#时装属性转移#l\t\r\n\r\n";
         cm.sendSimple(text);
     } else if (status === 1) {
         doSelect(selection);
@@ -59,19 +55,11 @@ function action(mode, type, selection) {
 function doSelect(selection) {
     switch (selection) {
         case 0:
-            openNpc("每日任务");
+            openNpc("时装属性转移");
             break;
         case 1:
-            openNpc("血衣合成");
+            // openNpc("血衣合成");
             break;
-        case 2:
-            openNpc("2006");  //明珠港怪物卡戒指NPC
-            break;
-        case 3:
-            openNpc("主线任务");
-            break;
-        case 4:
-            openNpc("世界任务");
             break;
         default:
             cm.sendOk("该功能暂不支持，敬请期待！");

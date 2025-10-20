@@ -1,0 +1,498 @@
+var a = 0;
+var text;
+var selects; // 记录选中的物品索引
+var inventoryType; // 0:水晶宝石 1:母矿 2:10%卷轴 3:60%卷轴 4:各种币
+var actionType; // 0:存储 1:取出
+var currentItemId; // 当前操作的物品ID
+var batchStoreItems = []; // 批量存储的物品列表
+
+// 水晶宝石列表 (type=0)
+var itemlist0 = [
+    4005000, 4005001, 4005002, 4005003, 4005004,
+    4021000, 4021001, 4021002, 4021003, 4021004,
+    4021005, 4021006, 4021007, 4021008,
+    4011006, 4011005, 4011004, 4011003, 4011002, 4011001, 4011000,
+    4011007,4021009, 4011008
+];
+
+// 母矿列表 (type=1)
+var itemlist1 = [
+    4004000, 4004001, 4004002, 4004003, 4004004,
+    4010000, 4010001, 4010002, 4010003, 4010004,
+    4010005, 4010006,
+    4020000, 4020001, 4020002, 4020003, 4020004,
+    4020005, 4020006, 4020007, 4020008,4010007
+];
+
+// 10%成功率卷轴ID数组(type=2)
+const itemlist2 = [
+    2040002, // 10%头盔防御卷轴
+    2040005, // 10%头盔体力卷轴
+    2040026, // 10%头盔智力卷轴
+    2040031, // 10%头盔敏捷卷轴
+    2040805, // 10%手套攻击卷轴
+    2040816, // 10%手套魔力卷轴
+
+    2040702, // 10%鞋子敏捷卷轴
+    2040705, // 10%鞋子跳跃卷轴
+    2040708, // 10%鞋子速度卷轴
+
+    2041002, // 10%披风魔防卷轴
+    2041005, // 10%披风防御卷轴
+    2041008, // 10%披风体力卷轴
+    2041014, // 10%披风力量卷轴
+    2041017, // 10%披风智力卷轴
+    2041020, // 10%披风敏捷卷轴
+    2041023, // 10%披风运气卷轴
+
+    2040412, // 10%上衣运气卷轴
+    2040419, // 10%上衣力量卷轴
+    2040402, // 10%上衣防御卷轴
+    2040422, // 10%上衣体力卷轴
+
+    2040612, // 10%裤裙敏捷卷轴
+    2040619, // 10%裤裙跳跃卷轴
+    2040622, // 10%裤裙体力卷轴
+
+    2040502, // 10%全身铠甲敏捷卷轴
+    2040505, // 10%全身铠甲防御卷轴
+    2040514, // 10%全身铠甲智力卷轴
+    2040517, // 10%全身铠甲运气卷轴
+    2040502, // 10%全身铠甲敏捷卷轴
+
+    2040302, // 10%耳环智力卷轴
+    2040318, // 10%耳环敏捷卷轴
+    2040323, // 10%耳环运气卷轴
+    2040330, // 10%耳环智力卷轴
+    2040328, // 10%耳环体力卷轴
+
+    2040100, // 10%脸部装饰生命卷轴
+    2040105, // 10%脸部装饰回避率卷轴
+];
+
+// 60%成功率卷轴ID数组(type=3)
+const itemlist3 = [
+    2040001, // 10%头盔防御卷轴
+    2040004, // 10%头盔体力卷轴
+    2040025, // 10%头盔智力卷轴
+    2040029, // 10%头盔敏捷卷轴
+    2040804, // 10%手套攻击卷轴
+    2040817, // 10%手套魔力卷轴
+
+    2040701, // 10%鞋子敏捷卷轴
+    2040704, // 10%鞋子跳跃卷轴
+    2040707, // 10%鞋子速度卷轴
+
+    2041001, // 10%披风魔防卷轴
+    2041004, // 10%披风防御卷轴
+    2041007, // 10%披风体力卷轴
+    2041013, // 10%披风力量卷轴
+    2041016, // 10%披风智力卷轴
+    2041019, // 10%披风敏捷卷轴
+    2041022, // 10%披风运气卷轴
+
+    2040413, // 10%上衣运气卷轴
+    2040425, // 10%上衣运气卷轴
+    2040418, // 10%上衣力量卷轴
+    2040401, // 10%上衣防御卷轴
+    2040421, // 10%上衣体力卷轴
+
+    2040613, // 10%裤裙敏捷卷轴
+    2040618, // 10%裤裙跳跃卷轴
+    2040621, // 10%裤裙体力卷轴
+
+    2040501, // 10%全身铠甲敏捷卷轴
+    2040504, // 10%全身铠甲防御卷轴
+    2040513, // 10%全身铠甲智力卷轴
+    2040516, // 10%全身铠甲运气卷轴
+    2040501, // 10%全身铠甲敏捷卷轴
+
+    2040301, // 10%耳环智力卷轴
+    2040317, // 10%耳环敏捷卷轴
+    2040321, // 10%耳环装饰运气卷轴
+    2040326, // 10%耳环体力卷轴
+
+    2040101, // 10%脸部装饰生命卷轴
+    2040106, // 10%脸部装饰回避率卷轴
+];
+
+// 各种币列表(type=4)
+var itemlist4 = [
+    4001129, 4001254
+];
+
+function start() {
+    a = -1;
+    action(1, 0, 0);
+}
+
+function action(mode, type, selection) {
+    if (mode == -1) {
+        cm.dispose();
+    } else {
+        if (mode == 1) {
+            a++;
+        } else {
+            a--;
+        }
+
+        if (a == -1) {
+            cm.dispose();
+        }
+        // 主菜单
+        else if (a == 0) {
+            text = "                                 #k物品仓库系统#k#n\r\n";
+            text += "\r\n";
+            text += "#L0#成品矿石仓库#l\t\t\t\t\t #L1#母矿仓库#l\r\n";
+            text += "\r\n";
+            text += "#L2#10%成功率卷轴仓库#l\t\t #L3#60%成功率卷轴仓库#l\r\n";
+            // text += "       #L4#各种币仓库#l\r\n";
+            text += "\r\n";
+            text += "#L5##r一键存储所有矿石#l\t\t\t #L6##r一键存储所有卷轴#l\r\n";
+            cm.sendSimple(text);
+        }
+        // 物品管理列表（各类物品）
+        else if (a == 1) {
+            // 处理一键存储操作
+            if (selection == 5) {
+                prepareBatchStoreAllItem(); // 一键存储所有矿石（0+1）
+                return;
+            } else if (selection == 6) {
+                prepareBatchStoreAllScroll(); // 一键存储所有卷轴（2+3）
+                return;
+            }
+
+            // 确定物品类型（0-4）
+            inventoryType = selection;
+            const itemList = getCurrentItemList(inventoryType);
+            const title = getTitleByType(inventoryType);
+
+            // 显示物品列表
+            text = `#d【${title}】#n\r\n`;
+            text += "#k每个物品可进行存储或取出操作#n\r\n\r\n";
+
+            itemList.forEach((itemId, i) => {
+                // 获取背包数量和仓库数量（统一用getExtraStorage，通过type区分）
+                const bagCount = cm.getPlayer().getItemQuantity(itemId, false);
+                const storeCount = cm.getPlayer().getExtraStorage().getItemQuantity(itemId, inventoryType);
+
+                // 第一行：物品图标、名称、背包和仓库数量
+                text += `#b#n#v${itemId}# #z${itemId}# `;
+                text += `#b#n[背包: #r#n${bagCount}] `;
+                text += `#b#n[仓库: #r#n${storeCount}]#b#n\r\n`;
+
+                // 第二行：存储和取出按钮
+                text += `  #L${i*2}##b存储#l          `;
+                text += `#L${i*2+1}##b取出#l\r\n\r\n`;
+            });
+
+            cm.sendSimple(text);
+        }
+        // 处理存储/取出操作（跳转数量输入）
+        else if (a == 2) {
+            const itemList = getCurrentItemList(inventoryType);
+            // 解析选中的操作
+            selects = Math.floor(selection / 2);
+            actionType = selection % 2; // 0:存储 1:取出
+            currentItemId = itemList[selects];
+
+            const itemName = `#v${currentItemId}# #z${currentItemId}#`;
+            const actionName = actionType === 0 ? "存储" : "取出";
+
+            // 获取数量信息（统一用getExtraStorage）
+            let maxCount, currentCount;
+            if (actionType === 0) {
+                currentCount = cm.getPlayer().getItemQuantity(currentItemId, false);
+                const storeCount = cm.getPlayer().getExtraStorage().getItemQuantity(currentItemId, inventoryType);
+                maxCount = Math.min(currentCount, 30000 - storeCount); // 仓库单种物品上限30000
+            } else {
+                currentCount = cm.getPlayer().getExtraStorage().getItemQuantity(currentItemId, inventoryType);
+                maxCount = currentCount;
+            }
+
+            // 验证数量合法性
+            if (maxCount <= 0) {
+                const msg = actionType === 0
+                    ? "背包中没有可存储的该物品或仓库已满！"
+                    : "仓库中没有可取出的该物品！";
+                cm.sendOk(msg);
+                cm.dispose();
+                return;
+            }
+
+            // 发送数量输入框
+            text = `请输入${actionName}数量：\r\n\r\n`;
+            text += `${itemName}\r\n`;
+            text += `#b#n当前${actionType === 0 ? "背包" : "仓库"}数量#r#e: ${currentCount}#b#n\r\n`;
+            if (actionType === 0) {
+                text += `可${actionName}上限: ${maxCount}\r\n`;
+            }
+            text += `\r\n请输入1-${maxCount}之间的数量：`;
+            cm.sendGetNumber(text, maxCount, 1, maxCount);
+        }
+        // 执行存储/取出操作（核心修改：统一使用storeExtraItem和takeOutExtraItem）
+        else if (a == 3) {
+            const quantity = selection;
+            if (quantity <= 0) {
+                cm.sendOk("请输入有效的数量！");
+                cm.dispose();
+                return;
+            }
+
+            const actionName = actionType === 0 ? "存储" : "取出";
+            let success, resultMsg;
+            const player = cm.getPlayer();
+
+            if (actionType === 0) {
+                // 执行存储：调用storeExtraItem(itemId, quantity, type)
+                success = player.storeExtraItem(currentItemId, quantity, inventoryType);
+                const newStoreCount = player.getExtraStorage().getItemQuantity(currentItemId, inventoryType);
+                resultMsg = success
+                    ? `成功${actionName} #z${currentItemId}# x ${quantity}\r\n当前仓库中共有: ${newStoreCount}`
+                    : `${actionName}失败，请检查背包数量或仓库容量！`;
+            } else {
+                // 执行取出：调用takeOutExtraItem(itemId, quantity, type)
+                success = player.takeOutExtraItem(currentItemId, quantity, inventoryType);
+                const newBagCount = player.getItemQuantity(currentItemId, false);
+                resultMsg = success
+                    ? `成功${actionName} #z${currentItemId}# x ${quantity}\r\n当前背包中共有: ${newBagCount}`
+                    : `${actionName}失败，请检查仓库数量或背包空间！`;
+            }
+
+            cm.sendOk(resultMsg);
+            cm.dispose();
+        }
+        // 批量存储确认
+        else if (a == 4) {
+            // 判断是矿石还是卷轴的批量存储确认
+            if (batchStoreItems[0]?.group === 'ore') {
+                executeBatchStoreExtraItem();
+            } else if (batchStoreItems[0]?.group === 'scroll') {
+                executeBatchStoreScroll();
+            } else {
+                cm.sendOk("操作异常，请重试！");
+                cm.dispose();
+            }
+        }
+    }
+}
+
+// 工具函数：根据类型获取物品列表
+function getCurrentItemList(type) {
+    switch (type) {
+        case 0: return itemlist0;
+        case 1: return itemlist1;
+        case 2: return itemlist2;
+        case 3: return itemlist3;
+        case 4: return itemlist4;
+        default: return [];
+    }
+}
+
+// 工具函数：根据类型获取标题
+function getTitleByType(type) {
+    const titles = [
+        "成品矿石仓库",
+        "母矿仓库",
+        "10%成功率卷轴仓库",
+        "60%成功率卷轴仓库",
+        "各种币仓库"
+    ];
+    return titles[type] || "物品仓库";
+}
+
+// 准备一键存储所有矿石（type0和type1）
+function prepareBatchStoreAllItem() {
+    batchStoreItems = [];
+    let text = "以下是可存储的矿石列表，请确认是否存储：\r\n\r\n";
+    const storage = cm.getPlayer().getExtraStorage();
+
+    // 处理水晶宝石（type=0）
+    let hasGem = false;
+    itemlist0.forEach(itemId => {
+        const bagCount = cm.getPlayer().getItemQuantity(itemId, false);
+        if (bagCount <= 0) return;
+
+        const storeCount = storage.getItemQuantity(itemId, 0);
+        const maxStore = 30000 - storeCount;
+        const realStore = Math.min(bagCount, maxStore);
+
+        if (realStore > 0) {
+            if (!hasGem) {
+                text += "#d【水晶宝石】#n\r\n";
+                hasGem = true;
+            }
+            batchStoreItems.push({
+                itemId: itemId,
+                quantity: realStore,
+                type: 0,
+                group: 'ore'
+            });
+            text += `#v${itemId}# #z${itemId}# x ${realStore}\r\n`;
+        }
+    });
+
+    // 处理母矿（type=1）
+    let hasOre = false;
+    itemlist1.forEach(itemId => {
+        const bagCount = cm.getPlayer().getItemQuantity(itemId, false);
+        if (bagCount <= 0) return;
+
+        const storeCount = storage.getOreQuantity(itemId, 1);
+        const maxStore = 30000 - storeCount;
+        const realStore = Math.min(bagCount, maxStore);
+
+        if (realStore > 0) {
+            if (!hasOre) {
+                text += "\r\n#d【母矿】#n\r\n";
+                hasOre = true;
+            }
+            batchStoreItems.push({
+                itemId: itemId,
+                quantity: realStore,
+                type: 1,
+                group: 'ore'
+            });
+            text += `#v${itemId}# #z${itemId}# x ${realStore}\r\n`;
+        }
+    });
+
+    if (batchStoreItems.length === 0) {
+        cm.sendOk("没有可存储的矿石，背包中可能没有矿石或仓库已满！");
+        cm.dispose();
+    } else {
+        text += `\r\n共${batchStoreItems.length}种矿石可存储，是否确认？`;
+        cm.sendYesNo(text);
+        a = 3; // 下一步进入确认处理
+    }
+}
+
+// 执行一键存储所有矿石（使用storeExtraItem方法）
+function executeBatchStoreExtraItem() {
+    let successCount = 0;
+    let resultText = "一键存储矿石结果：\r\n\r\n";
+    const player = cm.getPlayer();
+
+    // 分组显示结果
+    resultText += "#d【成品矿石】#n\r\n";
+    batchStoreItems.filter(item => item.type === 0).forEach(item => {
+        if (player.storeExtraItem(item.itemId, item.quantity, item.type)) {
+            resultText += `#v${item.itemId}# 成功存储 ${item.quantity} 个\r\n`;
+            successCount++;
+        } else {
+            resultText += `#v${item.itemId}# 存储失败\r\n`;
+        }
+    });
+
+    resultText += "\r\n#d【母矿石】#n\r\n";
+    batchStoreItems.filter(item => item.type === 1).forEach(item => {
+        if (player.storeExtraItem(item.itemId, item.quantity, item.type)) {
+            resultText += `#v${item.itemId}# 成功存储 ${item.quantity} 个\r\n`;
+            successCount++;
+        } else {
+            resultText += `#v${item.itemId}# 存储失败\r\n`;
+        }
+    });
+
+    resultText += `\r\n共处理${batchStoreItems.length}种矿石，成功${successCount}种`;
+    cm.sendOk(resultText);
+    cm.dispose();
+}
+
+// 准备一键存储所有卷轴（type2和type3）
+function prepareBatchStoreAllScroll() {
+    batchStoreItems = [];
+    let text = "以下是可存储的卷轴列表，请确认是否存储：\r\n\r\n";
+    const storage = cm.getPlayer().getExtraStorage();
+
+    // 处理10%卷轴（type=2）
+    let has10 = false;
+    itemlist2.forEach(itemId => {
+        const bagCount = cm.getPlayer().getItemQuantity(itemId, false);
+        if (bagCount <= 0) return;
+
+        const storeCount = storage.getItemQuantity(itemId, 2);
+        const maxStore = 30000 - storeCount;
+        const realStore = Math.min(bagCount, maxStore);
+
+        if (realStore > 0) {
+            if (!has10) {
+                text += "#d【10%成功率卷轴】#n\r\n";
+                has10 = true;
+            }
+            batchStoreItems.push({
+                itemId: itemId,
+                quantity: realStore,
+                type: 2,
+                group: 'scroll'
+            });
+            text += `#v${itemId}# #z${itemId}# x ${realStore}\r\n`;
+        }
+    });
+
+    // 处理60%卷轴（type=3）
+    let has60 = false;
+    itemlist3.forEach(itemId => {
+        const bagCount = cm.getPlayer().getItemQuantity(itemId, false);
+        if (bagCount <= 0) return;
+
+        const storeCount = storage.getItemQuantity(itemId, 3);
+        const maxStore = 30000 - storeCount;
+        const realStore = Math.min(bagCount, maxStore);
+
+        if (realStore > 0) {
+            if (!has60) {
+                text += "\r\n#d【60%成功率卷轴】#n\r\n";
+                has60 = true;
+            }
+            batchStoreItems.push({
+                itemId: itemId,
+                quantity: realStore,
+                type: 3,
+                group: 'scroll'
+            });
+            text += `#v${itemId}# #z${itemId}# x ${realStore}\r\n`;
+        }
+    });
+
+    if (batchStoreItems.length === 0) {
+        cm.sendOk("没有可存储的卷轴，背包中可能没有卷轴或仓库已满！");
+        cm.dispose();
+    } else {
+        text += `\r\n共${batchStoreItems.length}种卷轴可存储，是否确认？`;
+        cm.sendYesNo(text);
+        a = 3; // 下一步进入确认处理
+    }
+}
+
+// 执行一键存储所有卷轴（使用storeExtraItem方法）
+function executeBatchStoreScroll() {
+    let successCount = 0;
+    let resultText = "一键存储卷轴结果：\r\n\r\n";
+    const player = cm.getPlayer();
+
+    // 分组显示结果
+    resultText += "#d【10%成功率卷轴】#n\r\n";
+    batchStoreItems.filter(item => item.type === 2).forEach(item => {
+        if (player.storeExtraItem(item.itemId, item.quantity, item.type)) {
+            resultText += `#v${item.itemId}# 成功存储 ${item.quantity} 个\r\n`;
+            successCount++;
+        } else {
+            resultText += `#v${item.itemId}# 存储失败\r\n`;
+        }
+    });
+
+    resultText += "\r\n#d【60%成功率卷轴】#n\r\n";
+    batchStoreItems.filter(item => item.type === 3).forEach(item => {
+        if (player.storeExtraItem(item.itemId, item.quantity, item.type)) {
+            resultText += `#v${item.itemId}# 成功存储 ${item.quantity} 个\r\n`;
+            successCount++;
+        } else {
+            resultText += `#v${item.itemId}# 存储失败\r\n`;
+        }
+    });
+
+    resultText += `\r\n共处理${batchStoreItems.length}种卷轴，成功${successCount}种`;
+    cm.sendOk(resultText);
+    cm.dispose();
+}
