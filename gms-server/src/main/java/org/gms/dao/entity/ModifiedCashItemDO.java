@@ -20,8 +20,7 @@ import org.gms.server.ItemInformationProvider;
 
 import java.io.Serial;
 
-import static java.util.concurrent.TimeUnit.DAYS;
-import static java.util.concurrent.TimeUnit.HOURS;
+import static java.util.concurrent.TimeUnit.*;
 
 /**
  * 商城物品修改表 实体类。
@@ -143,6 +142,12 @@ public class ModifiedCashItemDO implements Serializable, Cloneable {
                             } else if(itemId == 5211047 || itemId == 5360014) { // 3 Hour 2X coupons, unused as of now
                                     item.setExpiration(Server.getInstance().getCurrentTime() + HOURS.toMillis(3));
                             */
+                    break;
+                case ItemId.DROP_COUPON_2X_30M:
+                case ItemId.EXP_COUPON_2X_30M:
+                case ItemId.DROP_COUPON_3X_30M:
+                case ItemId.EXP_COUPON_3X_30M:
+                    item.setExpiration(Server.getInstance().getCurrentTime() + MINUTES.toMillis(30));
                     break;
                 case ItemId.EXP_COUPON_3X_2H:
                     item.setExpiration(Server.getInstance().getCurrentTime() + HOURS.toMillis(2));

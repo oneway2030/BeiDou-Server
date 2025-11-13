@@ -82,6 +82,14 @@ public class NPCScriptManager extends AbstractScriptManager {
         return start(c, scriptItem.getNpc(), -1, scriptItem.getScript(), chr, true, "im");
     }
 
+    public boolean start(Client c, ScriptedItem scriptItem, Character chr, int itemId) {
+        return start(c, scriptItem.getNpc(), -1, scriptItem.getScript(), chr, true, "im", itemId);
+    }
+
+    public boolean start(Client c, int npc, int oid, String fileName, Character chr, boolean itemScript, String engineName) {
+        return start(c, npc, oid, fileName, chr, itemScript, engineName, -1);
+    }
+
     public void start(String filename, Client c, int npc, List<PartyCharacter> chrs) {
         try {
             final NPCConversationManager cm = new NPCConversationManager(c, npc, chrs, true);
@@ -113,9 +121,12 @@ public class NPCScriptManager extends AbstractScriptManager {
         }
     }
 
-    private boolean start(Client c, int npc, int oid, String fileName, Character chr, boolean itemScript, String engineName) {
+    private boolean start(Client c, int npc, int oid, String fileName, Character chr, boolean itemScript, String engineName, int itemId) {
         try {
             final NPCConversationManager cm = new NPCConversationManager(c, npc, oid, fileName, itemScript);
+            if (itemId > 0) {
+                cm.setItemId(itemId);
+            }
             if (cms.containsKey(c)) {
                 dispose(c);
             }
@@ -135,7 +146,7 @@ public class NPCScriptManager extends AbstractScriptManager {
                 }
                 if (engine == null) {
                     //npc节点取的是cm，不添加会报错
-                    engineName="cm";
+                    engineName = "cm";
                     engine = getInvocableScriptEngine("npc/" + npc + ".js", c);
                     cm.resetItemScript();
                 }

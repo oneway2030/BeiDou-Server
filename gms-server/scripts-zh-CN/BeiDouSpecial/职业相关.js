@@ -45,7 +45,7 @@ function action(mode, type, selection) {
         text += " \r\n";
         text += "#L1##b快速转职#l\t\r\n\r\n";
         text += "#L2#更换职业#l\t\r\n\r\n";
-        text += "#L3#一键转生#l\t\r\n\r\n";
+        text += "#L3#九转涅槃#l\t\r\n\r\n";
         cm.sendSimple(text);
     } else if (status === 1) {
         doSelect(selection);

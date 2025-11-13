@@ -1249,6 +1249,25 @@ public class Character extends AbstractCharacterObject {
 //        log.info("keyCode=: " + keyCode + " SkillId=" + SkillId);
     }
 
+    public boolean removeBySkillId(int targetSkillId) {
+        if (keymap == null || keymap.isEmpty()) {
+            return false;
+        }
+        boolean removed = false;
+        // 使用迭代器遍历以支持安全删除
+        Iterator<Map.Entry<Integer, KeyBinding>> iterator = keymap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Integer, KeyBinding> entry = iterator.next();
+            KeyBinding binding = entry.getValue();
+            // 假设技能类型为1（参考KeymapChangeHandler中的type=1判断）
+            if (binding.getType() == 1 && binding.getAction() == targetSkillId) {
+                iterator.remove();
+                removed = true;
+            }
+        }
+        return removed;
+    }
+
     public void changeKeybinding(int key, KeyBinding keybinding) {
         if (keybinding.getType() != 0) {
             keymap.put(key, keybinding);

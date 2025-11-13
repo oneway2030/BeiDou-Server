@@ -42,11 +42,11 @@ function action(mode, type, selection) {
     }
     if (status === 0) {
         let text = OldTitle;
-        text += " \r\n";
-        text += "#L1#血衣合成#l\t\r\n\r\n";
-        text += "#L2#怪物卡戒#l\t\r\n\r\n";
-        text += "#L3#主线任务#l\t\r\n\r\n";
-        text += "#L0#每日任务成#l\t\r\n\r\n";
+        text += "#b \r\n";
+        text += "#L0#每日任务#l\t\t\t";
+        text += "#L1#主线任务#l\t\t\t";
+        text += "#L2#血衣合成#l\t\r\n\r\n";
+        text += "#L3#怪物卡戒#l\t\t\t";
         text += "#L4#世界任务#l\t\r\n\r\n";
         cm.sendSimple(text);
     } else if (status === 1) {
@@ -62,13 +62,13 @@ function doSelect(selection) {
             openNpc("每日任务");
             break;
         case 1:
-            openNpc("血衣合成");
+            openNpc("主线任务");
             break;
         case 2:
-            openNpc("2006");  //明珠港怪物卡戒指NPC
+            openNpc("血衣合成");  //明珠港怪物卡戒指NPC
             break;
         case 3:
-            openNpc("主线任务");
+            openNpc("2006");
             break;
         case 4:
             openNpc("世界任务");

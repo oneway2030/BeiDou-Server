@@ -1,32 +1,11 @@
-/*
-    This file is part of the HeavenMS MapleStory Server
-    Copyleft (L) 2016 - 2019 RonanLana
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation version 3 as published by
-    the Free Software Foundation. You may not use, modify or distribute
-    this program under any other version of the GNU Affero General Public
-    License.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-/* NPC Base
-	Map Name (Map ID)
-	Extra NPC info.
+/**
+ * 就转涅槃(一键转生)
  */
-
 var cost;
-var ptcost = 1;  //普通职业转生消耗枫叶
-var qscost = 1; //骑士团转生消耗枫叶
+var ptcost = 100;  //普通职业转生消耗枫叶
+var qscost = 100; //骑士团转生消耗枫叶
 //消耗的金币，单位W
-var meso = 1;
+var meso = 5000;
 
 var relevel;
 var relevela = 250;  //普通职业转生等级
@@ -41,70 +20,30 @@ var reborns;
 //转生后的职业id, -1代表职业不变
 var jobId = 0;
 
-var 职业 = Array(Array("战士", 100, 10, 0), //	Array("战士", 100, 30, 100),
-//	Array("战士", 100, 70, 110),
-//	Array("战士", 100, 120, 111),
-//	Array("战士", 100, 200, 112),
-//	Array("战士", 100, 70, 120),
-//	Array("战士", 100, 120, 121),
-//	Array("战士", 100, 200, 122),
-//	Array("战士", 100, 70, 130),
-//	Array("战士", 100, 120, 131),
-//	Array("战士", 100, 200, 132),
-    Array("魔法师", 200, 8, 0), //	Array("魔法师", 200, 30, 200),
-//	Array("魔法师", 200, 70, 210),
-//	Array("魔法师", 200, 120, 211),
-//	Array("魔法师", 200, 200, 212),
-//	Array("魔法师", 200, 70, 220),
-//	Array("魔法师", 200, 120, 221),
-//	Array("魔法师", 200, 200, 222),
-//	Array("魔法师", 200, 70, 230),
-//	Array("魔法师", 200, 120, 231),
-//	Array("魔法师", 200, 200, 232),
-    Array("弓箭手", 300, 10, 0), //	Array("弓箭手", 300, 30, 300),
-//	Array("弓箭手", 300, 70, 310),
-//	Array("弓箭手", 300, 120, 311),
-//	Array("弓箭手", 300, 200, 312),
-//	Array("弓箭手", 300, 70, 320),
-//	Array("弓箭手", 300, 120, 321),
-//	Array("弓箭手", 300, 200, 322),
-    Array("飞侠", 400, 10, 0), //	Array("飞侠", 400, 30, 400),
-//	Array("飞侠", 400, 70, 410),
-//	Array("飞侠", 400, 120, 411),
-//	Array("飞侠", 400, 200, 412),
-//	Array("飞侠", 400, 70, 420),
-//	Array("飞侠", 400, 120, 421),
-//	Array("飞侠", 400, 200, 422),
-    Array("海盗", 500, 10, 0), //	Array("海盗", 500, 30, 500),
-//	Array("海盗", 500, 70, 510),
-//	Array("海盗", 500, 120, 511),
-//	Array("海盗", 500, 200, 512),12
-//	Array("海盗", 500, 70, 520),
-//	Array("海盗", 500, 120, 521),
-//	Array("海盗", 500, 200, 522),
-    Array("魂骑士", 1100, 10, 1000), //	Array("魂骑士", 1100, 30, 1100),
-//	Array("魂骑士", 1100, 70, 1110),
-//	Array("魂骑士", 1100, 120, 1111),
-    Array("炎术士", 1200, 10, 1000), //	Array("炎术士", 1200, 30, 1200),
-//	Array("炎术士", 1200, 70, 1210),
-//	Array("炎术士", 1200, 120, 1211),
-    Array("风灵使者", 1300, 10, 1000), //	Array("风灵使者", 1300, 30, 1300),
-//	Array("风灵使者", 1300, 70, 1310),
-//	Array("风灵使者", 1300, 120, 1311),
-    Array("夜行者", 1400, 10, 1000), //	Array("夜行者", 1400, 30, 1400),
-//	Array("夜行者", 1400, 70, 1410),
-//	Array("夜行者", 1400, 120, 1411),
-    Array("奇袭者", 1500, 10, 1000), //	Array("奇袭者", 1500, 30, 1500),
-//	Array("奇袭者", 1500, 70, 1510),
-//	Array("奇袭者", 1500, 120, 1511),
-//	Array("战神", 2100, 10, 2000),
-//	Array("战神", 2100, 30, 2100),
-//	Array("战神", 2100, 70, 2110),
-//	Array("战神", 2100, 120, 2111));
-    Array("战神", 2100, 10, 2000));
+var item_hp_id = 4032170;
+var item_mp_id = 4032171;
+var item_hp_count = 50;
+var item_mp_count = 50;
 
+// 职业配置数组
+var 职业 = [
+    ["战士", 100, 10, 0],
+    ["魔法师", 200, 8, 0],
+    ["弓箭手", 300, 10, 0],
+    ["飞侠", 400, 10, 0],
+    ["海盗", 500, 10, 0],
+    ["魂骑士", 1100, 10, 1000],
+    ["炎术士", 1200, 10, 1000],
+    ["风灵使者", 1300, 10, 1000],
+    ["夜行者", 1400, 10, 1000],
+    ["奇袭者", 1500, 10, 1000],
+    ["战神", 2100, 10, 2000]
+];
+var icon = "#fUI/UIWindow.img/Quest/icon8/0#";
+var maxRebornCount; // 最大转生次数
 
 function start() {
+    // 初始化消耗和等级限制
     cost = ptcost;    //默认是普通职业
     relevel = relevela;
     if (Math.floor(cm.getJobId() / 1000) == 1) {  //判断为骑士团职业
@@ -112,39 +51,52 @@ function start() {
         relevel = relevelb;
     }
 
+    // 初始化配置和转生信息
     const GameConfig = Java.type('org.gms.config.GameConfig');
     let baseRebirthLevel = GameConfig.getServerInt("rebirth_level");
     rebirthLevel = Math.max(1, baseRebirthLevel); // 确保最低为1级
     rebirthLevel = Math.min(rebirthLevel, cm.getPlayer().getMaxClassLevel()); // 限制不超过职业最大等级
     reborns = cm.getChar().getReborns();
+    maxRebornCount =GameConfig.getServerInt("max_reborn_count");
 
+
+    // 检查涅槃条件
     var level = cm.getLevel();
     var isCan = level >= relevel && cm.haveItem(4000313, cost) && cm.getMeso() >= meso * 10000;
-    text = "#e#k当前已转生#e#r" + reborns + "#k次\r\n";
-    text += "#e#k当您达到#e#r" + relevel + "#k级， #v4000313##e#r " + cost + " 个和" + meso + "W金币#k进行转生\r\n";
+
+    // 构建对话文本
+    var text = "\t\t\t\t\t#e#k欢迎来到#r[九转涅槃]#k系统#n\t\t\t\t\r\n\r\n";
+    text += `#e#k当前已涅槃#e#r${reborns}#k次\r\n\r\n`; // 新增最大次数显示
+    text += "#e#b涅槃条件：#e#r\r\n";
+    text += `1.等级达到${relevel}级\r\n`;
+    text += `2.涅槃次数小于${maxRebornCount}次\r\n\r\n`;
+    text += `3.消耗 #v4000313##e#r x${cost} 个和${meso}W金币#k\r\n\r\n`;
+    text += "#b涅槃后：#r\r\n";
+    text += `${icon} 等级回到${rebirthLevel}级\r\n`;
+    text += `${icon} 每次涅槃装备最大升级次数+5级（最高50级）\r\n`;
+    text += `${icon} 获取一点偷学技能点\r\n`;
+    text += `${icon} #v${item_hp_id}##t${item_hp_id}# × ${item_hp_count}\r\n`;
+    text += `${icon} #v${item_mp_id}##t${item_mp_id}# × ${item_mp_count}\r\n`;
+
     if (!is_change_job) {
-        text += "#b注意：转生后等级会变为" + rebirthLevel + "级,职业不会改变,\r\n #k如需改变职业请使用#e#r[更换职业]#k功能。\r\n"
+        text += `${icon} 职业不会变更（如需改变职业请使用#e#b[更换职业]#r功能）#k\r\n`;
     }
+
+    // 根据条件显示不同对话
     if (isCan) {
         if (is_change_job) {
-            text += "\r\n\r\n"
-            text += "请从下面选择你要转生的职业，转生后将会从之前的职业变为您现在选择的职业\r\n";
+            text += "\r\n请从下面选择你要涅槃的职业，涅槃后将会从之前的职业变为您现在选择的职业\r\n";
             for (var i = 0; i < 职业.length; i++) {
-                if (level >= relevel && cm.haveItem(4000313, cost)) {
-                    text += "#L" + 职业[i][1] + "##r" + 职业[i][0] + "#k#l\r\n";
-                }
+                text += `#L${职业[i][1]}##r${职业[i][0]}#k#l\r\n`;
             }
-        }
-        if (is_change_job) {
+            text += "\r\n您已满足涅槃条件，如需涅槃请点击下一步\r\n";
             cm.sendNextSelectLevel("SelectEnquire", text);
         } else {
+            text += "\r\n您已满足涅槃条件，如需涅槃请点击下一步\r\n";
             cm.sendNextLevel("Enquire", text);
         }
-
     } else {
-        text += "\r\n\r\n"
-        text += "#e#r您不满足以上转生条件,无法转生"
-        // cm.sendOk("我可以让你转生为任意职业，#e#d#r等级变为200级（能力点重置，技能保留）#k#n。\r\n如果你想要转生，需要#r等级" + relevela + "#k级，#r黄金枫叶" + ptcost + "个#k。\r\n注意：如果你是骑士团则需要#r等级" + relevelb + "#k级，#r黄金枫叶" + qscost + "个#k。\r\n");
+        text += "\r\n\r\n#e#g您不满足以上涅槃条件,无法涅槃";
         cm.sendOk(text);
         cm.dispose();
     }
@@ -152,24 +104,92 @@ function start() {
 
 function levelSelectEnquire(id) {
     jobId = parseInt(id);
-    cm.sendNextLevel("Rebirth", "#r#e当前已转生" + reborns + "次,转生后将变成" + rebirthLevel + "级确定转生吗？");
+    cm.sendNextLevel("Rebirth", getTipText());
 }
 
 function levelEnquire() {
-    cm.sendNextLevel("Rebirth", "#r#e当前已转生" + reborns + "次,转生后将变成" + rebirthLevel + "级确定转生吗？");
+    cm.sendNextLevel("Rebirth", getTipText());
+}
+
+function getTipText() {
+    let text = `#k您当前已涅槃#r#e${reborns}#n#k次 / 最大${maxRebornCount}次,涅槃后将变成#r#e${rebirthLevel}#n#k级，#r#e确定涅槃吗？`;
+    text += "\r\n#b涅槃后：\r\n";
+    text += `${icon} 等级回到${rebirthLevel}级\r\n`;
+    text += `${icon} 每次涅槃装备最大升级次数+5级\r\n`;
+    text += `${icon} 获取一点偷学技能点\r\n`;
+    text += `${icon} #v${item_hp_id}##t${item_hp_id}# × ${item_hp_count}\r\n`;
+    text += `${icon} #v${item_mp_id}##t${item_mp_id}# × ${item_mp_count}\r\n`;
+
+    if (!is_change_job) {
+        text += `${icon} 职业不会变更（如需改变职业请使用#e#b[更换职业]#r功能）#k\r\n`;
+    }
+    return text;
 }
 
 function levelRebirth() {
-    //重生
-    let isClear = jobId ===0
+    // 检查是否已达最大涅槃次数
+    if (reborns >= maxRebornCount) {
+        cm.sendOk(`已达到最大涅槃次数${maxRebornCount}次，无法继续涅槃！`);
+        cm.dispose();
+        return;
+    }
+
+    // 检查背包空间
+    if (cm.isNotCanHold(4)) {  // 检查其他类型背包
+        return;
+    }
+
+    // 重生
+    let isClear = jobId === 0;
     cm.getPlayer().rebirth(false, false, jobId);
-    //重置状态
+    // 重置状态
     cm.resetStats();
-    //装备变更广播
+    // 装备变更广播
     cm.getPlayer().equipChanged();
+    偷学技能点获取();
+    cm.gainItem(item_hp_id, item_hp_count);
+    cm.gainItem(item_mp_id, item_mp_count);
     cm.gainMeso(-meso * 10000);
     cm.gainItem(4000313, -cost);
-    cm.sendOk("#r恭喜你，转生成功！");
+    cm.sendOk("#r恭喜你，涅槃成功！");
     cm.dispose();
 }
 
+var 偷学技能点key = "偷学技能点";
+
+function 偷学技能点获取() {
+    try {
+        // 执行偷学技能点增加操作
+        saveStealKillCount(1);
+        // 移除偷学技能书（ID:2430674）
+        const skillBookId = 2430674;
+        cm.gainItem(skillBookId, -1);
+        // 提示用户操作结果
+        cm.getPlayer().dropMessage(5, `恭喜你！成功获取一点偷学技能点！当前偷学技能点：${getStealKillCount()}`);
+    } catch (e) {
+        // 捕获并处理异常
+        cm.getPlayer().dropMessage(5, `操作失败：${e.message}`);
+        // 打印错误日志便于调试
+        console.error("偷学技能点操作异常:", e);
+    }
+}
+
+/**
+ * 获取当前偷学技能点
+ * @returns {number} 技能点数量
+ */
+function getStealKillCount() {
+    const num = cm.getCharacterExtendValue(偷学技能点key);
+    return Number(num || 0); // 默认为0
+}
+
+/**
+ * 保存偷学技能点（可增减）
+ * @param {number} count - 变动数量（正数增加，负数减少）
+ */
+function saveStealKillCount(count) {
+    const currentCount = getStealKillCount();
+    let newCount = currentCount + count;
+    newCount = Math.max(newCount, 0); // 确保不小于0
+    cm.saveOrUpdateCharacterExtendValue(偷学技能点key, String(newCount));
+}

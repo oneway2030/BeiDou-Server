@@ -627,11 +627,11 @@ public class Equip extends Item {
             isUpgradeable = false; // 标记装备不可升级
             improveDefaultStats(stats); // 生成默认属性升级列表
         }
-        UpgradeSlotProcessing(stats,equipLevel);    // 砸卷次数和减少金锤子次数判断
+        UpgradeSlotProcessing(stats, equipLevel);    // 砸卷次数和减少金锤子次数判断
         if (isUpgradeable && stats.isEmpty()) {// 如果装备仍可升级且属性列表为空，则继续生成属性升级列表
             while (stats.isEmpty()) {
                 improveDefaultStats(stats);// 生成默认属性升级列表
-                UpgradeSlotProcessing(stats,equipLevel);// 砸卷次数和减少金锤子次数判断
+                UpgradeSlotProcessing(stats, equipLevel);// 砸卷次数和减少金锤子次数判断
             }
         }
 
@@ -645,11 +645,11 @@ public class Equip extends Item {
         boolean gotVicious = res.getRight().getRight(); // 是否减少了金锤子
 
         if (gotVicious) {// 如果减少了金锤子，追加提示消息
-            lvupStr += I18nUtil.getMessage("Equip.gainStats.Vicious","-1")  + "; ";
+            lvupStr += I18nUtil.getMessage("Equip.gainStats.Vicious", "-1") + "; ";
         }
 
         if (gotSlot) {// 如果增加了升级槽，追加提示消息
-            lvupStr += I18nUtil.getMessage("Equip.gainStats.UPGSLOT","+1")  + "; ";
+            lvupStr += I18nUtil.getMessage("Equip.gainStats.UPGSLOT", "+1") + "; ";
         }
 
         // 通知客户端更新装备状态
@@ -687,13 +687,16 @@ public class Equip extends Item {
     /**
      * 获取转生后的装备最大升级次数
      */
-    private int getEquipmentMaxLevelUp(Client c, int equipMaxLevel) {
+    private int getEquipmentMaxLevelUp(Client c) {
+        //转生后的最大等级
 //        int equipMaxLevel = Math.min(30, Math.max(ii.getEquipLevel(this.getItemId(), true), GameConfig.getServerInt("use_equipment_level_up")));// 计算装备的最大等级
+        int equipMaxLevel = GameConfig.getServerInt("use_equipment_level_up");// 计算装备的最大等级
         int reborn = c.getPlayer().getReborns();
         //每次转生装备可升级的次数
         int addLevelUp = GameConfig.getServerInt("each_time_reborn_equipment_add_level_up");
         int incremental = reborn * addLevelUp;
-        return equipMaxLevel + incremental;
+        int realMaxLevel = equipMaxLevel + incremental;
+        return Math.min(realMaxLevel, 50);
     }
 
     /**
@@ -705,8 +708,7 @@ public class Equip extends Item {
         if (!ii.isUpgradeable(this.getItemId())) {// 检查装备是否可升级
             return;
         }
-
-        int equipMaxLevel = Math.min(30, Math.max(ii.getEquipLevel(this.getItemId(), true), GameConfig.getServerInt("use_equipment_level_up")));// 计算装备的最大等级
+        int equipMaxLevel = getEquipmentMaxLevelUp(c);
         if (itemLevel >= equipMaxLevel) {
             return;
         }
@@ -760,10 +762,9 @@ public class Equip extends Item {
         if (!ii.isUpgradeable(this.getItemId())) {
             return "";
         }
-        int equipMaxLevel = Math.min(30, Math.max(ii.getEquipLevel(this.getItemId(), true), GameConfig.getServerInt("use_equipment_level_up")));// 计算装备的最大等级
-        int maxLevel = getEquipmentMaxLevelUp(c, equipMaxLevel);
+        int maxLevel = getEquipmentMaxLevelUp(c);
         String eqpName = ii.getName(getItemId());
-        String eqpInfo = reachedMaxLevel(c,maxLevel) ? " #e#rMAX LEVEL = "+maxLevel+"#k#n" : (" EXP: #e#b" + (int) itemExp + "#k#n / " + ExpTable.getEquipExpNeededForLevel(itemLevel)+"   #e#rMAX LEVEL ="+maxLevel);
+        String eqpInfo = reachedMaxLevel(c, maxLevel) ? " #e#rMAX LEVEL = " + maxLevel + "#k#n" : (" EXP: #e#b" + (int) itemExp + "#k#n / " + ExpTable.getEquipExpNeededForLevel(itemLevel) + "   #e#rMAX LEVEL =" + maxLevel);
         return "#k'" + eqpName + "' -> LV: #e#b" + itemLevel + "#k#n    " + eqpInfo + "\r\n";
     }
 

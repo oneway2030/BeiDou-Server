@@ -151,17 +151,46 @@ function action(mode, type, selection) {
             }
         } else if (status == 1) {
             selecta = selection;
-            cm.sendYesNo("现在可以为你更换职业，#e#d更换职业后等级回到#r" + returnLevel + "级#d，请谨慎变更职业#k#n。\r\n请确认是否要更换职业为#r#e[" + 职业[selecta][0] + "]？");
-        } else if (status == 2 && cm.haveItem(4000313, cost)) { //再次检查物品是否足够，避免玩家中途将物品丢出去从而不消耗物品
-            //cm.gainMeso(-cost);
-            cm.gainItem(4000313, -cost);
-            // cm.changeJobById(selecta);
-            cm.getPlayer().changeJobAndLevel(returnLevel, true, true, 职业[selecta][1]);
-            //cm.getChar().executeRebornBM(10);  // 等级变为10级（北冥自定义脚本，北斗不支持）
-            cm.resetStats();   // 重置属性点
-            cm.getPlayer().equipChanged();
-            cm.sendOk("更换职业成功！");
-            cm.dispose();
+            hpCount = getWashValue(0);
+            mpCount = getWashValue(1);
+            let text = "现在可以为你更换职业，#e#d更换职业后等级回到#r" + returnLevel + "级#d，请谨慎变更职业#k#n。\r\n请确认是否要更换职业为#r#e[" + 职业[selecta][0] + "]？";
+            text += "\r\n\r\n";
+            text += "#b#n变更职业后将返还已使用洗血道具：\r\n";
+            text += "红色魔石：" + hpCount + "个\r\n";
+            text += "蓝色魔石：" + mpCount + "个\r\n";
+            text += "\r\n\r\n";
+            cm.sendYesNo(text);
+        } else if (status == 2) { //再次检查物品是否足够，避免玩家中途将物品丢出去从而不消耗物品
+            if (cm.haveItem(4000313, cost)) {
+                var hpFlag = hpCount > 0 ? cm.canHold(HP_ITEM_ID, hpCount) : true;
+                var mpFlag = mpCount > 0 ? cm.canHold(MP_ITEM_ID, mpCount) : true;
+
+                if (hpFlag && mpFlag) {
+                    //cm.gainMeso(-cost);
+                    cm.gainItem(4000313, -cost);
+                    // cm.changeJobById(selecta);
+                    cm.getPlayer().changeJobAndLevel(returnLevel, true, true, 职业[selecta][1]);
+                    //cm.getChar().executeRebornBM(10);  // 等级变为10级（北冥自定义脚本，北斗不支持）
+                    cm.resetStats();   // 重置属性点
+                    cm.getPlayer().equipChanged();
+                    if (hpCount > 0) {
+                        cm.gainItem(HP_ITEM_ID, hpCount);
+                        setWashValue(0,0);
+                    }
+                    if (mpCount > 0) {
+                        cm.gainItem(MP_ITEM_ID, mpCount);
+                        setWashValue(0,1);
+                    }
+                    cm.sendOk("更换职业成功！");
+                    cm.dispose();
+                } else {
+                    cm.sendOk("背包空间不足，需要的材料不足");
+                    cm.dispose();
+                }
+            } else {
+                cm.sendOk("更换职业失败，需要的材料不足");
+                cm.dispose();
+            }
         } else {
             if (status == 2) {
                 cm.sendOk("更换职业失败。");
@@ -171,4 +200,23 @@ function action(mode, type, selection) {
             }
         }
     }
-} 
+}
+
+const KEY_WASH_HP = "key_wash_hp";
+const KEY_WASH_MP = "key_wash_mp";
+const HP_ITEM_ID = 4032170;
+const MP_ITEM_ID = 4032171;
+var hpCount = 0;
+var mpCount = 0;
+
+// 新增type参数，明确获取哪种类型的洗血次数
+function getWashValue(type) {
+    const key = type === 0 ? KEY_WASH_HP : KEY_WASH_MP;
+    return Number(cm.getCharacterExtendValue(key) || 0); // 处理未记录时的默认值
+}
+
+// 新增count参数，支持一次累加多个次数
+function setWashValue(curCount, type) {
+    const key = type === 0 ? KEY_WASH_HP : KEY_WASH_MP;
+    cm.saveOrUpdateCharacterExtendValue(key, curCount + "");
+}

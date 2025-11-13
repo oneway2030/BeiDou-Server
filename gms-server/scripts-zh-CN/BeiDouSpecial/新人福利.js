@@ -7,6 +7,7 @@
 
 var status;
 var textMsg;
+var key = "新人福利礼包"
 
 //Start
 function start() {
@@ -18,7 +19,7 @@ function action(mode, type, selection) {
     if (CheckStatus(mode)) {
         if (status == 0) {
             //第一层对话
-            var strGetText = cm.getCharacterExtendValue("新人福利礼包13");
+            var strGetText = cm.getCharacterExtendValue(key);
             if (strGetText == "已领取") {
                 cm.sendOk("您已经领取了新手奖励了。每个角色#r限领一次。#k");
                 cm.dispose();
@@ -27,8 +28,8 @@ function action(mode, type, selection) {
             }
         } else if (status == 1) {
             //第二层对话
-            if(isCanHold(2)){
-                cm.saveOrUpdateCharacterExtendValue("新人福利礼包13", "已领取");
+            if (!cm.isNotCanHold(2, 3)) {
+                cm.saveOrUpdateCharacterExtendValue(key, "已领取");
                 cm.gainItem(2430033, 10);
                 cm.gainItem(2029001, 1);
                 cm.gainMeso(50000000);
@@ -42,20 +43,6 @@ function action(mode, type, selection) {
         }
     }
 
-}
-
-/**
- * 背包是否满了
- * type 背包类型:1 装备 2 消耗 3 设置 4 其他 5 特殊
- * count 查询的格子数量,最少1格
- */
-function isCanHold(type) {
-    if (cm.getPlayer().isFull(type, 3)) {
-        cm.sendOk("#r背包空间不足，请确保空间大于等于3格子！");
-        cm.dispose();
-        return false
-    }
-    return true
 }
 
 

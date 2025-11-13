@@ -1,4 +1,4 @@
-
+-- 自定义仓库
 CREATE TABLE IF NOT EXISTS `extrastorage`
 (
     `inventoryequipmentid` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,

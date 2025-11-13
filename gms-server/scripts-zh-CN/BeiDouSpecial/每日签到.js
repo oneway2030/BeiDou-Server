@@ -32,11 +32,15 @@ function level0() {
         cm.sendOk("您已经签到过了，请明天再来");
         cm.dispose();
     } else {
-        if (isCanHold(2)) {
+        if (!cm.isNotCanHold(2)) {
             saveCheckInCount();
             cm.saveOrUpdateCharacterExtendValue(DAILY_CHECK_IN, "1", true);
             cm.sendOk("签到成功！");
             cm.gainItem(itemId, 5);
+            //双倍爆率
+            cm.gainItem(2029004, 1);
+            //三倍经验
+            cm.gainItem(2029005, 1);
             cm.dispose();
         }
     }
@@ -79,7 +83,7 @@ function levelChooseInventory(choose) {
         }
         cm.sendOk(tip);
     } else {
-        if (isCanHold(2)) {
+        if (!cm.isNotCanHold(2)) {
             tip = "#b恭喜您，领取成功!!";
             cm.saveOrUpdateCharacterExtendValue(tag, "1", true);
             cm.gainItem(2430033, 5 * column[choose - 1]);
@@ -87,20 +91,6 @@ function levelChooseInventory(choose) {
         }
     }
     cm.dispose();
-}
-
-/**
- * 背包是否满了
- * type 背包类型:1 装备 2 消耗 3 设置 4 其他 5 特殊
- * count 查询的格子数量,最少1格
- */
-function isCanHold(type) {
-    if (cm.getPlayer().isFull(type, 3)) {
-        cm.sendOk("#r背包空间不足，请确保空间大于等于3格子！");
-        cm.dispose();
-        return false
-    }
-    return true
 }
 
 

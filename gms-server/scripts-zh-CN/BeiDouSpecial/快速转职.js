@@ -873,7 +873,7 @@ function action(mode, type, selection) {
         for (var i = 1; i < Job_list[job_list_sel].length; i++) {
             s_text += "#s" + Job_list[job_list_sel][i].id + "# ";
         }
-        let  jonId=Job_list[job_list_sel][0].job_id
+        let jonId = Job_list[job_list_sel][0].job_id
         if (is4Zhuan(Job_list[job_list_sel][0].job_id)) {
             maxSkills = false
         }
@@ -900,26 +900,26 @@ function is4Zhuan(id) {
 function jobChange(jobId) {
     //一转需要给东西,并重置状态,不然不给技能点
     if (jobId === 100) {
-        if (isCanHold(2)) {
+        if (!cm.isNotCanHold(2)) {
             cm.changeJobById(100);
             cm.gainItem(1302077, 1);
             cm.resetStats();
         }
     } else if (jobId === 200) {
-        if (isCanHold(2)) {
+        if (!cm.isNotCanHold(2)) {
             cm.changeJobById(200);
             cm.gainItem(1372043, 1);
             cm.resetStats();
         }
     } else if (jobId === 300) {
-        if (isCanHold(2)) {
+        if (!cm.isNotCanHold(2)) {
             cm.changeJobById(300);
             cm.gainItem(1452051, 1);
             cm.gainItem(2060000, 1000);
             cm.resetStats();
         }
     } else if (jobId === 400) {
-        if (isCanHold(2)) {
+        if (!cm.isNotCanHold(2, 3)) {
             cm.changeJobById(400);
             cm.gainItem(2070015, 500);
             cm.gainItem(1472061, 1);
@@ -927,7 +927,7 @@ function jobChange(jobId) {
             cm.resetStats();
         }
     } else if (jobId === 500) {
-        if (isCanHold(2)) {
+        if (!cm.isNotCanHold(2, 3)) {
             cm.changeJobById(500);
             cm.gainItem(1492000, 1);
             cm.gainItem(1482000, 1);

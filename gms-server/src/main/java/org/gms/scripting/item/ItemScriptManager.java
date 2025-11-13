@@ -36,4 +36,8 @@ public class ItemScriptManager {
     public void runItemScript(Client c, ScriptedItem scriptItem) {
         NPCScriptManager.getInstance().start(c, scriptItem, null);
     }
+
+    public void runItemScript(Client c, ScriptedItem scriptItem, int itemId) {
+        NPCScriptManager.getInstance().start(c, scriptItem, null, itemId);
+    }
 }

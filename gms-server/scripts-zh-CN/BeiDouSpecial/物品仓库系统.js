@@ -338,7 +338,7 @@ function prepareBatchStoreAllItem() {
         const bagCount = cm.getPlayer().getItemQuantity(itemId, false);
         if (bagCount <= 0) return;
 
-        const storeCount = storage.getOreQuantity(itemId, 1);
+        const storeCount = storage.getItemQuantity(itemId, 1);
         const maxStore = 30000 - storeCount;
         const realStore = Math.min(bagCount, maxStore);
 

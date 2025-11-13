@@ -23,12 +23,17 @@ package org.gms.net.server.channel.handlers;
 
 import org.gms.client.Client;
 import org.gms.client.inventory.Item;
+import org.gms.client.inventory.manipulator.InventoryManipulator;
 import org.gms.constants.inventory.ItemConstants;
 import org.gms.net.AbstractPacketHandler;
 import org.gms.net.packet.InPacket;
+import org.gms.scripting.AbstractPlayerInteraction;
 import org.gms.scripting.item.ItemScriptManager;
 import org.gms.server.ItemInformationProvider;
 import org.gms.server.ItemInformationProvider.ScriptedItem;
+import org.gms.util.PacketCreator;
+import org.gms.util.Randomizer;
+
 
 /**
  * @author Jay Estrella
@@ -39,6 +44,13 @@ public final class ScriptedItemHandler extends AbstractPacketHandler {
         p.readInt(); // trash stamp, thanks RMZero213
         short itemSlot = p.readShort(); // item slot, thanks RMZero213
         int itemId = p.readInt();
+
+
+        // 处理物品ID为2430680的特殊逻辑：随机获取任务品
+        if (itemId == 2430680) {
+            handleWorldQuest(c, itemId, itemSlot);
+            return;
+        }
 
         ItemInformationProvider ii = ItemInformationProvider.getInstance();
         ScriptedItem info = ii.getScriptedItemInfo(itemId);
@@ -52,6 +64,67 @@ public final class ScriptedItemHandler extends AbstractPacketHandler {
         }
 
         ItemScriptManager ism = ItemScriptManager.getInstance();
-        ism.runItemScript(c, info);
+        ism.runItemScript(c, info, itemId);
+    }
+
+    private void handleWorldQuest(Client c, int itemId, short itemSlot) {
+        // 1. 验证物品是否存在且可使用
+        Item item = c.getPlayer().getInventory(ItemConstants.getInventoryType(itemId)).getItem(itemSlot);
+        if (item == null || item.getItemId() != itemId || item.getQuantity() < 1) {
+            return;
+        }
+
+        // 2. 定义物品ID范围
+        int[] group1 = new int[20]; // 2430681-2430700（共20个）
+        for (int i = 0; i < group1.length; i++) {
+            group1[i] = 2430681 + i;
+        }
+
+        int[] group2 = {2430701, 2430702, 2430703, 2430704, 2430705}; // 共5个
+
+        // 3. 概率分配：group1每个物品概率相同，group2每个物品概率为group1的1/5
+        // 总权重 = 20*5 + 5*1 = 105（确保概率比例）
+        int totalWeight = 20 * 5 + 5 * 1;
+        int random = Randomizer.nextInt(totalWeight);
+
+        int rewardItemId = -1;
+
+        // 4. 计算随机结果
+        if (random < 20 * 5) {
+            // 命中group1：每个物品分配5个权重
+            int index = random / 5;
+            rewardItemId = group1[index];
+        } else {
+            // 命中group2：每个物品分配1个权重
+            int offset = random - 20 * 5;
+            rewardItemId = group2[offset];
+        }
+
+        // 5. 发放奖励并消耗道具
+        if (rewardItemId != -1) {
+            // 检查背包空间
+            if (InventoryManipulator.checkSpace(c, rewardItemId, (short) 1, "")) {
+                // 添加奖励物品
+                AbstractPlayerInteraction player = c.getAbstractPlayerInteraction();
+                player.gainItem(rewardItemId, (short) (short) 1);
+                //InventoryManipulator.addById(c, rewardItemId, (short) 1, "", -1);
+                // 消耗使用的道具
+                removeItem(c, itemId, itemSlot);
+                // 发送提示消息
+                c.getPlayer().dropMessage(5, "获得了任务物品：" + ItemInformationProvider.getInstance().getName(rewardItemId));
+            } else {
+                c.getPlayer().dropMessage(1, "背包空间不足，无法获得物品！");
+
+                c.sendPacket(PacketCreator.enableActions());
+            }
+        }
+    }
+
+    /**
+     * 统一处理物品移除和动作启用
+     */
+    private void removeItem(Client c, int itemId, short slot) {
+        InventoryManipulator.removeFromSlot(c, ItemConstants.getInventoryType(itemId), slot, (short) 1, false);
+        c.sendPacket(PacketCreator.enableActions());
     }
 }

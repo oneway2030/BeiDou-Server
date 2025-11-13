@@ -256,7 +256,9 @@ public class World {
         mountsSchedule = tman.register(new MountTirednessTask(this), MINUTES.toMillis(1), MINUTES.toMillis(1));
         merchantSchedule = tman.register(new HiredMerchantTask(this), 10 * MINUTES.toMillis(1), 10 * MINUTES.toMillis(1));
         timedMapObjectsSchedule = tman.register(new TimedMapObjectTask(this), MINUTES.toMillis(1), MINUTES.toMillis(1));
-        charactersSchedule = tman.register(new CharacterAutosaverTask(this), HOURS.toMillis(1), HOURS.toMillis(1));
+        //一小时保存一次数据改为10分钟保存一次
+//        charactersSchedule = tman.register(new CharacterAutosaverTask(this), HOURS.toMillis(1), HOURS.toMillis(1));
+        charactersSchedule = tman.register(new CharacterAutosaverTask(this), MINUTES.toMillis(10), MINUTES.toMillis(10));
         marriagesSchedule = tman.register(new WeddingReservationTask(this), MINUTES.toMillis(GameConfig.getServerLong("wedding_reservation_interval")), MINUTES.toMillis(GameConfig.getServerLong("wedding_reservation_interval")));
         mapOwnershipSchedule = tman.register(new MapOwnershipTask(this), SECONDS.toMillis(20), SECONDS.toMillis(20));
         fishingSchedule = tman.register(new FishingTask(this), SECONDS.toMillis(10), SECONDS.toMillis(10));
@@ -1643,8 +1645,8 @@ public class World {
             for (Map.Entry<Integer, Pair<HiredMerchant, Integer>> dm : deployedMerchants.entrySet()) {
                 int timeOn = dm.getValue().getRight();
                 HiredMerchant hm = dm.getValue().getLeft();
-
-                if (timeOn <= 144) {   // 1440 minutes == 24hrs
+                //这里修改雇佣商人移除时间
+                if (timeOn <= 144*2) {   // 1440 minutes == 24hrs
                     activeMerchants.put(hm.getOwnerId(), new Pair<>(dm.getValue().getLeft(), timeOn + 1));
                 } else {
                     hm.forceClose();

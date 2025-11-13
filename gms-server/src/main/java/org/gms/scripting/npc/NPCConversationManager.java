@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package org.gms.scripting.npc;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.gms.client.Character;
 import org.gms.client.*;
 import org.gms.client.inventory.Item;
@@ -31,7 +32,6 @@ import org.gms.config.GameConfig;
 import org.gms.constants.game.GameConstants;
 import org.gms.constants.game.NextLevelType;
 import org.gms.constants.id.MapId;
-import org.gms.constants.id.NpcId;
 import org.gms.constants.inventory.ItemConstants;
 import org.gms.constants.string.LanguageConstants;
 import org.gms.manager.ServerManager;
@@ -57,8 +57,6 @@ import org.gms.server.SkillbookInformationProvider.SkillBookEntry;
 import org.gms.server.events.gm.Event;
 import org.gms.server.expeditions.Expedition;
 import org.gms.server.expeditions.ExpeditionType;
-import org.gms.server.gachapon.Gachapon;
-import org.gms.server.gachapon.Gachapon.GachaponItem;
 import org.gms.server.life.LifeFactory;
 import org.gms.server.life.PlayerNPC;
 import org.gms.server.maps.MapManager;
@@ -89,12 +87,16 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     private String scriptName;
     private String getText;
     private boolean itemScript;
+    @Setter
+    @Getter
+    private int itemId;
     private List<PartyCharacter> otherParty;
     private static final GachaponService gachaponService = ServerManager.getApplicationContext().getBean(GachaponService.class);
 
     private final Map<Integer, String> npcDefaultTalks = new HashMap<>();
     @Getter
     private final NextLevelContext nextLevelContext = new NextLevelContext();
+    private String[] mBackpackTypeStr = {"装备", "消耗", "设置", "其他", "特殊"};
 
     private String getDefaultTalk(int npcid) {
         String talk = npcDefaultTalks.get(npcid);
@@ -1443,5 +1445,23 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         nextLevelContext.setLevelType(NextLevelType.SEND_YES_NO);
         nextLevelContext.setLastLevel(noLevel);
         nextLevelContext.setNextLevel(yesLevel);
+    }
+
+    public boolean isNotCanHold(int type) {
+        return isNotCanHold(type, 2);
+    }
+
+    /**
+     * 检查背包是否有足够空间
+     * type 背包类型:1 装备 2 消耗 3 设置 4 其他 5 特殊
+     * count 校验数量
+     */
+    public boolean isNotCanHold(int type, int count) {
+        if (getPlayer().isFull(type, count)) {  // 确保至少有2个空格
+            sendOk("#r背包空间不足，请确保#b" + mBackpackTypeStr[type - 1] + "栏#r至少有#b" + count + "#r个空格！");
+            dispose();
+            return true;
+        }
+        return false;
     }
 }

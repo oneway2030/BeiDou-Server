@@ -1673,6 +1673,26 @@ public class ItemInformationProvider {
         return DataTool.getInt("spec/remove", getItemData(itemId), 0) == 1;
     }
 
+    public boolean isNpc(int itemId) {
+        return DataTool.getInt("spec/isNpc", getItemData(itemId), 0) == 1;
+    }
+
+    public boolean isHasItem(int itemId) {
+        return DataTool.getInt("spec/isHasItem", getItemData(itemId), 0) == 1;
+    }
+
+    public int getHasItemId(int itemId) {
+        return  DataTool.getInt("spec/hasItemId", getItemData(itemId), 0);
+    }
+
+    public int getHasItemQuantity(int itemId) {
+        return  DataTool.getInt("spec/hasItemQuantity", getItemData(itemId), 0);
+    }
+
+    public int getHasItemTime(int itemId) {
+        return  DataTool.getInt("spec/hasItemTime", getItemData(itemId), -1);
+    }
+
     public ScriptedItem getScriptedItemInfo(int itemId) {
         if (scriptedItemCache.containsKey(itemId)) {
             return scriptedItemCache.get(itemId);

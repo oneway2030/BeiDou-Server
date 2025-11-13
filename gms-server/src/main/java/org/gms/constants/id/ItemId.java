@@ -297,6 +297,12 @@ public class ItemId {
     public static final int EXP_COUPON_2X_4H = 5211048;
     public static final int DROP_COUPON_2X_4H = 5360042;
     public static final int EXP_COUPON_3X_2H = 5211060;
+    public static final int DROP_COUPON_2X_30M = 5360901;
+    public static final int EXP_COUPON_2X_30M = 5211901;
+    public static final int DROP_COUPON_3X_30M = 5360902;
+    public static final int EXP_COUPON_3X_30M = 5211902;
+
+
     public static final int QUICK_DELIVERY_TICKET = 5330000;
     public static final int CHALKBOARD_1 = 5370000;
     public static final int CHALKBOARD_2 = 5370001;

@@ -44,10 +44,10 @@ public class SaveAllCommand extends Command {
         for (World world : Server.getInstance().getWorlds()) {
             for (Character chr : world.getPlayerStorage().getAllCharacters()) {
                 chr.saveCharToDB();
+                chr.message(I18nUtil.getMessage("SaveAllCommand.message3"));
             }
         }
         Server.getInstance().broadcastGMMessage(c.getWorld(), PacketCreator.serverNotice(5, I18nUtil.getMessage("SaveAllCommand.message2", player.getName())));
-        player.message(I18nUtil.getMessage("SaveAllCommand.message3"));
         HpMpAlertService hpMpAlertService = ServerManager.getApplicationContext().getBean(HpMpAlertService.class);
         hpMpAlertService.saveAll();
     }

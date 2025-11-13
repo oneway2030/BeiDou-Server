@@ -23,11 +23,12 @@
 /**
  * @description 拍卖行中心脚本
  */
-var OldTitle = "\t\t\t\t\t#e欢迎来到#rBeiDou#k脚本中心#n\t\t\t\t\r\n";
+var DAILY_CHECK_IN_TOTAL = "累计签到次数"
 var status = -1;
 var i = 0;
 // var icon="#fMap/MapHelper/minimap/arrowright#";
-var icon="#fUI/UIWindow.img/Quest/icon8/0#";
+var icon = "#fUI/UIWindow.img/Quest/icon8/0#";
+
 function start() {
     try {
         action(1, 0, 0)
@@ -46,10 +47,11 @@ function action(mode, type, selection) {
         return;
     }
     if (status === 0) {
+        var OldTitle = "\t\t\t\t\t#e#k欢迎大佬 #r[" + cm.getPlayer().getName() + "] #k您的到来#n\t\t\t\t\r\n";
         // var OldTitle = "\t\t\t\t\t#e欢迎来到#rBeiDou#k脚本中心#n\t\t\t\t\r\n";
         let text = OldTitle;
         text += " \r\n";
-        text += "#k当前点券：#r" + cm.getPlayer().getCashShop().getCash(1) + "        #k转生次数:#r" + cm.getChar().getReborns() + " \r\n";
+        text += "#k当前点券：#r" + cm.getPlayer().getCashShop().getCash(1) + "        #k签到天数:#r" + Number(cm.getCharacterExtendValue(DAILY_CHECK_IN_TOTAL)) + "        #k转生次数:#r" + cm.getChar().getReborns() + " \r\n";
         // text += "当前抵用券：" + cm.getPlayer().getCashShop().getCash(2) + "\r\n";
         // text += "当前信用券：" + cm.getPlayer().getCashShop().getCash(4) + "\r\n";
         // text += " \r\n";
@@ -57,13 +59,13 @@ function action(mode, type, selection) {
         text += "\t\t\t\t\t#L999 ##b自由市场#n#l\t\t #L0#新人福利#n#l\r\n";
         text += " \r\n";
 
-        text += "#L1#"+icon+"#r万能传送#l\t#L2#随身仓库#l\t#L3#便利商店#l\t#L4#一键出售#l\r\n";
+        text += "#L1#" + icon + "#r万能传送#l\t#L2#随身仓库#l\t#L3#便利商店#l\t#L4#一键出售#l\r\n";
         text += " \r\n";
-        text += "#L12#"+icon+"#b每日签到#l\t#L13#在线奖励#l\t#L6#职业中心#l\t#L7#技能中心#l\r\n";
+        text += "#L12#" + icon + "#b每日签到#l\t#L13#在线奖励#l\t#L6#职业中心#l\t#L7#技能中心#l\r\n";
         text += " \r\n";
-        text += "#L5#"+icon+"时装暖暖#l\t#L16#各种兑换#l\t#L17#爆率一览#l\t#L18#删除道具#l\r\n";
+        text += "#L5#" + icon + "时装暖暖#l\t#L16#各种兑换#l\t#L17#爆率一览#l\t#L18#删除道具#l\r\n";
         text += " \r\n";
-        text += "#L19#"+icon+"额外仓库#l\t#L333#任务大厅#l\t#L444#装备中心#l\r\n";
+        text += "#L19#" + icon + "额外仓库#l\t#L333#任务大厅#l\t#L444#装备中心#l\t#L555#角色提升#l\r\n";
         text += " \r\n";
         //
         // text += "#L0#新人点我#l \t #L1#每日签到#l\t #L2#在线奖励#l\r\n";
@@ -124,9 +126,14 @@ function doSelect(selection) {
         //           break;
         // 脚本移植注意编码改为UTF-8
         case 999://去自由
+            // cm.getPlayer().addMaxHP(1);
+            // cm.getPlayer().addMaxMP(-100);
             cm.getPlayer().saveLocationOnWarp();
             cm.warp(910000000);
             cm.dispose();
+            break;
+        case 555://角色提升
+            openNpc("角色提升");
             break;
         case 444://主线任务
             openNpc("装备中心");

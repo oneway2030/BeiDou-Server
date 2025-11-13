@@ -23,7 +23,7 @@
 /**
  * @description 拍卖行中心脚本
  */
-var OldTitle = "\t\t\t\t\t#e#k欢迎来到#r[技能中心]#k系统#n\t\t\t\t\r\n";
+var OldTitle = "\t\t\t\t\t#e#k欢迎来到#r[角色提升]#k系统#n\t\t\t\t\r\n";
 var status = -1;
 var i = 0;
 
@@ -43,10 +43,8 @@ function action(mode, type, selection) {
     if (status === 0) {
         let text = OldTitle;
         text += " \r\n";
-        text += "#L1##b快捷技能(获取二段跳)#l\t\r\n\r\n";
-        text += "#L2#技能全满#l\t\r\n\r\n";
-        text += "#L3#三宠技能#l\t\r\n\r\n";
-        text += "#L4#技能偷学#l\t\r\n\r\n";
+        text += "#L1#洗血系统#l\t\r\n\r\n";
+        // text += "#L2#洗血系统#l\t\r\n\r\n";
         cm.sendSimple(text);
     } else if (status === 1) {
         doSelect(selection);
@@ -58,16 +56,11 @@ function action(mode, type, selection) {
 function doSelect(selection) {
     switch (selection) {
         case 1:
-            openNpc("快捷技能");
+            openNpc("洗血系统");
             break;
         case 2:
-            openNpc("技能全满");
+            openNpc("洗血系统");
             break;
-        case 3:
-            openNpc("三宠技能");
-            break;
-        case 4:
-            openNpc("技能偷学");
             break;
         default:
             cm.sendOk("该功能暂不支持，敬请期待！");
@@ -79,5 +72,3 @@ function openNpc(scriptName) {
     cm.dispose();
     cm.openNpc(9900001, scriptName);
 }
-
-
