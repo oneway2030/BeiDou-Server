@@ -597,7 +597,7 @@ function start() {
     var text = "亲爱的老板~请问您想要什么样的点装呢?#b\r\n";
     text += "#d点卷余额：#b" + cm.getPlayer().getCashShop().getCash(1) + "#k\r\n";
     text += "#d抵用余额：#b" + cm.getPlayer().getCashShop().getCash(4) + "#k#n\r\n";
-    var options = new Array("武器", "上衣", "裤子", "套服", "手套", "鞋子", "饰品", "帽子", "动漫皮肤");
+    var options = new Array("武器", "上衣", "裤子", "套服", "手套", "鞋子", "饰品", "帽子");
 
     for (var i = 0; i < options.length; i++){
         text += "\r\n#L" + i + "# " + options[i] + "#l";

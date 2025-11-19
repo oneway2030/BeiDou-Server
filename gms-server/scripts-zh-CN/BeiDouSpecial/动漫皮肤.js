@@ -118,7 +118,7 @@ var ComicList = [
 // 抽奖消耗的点卷数量
 const DRAW_COST = 6000;
 // 兑换所需道具ID
-const EXCHANGE_ITEM_ID = 4000313;
+const EXCHANGE_ITEM_ID = 4000325;
 // 兑换所需数量
 const count = 1;
 // 皮肤有效期（7天，单位：分钟）
@@ -127,8 +127,9 @@ const SKIN_DURATION = 7 * 60 * 24;
 var mSelectedIndex=0;
 
 function start() {
-    let text = "动漫皮肤获取,请选择你想要的操作：#b\r\n" + "#L1#抽奖获取皮肤（消耗6000点卷）#l\r\n\r\n"
-        + "#L2#道具兑换皮肤（需要  #v" + EXCHANGE_ITEM_ID + "#   x" + count + ".）#l";
+    let text = "动漫皮肤获取,请选择你想要的操作：#b\r\n"
+        + "#L1#抽奖获取皮肤（消耗6000点卷）#l\r\n\r\n"
+        + "#L2#兑换指定皮肤（需要  #v" + EXCHANGE_ITEM_ID + "#   x" + count + ".）#l";
     cm.sendSelectLevel("Select", text);
 }
 

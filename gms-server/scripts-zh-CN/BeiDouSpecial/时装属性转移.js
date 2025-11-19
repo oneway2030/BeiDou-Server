@@ -3,7 +3,7 @@ const slotSrc = 1; // 源装备槽位（固定）
 const slotDest = 2; // 目标装备槽位（固定）
 // 消耗道具配置
 const CONSUME_ITEM_ID = 4000313; // 消耗道具ID
-const CONSUME_ITEM_COUNT = 2; // 消耗数量
+const CONSUME_ITEM_COUNT = 10; // 消耗数量
 // 提前引入需要的Java类
 const InventoryType = Java.type('org.gms.client.inventory.InventoryType');
 const ItemInformationProvider = Java.type('org.gms.server.ItemInformationProvider');

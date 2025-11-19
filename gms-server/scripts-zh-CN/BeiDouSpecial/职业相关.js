@@ -46,6 +46,7 @@ function action(mode, type, selection) {
         text += "#L1##b快速转职#l\t\r\n\r\n";
         text += "#L2#更换职业#l\t\r\n\r\n";
         text += "#L3#九转涅槃#l\t\r\n\r\n";
+        text += "#L4#洗血系统#l\t\r\n\r\n";
         cm.sendSimple(text);
     } else if (status === 1) {
         doSelect(selection);
@@ -64,6 +65,9 @@ function doSelect(selection) {
             break;
         case 3:
             openNpc("一键转生");
+            break;
+        case 4:
+            openNpc("洗血系统");
             break;
         default:
             cm.sendOk("该功能暂不支持，敬请期待！");

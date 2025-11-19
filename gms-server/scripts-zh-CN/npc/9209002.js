@@ -48,8 +48,8 @@ function action(mode, type, selection) {
 
         if (status == 0) {
             var greeting = "你好,我是兑换商人!#b\r\n";
-            greeting += "#L0#购买三倍经验卡(永久)#l\r\n";
-            greeting += "#L8#购买双倍爆率卡(永久)#l\r\n";
+            // greeting += "#L0#购买三倍经验卡(永久)#l\r\n";
+            // greeting += "#L8#购买双倍爆率卡(永久)#l\r\n";
             greeting += "#L1#购买百宝券#l\r\n";
             greeting += "#L6#购买高级百宝券#l\r\n";
             greeting += "#L2#购买#z4001126##l\r\n";

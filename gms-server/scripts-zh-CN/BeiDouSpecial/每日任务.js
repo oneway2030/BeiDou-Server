@@ -10,11 +10,17 @@ const CashPoint1Num = 500; // 点券奖励
 const MesoNum = 20; // 金币奖励,单位W
 var selectedItemId = 0; // 当前任务道具ID
 var requiredItemCount = 0; // 当前任务所需道具数量
-var drop_rate_card_id = 5360042; // 爆率卡id
+var 额外奖励次数 = 8;
 
+// 定义每日签到奖励物品信息
+var 奖励道具集合 = [
+    {id: 2029005, qty: 1},//三倍经验
+    {id: 2029002, qty: 1}//双倍经验
+];
 
 // 存储键名定义
 const ROUND_KEY = "每日任务当前第几轮";
+const TOTAL_COMPLETE_KEY = "每日任务总完成轮数";
 const ITEM_ID_KEY = "每日任务当前道具ID";
 const ITEM_COUNT_KEY = "每日任务当前道具数量";
 
@@ -62,18 +68,17 @@ function action(mode, type, selection) {
             return;
         }
         // 显示当前轮次任务信息和操作选项
-        cm.sendSimple(
-            `#k每日任务 第 #r${currentRound}/${maxRounds} #k轮\r\n\r\n` +
-            `每轮奖励：#b\r\n` +
+        let text = `#k每日任务 第 #r${currentRound}/${maxRounds} #k轮\r\n\r\n` +
+            `#b每轮奖励：#k\r\n` +
             `- ${CashPoint1Num} 点券\r\n` +
-            `- ${MesoNum} w金币\r\n` +
-            `- #r每天完成10次额外获得：双倍爆率30分钟：#v${drop_rate_card_id}# x1\r\n\r\n` +
-            `#k当前任务要求：\r\n` +
+            `- ${MesoNum} w金币\r\n\r\n` +
+            获取奖励文本() +
+            `#b当前任务要求：\r\n` +
             `#b#i${selectedItemId}# #t${selectedItemId}# × ${requiredItemCount}\r\n\r\n` +
             `#k请选择操作：\r\n` +
             `#r#L0#提交任务#l\r\n` +  // 使用换行符分隔选项，避免索引识别错误
-            `#k#L1#跳过本轮#l`
-        );
+            `#k#L1#跳过本轮(不获取奖励)#l`;
+        cm.sendSimple(text);
     } else if (status === 1) {
         if (selection === 0) {//点击提交
             completeTask();
@@ -89,6 +94,15 @@ function action(mode, type, selection) {
     }
 }
 
+function 获取奖励文本() {
+    let text = "#b最后一轮获取，并且当天总完成次数大于8轮：#k\r\n";
+    奖励道具集合.forEach(reward => {
+        text += `- #v${reward.id}##t${reward.id}# x ${reward.qty}\r\n`;
+    });
+    text += "\r\n";
+    return text;
+}
+
 /**
  * 加载存储的任务数据
  */
@@ -97,11 +111,15 @@ function loadTaskData() {
     currentRound = savedRound ? parseInt(savedRound) : 1;
     currentRound = savedRound <= 0 ? 1 : parseInt(savedRound);
 
+    const savedTotalComplete = cm.getAccountExtendValue(TOTAL_COMPLETE_KEY, true);
+    // 初始化总完成次数（默认0）
+    totalCompleteCount = savedTotalComplete ? parseInt(savedTotalComplete) : 0;
 
     const savedItemId = cm.getAccountExtendValue(ITEM_ID_KEY, true);
     selectedItemId = savedItemId ? parseInt(savedItemId) : 0;
     const savedItemCount = cm.getAccountExtendValue(ITEM_COUNT_KEY, true);
     requiredItemCount = savedItemCount ? parseInt(savedItemCount) : 0;
+
     if (selectedItemId === 0 || requiredItemCount === 0) {
         generateTask();
         saveTaskProgress();
@@ -113,6 +131,7 @@ function loadTaskData() {
  */
 function resetDailyTask() {
     currentRound = 1;
+    totalCompleteCount = 0; // 重置总完成次数
     selectedItemId = 0;
     requiredItemCount = 0;
 }
@@ -122,6 +141,7 @@ function resetDailyTask() {
  */
 function saveTaskProgress() {
     cm.saveOrUpdateAccountExtendValue(ROUND_KEY, currentRound.toString(), true);
+    cm.saveOrUpdateAccountExtendValue(TOTAL_COMPLETE_KEY, totalCompleteCount.toString(), true); // 保存总完成次数
     cm.saveOrUpdateAccountExtendValue(ITEM_ID_KEY, selectedItemId.toString(), true);
     cm.saveOrUpdateAccountExtendValue(ITEM_COUNT_KEY, requiredItemCount.toString(), true);
 }
@@ -160,9 +180,6 @@ function generateTask() {
     const randomIndex = Math.floor(Math.random() * availableItems.length);
     selectedItemId = availableItems[randomIndex][0];
     requiredItemCount = availableItems[randomIndex][1];
-    //test
-    // selectedItemId=4000330;
-    // requiredItemCount=1;
 }
 
 /**
@@ -170,37 +187,52 @@ function generateTask() {
  */
 function completeTask() {
     if (cm.haveItem(selectedItemId, requiredItemCount)) {
-        // 进入下一轮
+        // 检查背包空间
+        if (cm.isNotCanHold(2)) {
+            return;
+        }
+        // 1. 总完成次数+1并保存
+        totalCompleteCount++;
+
+        // 2. 进入下一轮
+        const completedRound = currentRound; // 记录当前完成的轮次
         currentRound++;
-        if (currentRound === 10) {
-            if (!cm.isNotCanHold(2)) {
-                cm.gainItem(drop_rate_card_id, 1);
+
+        // 3. 扣除道具
+        cm.gainItem(selectedItemId, -requiredItemCount);
+        // 4. 发放基础奖励
+        cm.gainMeso(MesoNum * 10000);
+        cm.getPlayer().getCashShop().gainCash(1, CashPoint1Num);
+
+        // 5. 第10轮任务完成时，判断是否发放额外道具（总完成次数>8）
+        let extraRewardText = "";
+        if (completedRound === maxRounds) {
+            // 总完成次数>8时发放额外道具
+            if (totalCompleteCount >= 额外奖励次数) {
+                发放道具();
+                extraRewardText = `- 额外奖励：\r\n`;
+                奖励道具集合.forEach(item => {
+                    extraRewardText += `  #v${item.id}##t${item.id}# x ${item.qty}\r\n`;
+                });
             } else {
-                return;
+                extraRewardText = `- 今日总完成次数不足${额外奖励次数}次，未获得额外道具奖励\r\n`;
             }
         }
-        // 扣除道具
-        cm.gainItem(selectedItemId, -requiredItemCount);
-        // 发放金币
-        cm.gainMeso(MesoNum * 10000);
-        // 发放点卷
-        cm.getPlayer().getCashShop().gainCash(1, CashPoint1Num);
-        if (currentRound - 1 === 10) {
-            cm.gainItem(2029002, 1);
-            cm.gainItem(2029003, 1);
-        }
+
+        // 6. 生成下一轮任务（如果未完成全部轮次）
         if (currentRound <= maxRounds) {
             generateTask();
         }
+
+        // 7. 保存进度并提示
         saveTaskProgress();
         status = -1;
-        let text =
-            `#b恭喜完成第 #r${currentRound - 1}/${maxRounds} #b轮任务！\r\n\r\n` +
+        let text = `#b恭喜完成第 #r${completedRound}/${maxRounds} #b轮任务（成功完成${totalCompleteCount}轮任务）！\r\n\r\n` +
             `获得奖励：\r\n` +
             `- #r${CashPoint1Num} #b点券\r\n` +
             `- #r${MesoNum} #bW金币\r\n`;
-        if (currentRound === 10) {
-            text += `- #r#v${道具ID} x1##t\r\n\r\n`;
+        if (completedRound === maxRounds) {
+            text += extraRewardText;
         }
         cm.sendNext(text);
     } else {
@@ -214,10 +246,19 @@ function completeTask() {
 }
 
 /**
+ * 发放额外道具奖励
+ */
+function 发放道具() {
+    奖励道具集合.forEach(item => {
+        cm.gainItem(item.id, item.qty);
+    });
+}
+
+/**
  * 跳过当前任务（带确认流程）
  */
 function skipTask() {
-    // 进入下一轮并生成新任务
+    // 进入下一轮并生成新任务（跳过不增加总完成次数）
     currentRound++;
     if (currentRound <= maxRounds) {
         generateTask();

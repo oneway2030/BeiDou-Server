@@ -1,6 +1,5 @@
 package org.gms.model.dto;
 
-import com.mybatisflex.annotation.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -109,6 +108,7 @@ public class InventorySearchRtnDTO {
             equip.setItemLevel(Optional.ofNullable(getInventoryEquipment().getItemLevel()).orElse((byte) 0));
             equip.setItemExp(Optional.ofNullable(getInventoryEquipment().getItemExp()).orElse(0));
             equip.setRingId(Optional.ofNullable(getInventoryEquipment().getRingId()).orElse(0));
+            equip.setUpgradeHistory(Optional.ofNullable(getInventoryEquipment().getUpgradeHistory()).orElse(""));
             item = equip;
         } else {
             item = new Item(getItemId(), getPosition(), getQuantity(), getPetId());

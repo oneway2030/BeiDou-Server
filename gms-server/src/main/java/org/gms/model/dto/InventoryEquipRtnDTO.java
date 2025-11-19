@@ -106,4 +106,8 @@ public class InventoryEquipRtnDTO {
      * 戒指id，对应ringid
      */
     private Integer ringId;
+    /**
+     *装备升级记录，对应upgradehistory
+     */
+    private String upgradeHistory;
 }

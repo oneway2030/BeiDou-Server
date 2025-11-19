@@ -39,10 +39,8 @@ VALUES ( 'server', 'Game Mechanics', 'java.lang.Integer', 'rebirth_level', '10',
 INSERT INTO `lang_resources` (`lang_type`, `lang_base`, `lang_code`, `lang_value`) VALUES ('zh-CN', 'game_config', 'rebirth_level', '转生后的等级,默认10级,重启服务器生效');
 INSERT INTO `lang_resources` (`lang_type`, `lang_base`, `lang_code`, `lang_value`) VALUES ('en-US', 'game_config', 'rebirth_level', 'Level after Rebirth.');
 
---不转生装备最大等级，超过1开启装备升级系统
 INSERT INTO `game_config` ( `config_type`, `config_sub_type`, `config_clazz`, `config_code`, `config_value`, `config_desc`)
 VALUES ( 'server', 'Game Mechanics', 'java.lang.Integer', 'max_reborn_count', '5', 'max_reborn_count');
-INSERT INTO `lang_resources` (`lang_type`, `lang_base`, `lang_code`, `lang_value`) VALUES ('zh-CN', 'game_config', 'max_reborn_count', '最大重生次数');
-INSERT INTO `lang_resources` (`lang_type`, `lang_base`, `lang_code`, `lang_value`) VALUES ('en-US', 'game_config', 'max_reborn_count', '最大重生次数');
-
+INSERT INTO `lang_resources` (`lang_type`, `lang_base`, `lang_code`, `lang_value`) VALUES ('zh-CN', 'game_config', 'max_reborn_count', '转生后的等级,默认10级,重启服务器生效');
+INSERT INTO `lang_resources` (`lang_type`, `lang_base`, `lang_code`, `lang_value`) VALUES ('en-US', 'game_config', 'max_reborn_count', 'Level after Rebirth.');
 

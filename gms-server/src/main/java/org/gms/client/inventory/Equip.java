@@ -21,7 +21,9 @@
  */
 package org.gms.client.inventory;
 
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson2.TypeReference;
 import lombok.Getter;
 import org.gms.client.Client;
 import org.gms.config.GameConfig;
@@ -35,10 +37,7 @@ import org.slf4j.LoggerFactory;
 import org.gms.server.ItemInformationProvider;
 import org.gms.util.Pair;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Equip extends Item {
     private static final Logger log = LoggerFactory.getLogger(Equip.class);
@@ -80,6 +79,9 @@ public class Equip extends Item {
     private boolean wear = false;
     private boolean isUpgradeable, isElemental = false;    // timeless or reverse, or any equip that could levelup on GMS for all effects
     private static ItemInformationProvider ii = ItemInformationProvider.getInstance();
+    private List<List<Pair<StatUpgrade, Integer>>> mUpgradeHistoryList = new LinkedList<>();
+    @Getter
+    private String upgradeHistory = "";
 
     public Equip(int id, short position) {
         this(id, position, 0);
@@ -118,6 +120,7 @@ public class Equip extends Item {
         ret.itemLevel = itemLevel;
         ret.itemExp = itemExp;
         ret.level = level;
+        ret.upgradeHistory = upgradeHistory;
         ret.itemLog = new LinkedList<>(itemLog);
         ret.setOwner(getOwner());
         ret.setQuantity(getQuantity());
@@ -303,19 +306,62 @@ public class Equip extends Item {
         }
     }
 
+//    /**
+//     * 老的随机逻辑
+//     */
+//    private static int randomizeStatUpgrade(int top) {
+//        int limit = Math.min(top, GameConfig.getServerInt("max_equipment_level_up_stat_up"));
+//
+//        int poolCount = (limit * (limit + 1) / 2) + limit;
+//        int rnd = Randomizer.rand(0, poolCount);
+//
+//        int stat = 0;
+//        if (rnd >= limit) {
+//            rnd -= limit;
+//            stat = 1 + (int) Math.floor((-1 + Math.sqrt((8 * rnd) + 1)) / 2);    // optimized randomizeStatUpgrade author: David A.
+//        }
+//
+//        return stat;
+//    }
+
+    /**
+     * 新的随机逻辑
+     */
     private static int randomizeStatUpgrade(int top) {
-        int limit = Math.min(top, GameConfig.getServerInt("max_equipment_level_up_stat_up"));
-
-        int poolCount = (limit * (limit + 1) / 2) + limit;
-        int rnd = Randomizer.rand(0, poolCount);
-
-        int stat = 0;
-        if (rnd >= limit) {
-            rnd -= limit;
-            stat = 1 + (int) Math.floor((-1 + Math.sqrt((8 * rnd) + 1)) / 2);    // optimized randomizeStatUpgrade author: David A.
+        // 1. 限制最大值（不超过配置上限）
+        int maxAllowed = GameConfig.getServerInt("max_equipment_level_up_stat_up");
+        int limit = Math.min(top, maxAllowed);
+        if (limit <= 0) {
+            return 0; // 无增长可能
         }
 
-        return stat;
+        // 2. 权重分配：0值权重降低（limit/2），1~limit权重严格递减（数值越大权重越低）
+        int zeroWeight = Math.max(1, limit / 2); // 0值权重=limit/2（至少1，避免0权重）
+        int[] numWeights = new int[limit + 1];  // 索引=数值，值=权重
+        numWeights[0] = zeroWeight;
+
+        // 1~limit的权重：数值k的权重=limit - k + 1（严格递减，如limit=5时：5→5,4→4,...,1→1）
+        for (int k = 1; k <= limit; k++) {
+            numWeights[k] = limit - k + 1;
+        }
+
+        // 3. 计算总权重和权重区间
+        int totalWeight = 0;
+        for (int w : numWeights) {
+            totalWeight += w;
+        }
+
+        // 4. 生成随机数并匹配结果
+        int rnd = Randomizer.rand(0, totalWeight);
+        int cumulative = 0;
+        for (int k = 0; k < numWeights.length; k++) {
+            cumulative += numWeights[k];
+            if (rnd < cumulative) {
+                return k; // k即属性值（0~limit）
+            }
+        }
+
+        return 0; // 兜底逻辑（理论上不会触发）
     }
 
     private static boolean isPhysicalWeapon(int itemid) {
@@ -339,33 +385,35 @@ public class Equip extends Item {
 
     private void getUnitStatUpgrade(List<Pair<StatUpgrade, Integer>> stats, StatUpgrade name, int curStat, boolean isAttribute) {
         isUpgradeable = true;
-
         int maxUpgrade = randomizeStatUpgrade((int) (1 + (curStat / (getStatModifier(isAttribute) * (isNotWeaponAffinity(name) ? 2.7 : 1)))));
-        if (maxUpgrade == 0) {
-            return;
-        }
-
+        //这里改一下0的时候也记录，防止不加属性，导致不能洗练
+//        if (maxUpgrade == 0) {
+//            return;
+//        }
         stats.add(new Pair<>(name, maxUpgrade));
     }
 
     /**
      * 尝试为单位插槽添加升级属性（默认10%成功率）
+     *
+     * @param {List<Pair<StatUpgrade, Integer>>} stats - 存储升级属性的列表（需传入引用）
+     * @param {StatUpgrade}           name - 要尝试升级的属性类型
      * @private
      * @static
-     * @param {List<Pair<StatUpgrade, Integer>>} stats - 存储升级属性的列表（需传入引用）
-     * @param {StatUpgrade} name - 要尝试升级的属性类型
      * @description 调用重载方法时默认使用10%的成功概率
      */
     private static void getUnitSlotUpgrade(List<Pair<StatUpgrade, Integer>> stats, StatUpgrade name) {
         getUnitSlotUpgrade(stats, name, 0.1);  // 默认10%成功率的快捷调用
     }
+
     /**
      * 尝试为单位插槽添加升级属性（可配置概率）
+     *
+     * @param {List<Pair<StatUpgrade, Integer>>} stats - 存储升级属性的列表（需传入引用）
+     * @param {StatUpgrade}           name - 要尝试升级的属性类型
+     * @param {double}                chance - 成功概率值（范围0.0\~1.0）
      * @private
      * @static
-     * @param {List<Pair<StatUpgrade, Integer>>} stats - 存储升级属性的列表（需传入引用）
-     * @param {StatUpgrade} name - 要尝试升级的属性类型
-     * @param {double} chance - 成功概率值（范围0.0\~1.0）
      * @description 通过随机数判断是否成功添加属性升级项
      */
     private static void getUnitSlotUpgrade(List<Pair<StatUpgrade, Integer>> stats, StatUpgrade name, double chance) {
@@ -373,32 +421,34 @@ public class Equip extends Item {
             stats.add(new Pair<>(name, 1));  // 成功时添加新属性项
         }
     }
+
     /**
      * 判断是否需要增加砸卷次数或者减少金锤子已使用次数
      */
-    private void UpgradeSlotProcessing(List<Pair<StatUpgrade, Integer>> stats,int equipLevel) {
+    private void UpgradeSlotProcessing(List<Pair<StatUpgrade, Integer>> stats, int equipLevel) {
         if (GameConfig.getServerBoolean("use_equipment_level_up_slots")) {// 处理可砸卷次数逻辑
             getUnitSlotUpgrade(stats, StatUpgrade.incSlot); // 增加升级槽
         }
         if (GameConfig.getServerBoolean("use_equipment_level_up_vicious") && vicious > 0) { // 金锤子已使用次数大于0时
             double[][] chanceList = {{0, 255, 0.1}};
             String chanceParam = GameConfig.getServerString("use_equipment_level_up_vicious_levelrange_chance");
-            if(chanceParam != null) {
+            if (chanceParam != null) {
                 try {
                     chanceList = JSONObject.parseObject(chanceParam, double[][].class);
                 } catch (Throwable e) {
                     log.warn("金锤子装备等级范围概率参数解析失败，请检查是否正确");
                 }
             }
-            for(double[] obj : chanceList) {
-                double minLevel = obj[0],maxLevel = obj[1], chance = obj[2];
-                if(equipLevel >= minLevel && equipLevel <= maxLevel) {
-                    getUnitSlotUpgrade(stats, StatUpgrade.incVicious,chance); // 减少金锤子
+            for (double[] obj : chanceList) {
+                double minLevel = obj[0], maxLevel = obj[1], chance = obj[2];
+                if (equipLevel >= minLevel && equipLevel <= maxLevel) {
+                    getUnitSlotUpgrade(stats, StatUpgrade.incVicious, chance); // 减少金锤子
                     break;
                 }
             }
         }
     }
+
     private void improveDefaultStats(List<Pair<StatUpgrade, Integer>> stats) {
         if (dex > 0) {
             getUnitStatUpgrade(stats, StatUpgrade.incDEX, dex, true);
@@ -418,9 +468,11 @@ public class Equip extends Item {
         if (mp > 0) {
             getUnitStatUpgrade(stats, StatUpgrade.incMMP, mp, false);
         }
+        //物理攻击
         if (watk > 0) {
             getUnitStatUpgrade(stats, StatUpgrade.incPAD, watk, false);
         }
+        //魔法攻击
         if (matk > 0) {
             getUnitStatUpgrade(stats, StatUpgrade.incMAD, matk, false);
         }
@@ -496,6 +548,7 @@ public class Equip extends Item {
     /**
      * 装备升级时计算增加的属性值，值>0才显示，避免显示负数或者0，避免玩家以为属性被扣除了
      * 优化提示消息，使其更易懂
+     *
      * @param stats 属性升级列表，包含属性类型和增加值
      * @return 返回一个 Pair，包含提示消息和两个布尔值（是否增加升级槽、是否减少金锤子）
      */
@@ -518,21 +571,23 @@ public class Equip extends Item {
                     gotSlot = true;
                     break;
                 default: // 处理普通属性
-                    int statUp = handleStatUpgrade(type, value, maxStat);
-                    if (statUp > 0) {
-                        lvupStr.append(getStatMessage(type, statUp)).append("; ");
+                    if (value != 0) {
+                        int statUp = handleStatUpgrade(type, value, maxStat);
+                        if (statUp > 0) {
+                            lvupStr.append(getStatMessage(type, statUp)).append("; ");
+                        }
                     }
                     break;
             }
         }
-
         return new Pair<>(lvupStr.toString(), new Pair<>(gotSlot, gotVicious));
     }
 
     /**
      * 处理普通属性的升级逻辑
-     * @param type 属性类型
-     * @param value 属性增加值
+     *
+     * @param type    属性类型
+     * @param value   属性增加值
      * @param maxStat 属性最大值
      * @return 实际增加的属性值
      */
@@ -547,57 +602,104 @@ public class Equip extends Item {
 
     /**
      * 获取当前属性值
+     *
      * @param type 属性类型
      * @return 当前属性值
      */
     private int getCurrentStat(StatUpgrade type) {
         switch (type) {
-            case incDEX: return dex;
-            case incSTR: return str;
-            case incINT: return _int;
-            case incLUK: return luk;
-            case incMHP: return hp;
-            case incMMP: return mp;
-            case incPAD: return watk;
-            case incMAD: return matk;
-            case incPDD: return wdef;
-            case incMDD: return mdef;
-            case incEVA: return avoid;
-            case incACC: return acc;
-            case incSpeed: return speed;
-            case incJump: return jump;
-            default: return 0;
+            case incDEX:
+                return dex;
+            case incSTR:
+                return str;
+            case incINT:
+                return _int;
+            case incLUK:
+                return luk;
+            case incMHP:
+                return hp;
+            case incMMP:
+                return mp;
+            case incPAD:
+                return watk;
+            case incMAD:
+                return matk;
+            case incPDD:
+                return wdef;
+            case incMDD:
+                return mdef;
+            case incEVA:
+                return avoid;
+            case incACC:
+                return acc;
+            case incSpeed:
+                return speed;
+            case incJump:
+                return jump;
+            default:
+                return 0;
         }
     }
 
     /**
      * 设置当前属性值
-     * @param type 属性类型
+     *
+     * @param type  属性类型
      * @param value 新的属性值
      */
     private void setCurrentStat(StatUpgrade type, int value) {
         switch (type) {
-            case incDEX: dex = (short) value; break;
-            case incSTR: str = (short) value; break;
-            case incINT: _int = (short) value; break;
-            case incLUK: luk = (short) value; break;
-            case incMHP: hp = (short) value; break;
-            case incMMP: mp = (short) value; break;
-            case incPAD: watk = (short) value; break;
-            case incMAD: matk = (short) value; break;
-            case incPDD: wdef = (short) value; break;
-            case incMDD: mdef = (short) value; break;
-            case incEVA: avoid = (short) value; break;
-            case incACC: acc = (short) value; break;
-            case incSpeed: speed = (short) value; break;
-            case incJump: jump = (short) value; break;
-            default: break;
+            case incDEX:
+                dex = (short) value;
+                break;
+            case incSTR:
+                str = (short) value;
+                break;
+            case incINT:
+                _int = (short) value;
+                break;
+            case incLUK:
+                luk = (short) value;
+                break;
+            case incMHP:
+                hp = (short) value;
+                break;
+            case incMMP:
+                mp = (short) value;
+                break;
+            case incPAD:
+                watk = (short) value;
+                break;
+            case incMAD:
+                matk = (short) value;
+                break;
+            case incPDD:
+                wdef = (short) value;
+                break;
+            case incMDD:
+                mdef = (short) value;
+                break;
+            case incEVA:
+                avoid = (short) value;
+                break;
+            case incACC:
+                acc = (short) value;
+                break;
+            case incSpeed:
+                speed = (short) value;
+                break;
+            case incJump:
+                jump = (short) value;
+                break;
+            default:
+                break;
         }
     }
 
     /**
      * 获取属性提升的提示消息
-     * @param type 属性类型
+     *
+     * @param type  属性类型
      * @param value 属性增加值
      * @return 提示消息
      */
@@ -608,34 +710,14 @@ public class Equip extends Item {
 
     /**
      * 处理装备升级的逻辑，包括属性提升、升级槽增加、金锤子减少等，并通知客户端更新装备状态
+     *
      * @param c 触发升级的客户端
      */
-    private void gainLevel(Client c) {
-        List<Pair<StatUpgrade, Integer>> stats = new LinkedList<>(); // 初始化属性升级列表
-        int equipLevel = ii.getEquipLevelReq(getItemId()); // 获取装备要求等级
-
-        if (isElemental) {// 如果是元素装备，从配置中获取元素属性升级列表
-            List<Pair<String, Integer>> elementalStats = ii.getItemLevelupStats(getItemId(), itemLevel);
-            for (Pair<String, Integer> p : elementalStats) {
-                if (p.getRight() > 0) { // 只有增加值大于0时才添加到列表
-                    stats.add(new Pair<>(StatUpgrade.valueOf(p.getLeft()), p.getRight()));
-                }
-            }
-        }
-
-        if (stats.isEmpty()) {// 如果属性列表为空，则生成默认属性升级列表
-            isUpgradeable = false; // 标记装备不可升级
-            improveDefaultStats(stats); // 生成默认属性升级列表
-        }
-        UpgradeSlotProcessing(stats, equipLevel);    // 砸卷次数和减少金锤子次数判断
-        if (isUpgradeable && stats.isEmpty()) {// 如果装备仍可升级且属性列表为空，则继续生成属性升级列表
-            while (stats.isEmpty()) {
-                improveDefaultStats(stats);// 生成默认属性升级列表
-                UpgradeSlotProcessing(stats, equipLevel);// 砸卷次数和减少金锤子次数判断
-            }
-        }
-
+    public void gainLevel(Client c) {
+        List<Pair<StatUpgrade, Integer>> stats = getNewStats(); // 初始化属性升级列表
         itemLevel++; // 提升装备等级
+        //记录装备升级信息
+        addNewUpgradeHistory(stats);
 
         String lvupStr = I18nUtil.getMessage("Equip.gainStats.lvupStr", ii.getName(this.getItemId()), itemLevel) + "; ";  // 生成等级提升的提示消息
 
@@ -661,6 +743,32 @@ public class Equip extends Item {
         c.sendPacket(PacketCreator.showEquipmentLevelUp());
         c.getPlayer().getMap().broadcastPacket(c.getPlayer(), PacketCreator.showForeignEffect(c.getPlayer().getId(), 15));
         c.getPlayer().forceUpdateItem(this); // 强制更新装备状态
+    }
+
+    public List<Pair<StatUpgrade, Integer>> getNewStats() {
+        List<Pair<StatUpgrade, Integer>> stats = new LinkedList<>(); // 初始化属性升级列表
+        int equipLevel = ii.getEquipLevelReq(getItemId()); // 获取装备要求等级
+
+        if (isElemental) {// 如果是元素装备，从配置中获取元素属性升级列表
+            List<Pair<String, Integer>> elementalStats = ii.getItemLevelupStats(getItemId(), itemLevel);
+            for (Pair<String, Integer> p : elementalStats) {
+                if (p.getRight() > 0) { // 只有增加值大于0时才添加到列表
+                    stats.add(new Pair<>(StatUpgrade.valueOf(p.getLeft()), p.getRight()));
+                }
+            }
+        }
+        if (stats.isEmpty()) {// 如果属性列表为空，则生成默认属性升级列表
+            isUpgradeable = false; // 标记装备不可升级
+            improveDefaultStats(stats); // 生成默认属性升级列表
+        }
+        UpgradeSlotProcessing(stats, equipLevel);    // 砸卷次数和减少金锤子次数判断
+        if (isUpgradeable && stats.isEmpty()) {// 如果装备仍可升级且属性列表为空，则继续生成属性升级列表
+            while (stats.isEmpty()) {
+                improveDefaultStats(stats);// 生成默认属性升级列表
+                UpgradeSlotProcessing(stats, equipLevel);// 砸卷次数和减少金锤子次数判断
+            }
+        }
+        return stats;
     }
 
     public int getItemExp() {
@@ -701,7 +809,8 @@ public class Equip extends Item {
 
     /**
      * 处理装备经验值的增加逻辑（Ronan 的装备经验值获取方法）
-     * @param c 客户端对象
+     *
+     * @param c    客户端对象
      * @param gain 获得的经验值
      */
     public synchronized void gainItemExp(Client c, int gain) {
@@ -808,4 +917,218 @@ public class Equip extends Item {
         wear = yes;
     }
 
+
+    public String gainStatsDes(List<Pair<StatUpgrade, Integer>> stats) {
+        StringBuilder lvupStr = new StringBuilder(); // 使用 StringBuilder 提高字符串拼接效率
+        for (Pair<StatUpgrade, Integer> stat : stats) { // 遍历属性升级列表
+            StatUpgrade type = stat.getLeft(); // 属性类型
+            int value = stat.getRight(); // 属性增加值
+            switch (type) {
+                case incVicious: // 减少金锤子
+                case incSlot: // 增加升级槽
+                    break;
+                default: // 处理普通属性
+                    lvupStr.append(getStatMessage(type, value)).append("; ");
+                    break;
+            }
+        }
+        return lvupStr.toString();
+    }
+
+    /**
+     * 获取升级记录的描述
+     */
+    public List<String> getUpgradeHistoryDes() {
+        List<String> descs = new LinkedList<>();
+        for (int i = 0; i < mUpgradeHistoryList.size(); i++) {
+            List<Pair<StatUpgrade, Integer>> stats = mUpgradeHistoryList.get(i);
+            descs.add(this.gainStatsDes(stats));
+        }
+        return descs;
+    }
+
+    /**
+     * 获取升级记录的指定位置描述
+     */
+    public String getUpgradeHistoryDes(int index) {
+        // 1. 先判断集合是否为空
+        if (mUpgradeHistoryList == null || mUpgradeHistoryList.isEmpty()) {
+            return "暂无升级记录";
+        }
+        // 2. 判断索引是否合法（0 <= index < 集合长度）
+        if (index < 0 || index >= mUpgradeHistoryList.size()) {
+            return "升级记录索引无效";
+        }
+        // 3. 获取对应索引的升级数据，判断是否为空
+        List<Pair<StatUpgrade, Integer>> stats = mUpgradeHistoryList.get(index);
+        if (stats == null || stats.isEmpty()) {
+            return "该次升级无属性变化";
+        }
+        // 4. 正常生成属性描述
+        return this.gainStatsDes(stats);
+    }
+
+    /**
+     * 设置装备升级历史（从字符串反序列化）
+     *
+     * @param upgradeHistory 序列化后的升级历史字符串
+     */
+    public void setUpgradeHistory(String upgradeHistory) {
+        if (upgradeHistory != null && !upgradeHistory.trim().isEmpty()) {
+            this.upgradeHistory = upgradeHistory;
+            mUpgradeHistoryList.clear();
+            try {
+                // 使用fastjson2反序列化字符串为List<List<Pair>>类型
+                List<List<Pair<StatUpgrade, Integer>>> list = JSON.parseObject(
+                        upgradeHistory,
+                        new TypeReference<List<List<Pair<StatUpgrade, Integer>>>>() {
+                        }
+                );
+                mUpgradeHistoryList.addAll(list);
+                log.info("设置装备升级历史成功：" + mUpgradeHistoryList.toString());
+            } catch (Exception e) {
+                log.error("解析装备升级历史失败", e);
+                mUpgradeHistoryList = new LinkedList<>();
+            }
+        } else {
+            this.upgradeHistory = "";
+            mUpgradeHistoryList = new LinkedList<>();
+        }
+    }
+
+    /**
+     * 将升级历史列表序列化为字符串
+     *
+     * @return 序列化后的升级历史字符串
+     */
+    public String upgradeHistoryToJson() {
+        if (mUpgradeHistoryList == null) {
+            log.error("upgradeHistoryToJson序列化为null");
+            return "";
+        }
+        try {
+            // 使用fastjson2将列表序列化为字符串
+            return JSON.toJSONString(mUpgradeHistoryList);
+        } catch (Exception e) {
+            log.error("upgradeHistoryToJson 序列化装备升级历史失败", e);
+            return "";
+        }
+    }
+
+    /**
+     * 添加新的升级记录到历史列表
+     *
+     * @param stats 本次升级的属性变化列表
+     */
+    public void addNewUpgradeHistory(List<Pair<StatUpgrade, Integer>> stats) {
+        if (!stats.isEmpty()) {
+            if (mUpgradeHistoryList == null) {
+                mUpgradeHistoryList = new LinkedList<>();
+            }
+            mUpgradeHistoryList.add(stats);
+            // 同步更新字符串形式的历史记录
+            this.upgradeHistory = upgradeHistoryToJson();
+        }
+    }
+
+    /**
+     * 替换装备升级的某一条属性，自动随机生成
+     *
+     * @param c
+     * @param index
+     * @return
+     */
+    public boolean replaceUpgradeHistory(Client c, int index) {
+        return replaceUpgradeHistory(c, index, getNewStats());
+    }
+
+    /**
+     * 替换装备升级历史中第N次的属性记录，并重新应用新属性到装备
+     *
+     * @param index    要替换的历史记录索引（从0开始）
+     * @param newStats 新的属性升级列表
+     * @return 替换是否成功
+     */
+    public boolean replaceUpgradeHistory(Client c, int index, List<Pair<StatUpgrade, Integer>> newStats) {
+        // 校验索引有效性和新属性列表非空
+        if (mUpgradeHistoryList == null || index < 0 || index >= mUpgradeHistoryList.size() || newStats == null || newStats.isEmpty()) {
+            log.warn("替换升级历史失败：无效索引或空属性列表");
+            return false;
+        }
+
+        // 1. 先移除原第N次升级记录带来的属性
+        List<Pair<StatUpgrade, Integer>> oldStats = mUpgradeHistoryList.get(index);
+        revertStats(oldStats);
+
+        // 2. 替换历史记录为新属性列表
+        mUpgradeHistoryList.set(index, newStats);
+
+        // 3. 应用新的属性列表，并计算属性提升和生成提示消息
+        Pair<String, Pair<Boolean, Boolean>> res = this.gainStats(newStats);
+
+        // 4. 同步更新JSON字符串形式的历史记录
+        this.upgradeHistory = upgradeHistoryToJson();
+
+        //5.推送成功消息
+        String lvupStr = I18nUtil.getMessage("Equip.resetAttributes.lvupStr", ii.getName(this.getItemId())) + "; ";  // 生成等级提升的提示消息
+        lvupStr += res.getLeft(); // 拼接属性提升的提示消息
+        boolean gotSlot = res.getRight().getLeft(); // 是否增加了升级槽
+        boolean gotVicious = res.getRight().getRight(); // 是否减少了金锤子
+
+        if (gotVicious) {// 如果减少了金锤子，追加提示消息
+            lvupStr += I18nUtil.getMessage("Equip.gainStats.Vicious", "-1") + "; ";
+        }
+
+        if (gotSlot) {// 如果增加了升级槽，追加提示消息
+            lvupStr += I18nUtil.getMessage("Equip.gainStats.UPGSLOT", "+1") + "; ";
+        }
+
+        // 通知客户端更新装备状态
+        c.getPlayer().equipChanged();
+        c.getPlayer().showHint(I18nUtil.getMessage("Equip.resetAttributes.showHint", ii.getName(this.getItemId())), 300); // 显示等级提升的消息
+        c.getPlayer().dropMessage(6, lvupStr); // 显示属性提升的消息
+
+        // 发送装备升级的效果包
+        c.sendPacket(PacketCreator.showEquipmentLevelUp());
+        c.getPlayer().getMap().broadcastPacket(c.getPlayer(), PacketCreator.showForeignEffect(c.getPlayer().getId(), 15));
+        c.getPlayer().forceUpdateItem(this); // 强制更新装备状态
+        return true;
+    }
+
+    /**
+     * 撤销指定属性列表带来的属性增益（用于替换历史记录时回滚原属性）
+     *
+     * @param stats 要撤销的属性列表
+     */
+    private void revertStats(List<Pair<StatUpgrade, Integer>> stats) {
+        for (Pair<StatUpgrade, Integer> stat : stats) {
+            StatUpgrade type = stat.getLeft();
+            int value = stat.getRight();
+            if (value <= 0) {
+                continue; // 忽略非正值的属性（通常不会出现）
+            }
+
+            switch (type) {
+                case incVicious:
+                    // 原逻辑是减少金锤子次数，撤销则增加
+                    vicious += value;
+                    break;
+                case incSlot:
+                    // 原逻辑是增加升级槽，撤销则减少
+                    upgradeSlots -= value;
+                    if (upgradeSlots < 0) {
+                        upgradeSlots = 0; // 防止出现负的升级槽
+                    }
+                    break;
+                default:
+                    // 撤销普通属性增益（减去原增加值）
+                    int currentStat = getCurrentStat(type);
+                    int statDown = Math.min(value, currentStat); // 确保不会减到负数
+                    if (statDown > 0) {
+                        setCurrentStat(type, currentStat - statDown);
+                    }
+                    break;
+            }
+        }
+    }
 }

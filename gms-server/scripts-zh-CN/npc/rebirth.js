@@ -13,6 +13,9 @@ var jobs = Array(
 var status;
 
 function start() {
+  cm.sendOk("#b请使用快捷菜单里的九转涅槃");
+  cm.dispose();
+  return;
   status = -1;
   if (!Packages.config.YamlConfig.config.server.USE_REBIRTH_SYSTEM) {
     cm.sendOk("...我在搜索我的主人，你看到他了吗？");

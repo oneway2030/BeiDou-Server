@@ -25,7 +25,6 @@
  */
 var OldTitle = "\t\t\t\t\t#e#k欢迎来到#r[装备中心]#k系统#n\t\t\t\t\r\n";
 var status = -1;
-var i = 0;
 
 function start() {
     action(1, 0, 0)
@@ -44,7 +43,8 @@ function action(mode, type, selection) {
         let text = OldTitle;
         text += " \r\n";
         text += "#L0#时装属性转移#l\t\r\n\r\n";
-        text += "#L1#装备制作#l\t\r\n\r\n";
+        text += "#L1#装备洗练#l\t\r\n\r\n";
+        text += "#L2#装备制作#l\t\r\n\r\n";
         cm.sendSimple(text);
     } else if (status === 1) {
         doSelect(selection);
@@ -59,9 +59,11 @@ function doSelect(selection) {
             openNpc("时装属性转移");
             break;
         case 1:
+            openNpc("装备洗练");
+            break;
+        case 2:
             cm.sendOk("开发中，敬请期待！");
             cm.dispose();
-            // openNpc("血衣合成");
             break;
         default:
             cm.sendOk("该功能暂不支持，敬请期待！");

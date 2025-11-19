@@ -202,6 +202,7 @@ public class InventoryService {
                     .itemLevel(obj.getByte("itemlevel"))
                     .itemExp(obj.getInt("itemexp"))
                     .ringId(obj.getInt("ringid"))
+                    .upgradeHistory(obj.getString("upgradehistory"))
                     .build());
         }
         return rtnDTO;
@@ -255,6 +256,7 @@ public class InventoryService {
                         .itemLevel(equip.getItemLevel())
                         .itemExp(equip.getItemExp())
                         .ringId(equip.getRingId())
+                        .upgradeHistory(equip.getUpgradeHistory())
                         .build());
             }
             return rtnDTO;
@@ -307,6 +309,7 @@ public class InventoryService {
             if (equipment.getSpeed() != null) equip.setSpeed(equipment.getSpeed());
             if (equipment.getJump() != null) equip.setJump(equipment.getJump());
             if (equipment.getVicious() != null) equip.setVicious(equipment.getVicious());
+            if (equipment.getUpgradeHistory() != null) equip.setUpgradeHistory(equipment.getUpgradeHistory());
         }
         character.sendPacket(PacketCreator.modifyInventory(true, Arrays.asList(new ModifyInventory(3, item), new ModifyInventory(0, item))));
     }
@@ -340,6 +343,7 @@ public class InventoryService {
                             .speed(Optional.ofNullable(equipment.getSpeed()).map(Short::intValue).orElse(null))
                             .jump(Optional.ofNullable(equipment.getJump()).map(Short::intValue).orElse(null))
                             .vicious(Optional.ofNullable(equipment.getVicious()).map(Short::intValue).orElse(null))
+                            .upgradehistory(equipment.getUpgradeHistory())
                             .build(),
                     QueryWrapper.create().where(INVENTORYEQUIPMENT_D_O.INVENTORYITEMID.eq(inventoryitemsDO.getInventoryitemid())));
         }
