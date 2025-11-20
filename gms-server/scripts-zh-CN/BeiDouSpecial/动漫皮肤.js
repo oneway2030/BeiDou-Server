@@ -117,14 +117,16 @@ var ComicList = [
 ];
 // 抽奖消耗的点卷数量
 const DRAW_COST = 6000;
+const 未抽中返回的点卷 = 1000;
 // 兑换所需道具ID
 const EXCHANGE_ITEM_ID = 4000325;
 // 兑换所需数量
 const count = 1;
 // 皮肤有效期（7天，单位：分钟）
-const SKIN_DURATION = 7 * 60 * 24;
+// const SKIN_DURATION = 7 * 60 * 24;
+const SKIN_DURATION = -1;
 //当前选中
-var mSelectedIndex=0;
+var mSelectedIndex = 0;
 
 function start() {
     let text = "动漫皮肤获取,请选择你想要的操作：#b\r\n"
@@ -135,7 +137,7 @@ function start() {
 
 //抽奖显示界面
 function levelSelect1() {
-    let text = "#k请点击下方按钮进行抽奖（消耗6000点卷，50%概率获得选中皮肤，50%概率获得100点卷）\r\n";
+    let text = "#k请点击下方按钮进行抽奖（消耗6000点卷，50%概率随机获取一款皮肤，50%概率获得"+未抽中返回的点卷+"点卷）\r\n";
     text += "#L0##r点击进行抽奖#l\r\n\r\n\r\n\r\n";
     text += "#k以下是可抽奖获取的皮肤列表：#b\r\n";
     for (let i = 0; i < ComicList.length; i++) {
@@ -152,9 +154,9 @@ function levelSelect1() {
 function levelLottery0() {
     const player = cm.getPlayer();
     // 检查点卷是否足够
-    if (player.getMeso() >= DRAW_COST) {
+    if (cm.getPlayer().getCashShop().getCash(1) >= DRAW_COST) {
         // 扣除点卷
-        player.gainMeso(-DRAW_COST, true);
+        player.getCashShop().gainCash(1, -DRAW_COST);//点券
         // 50%概率抽奖结果
         const isSuccess = Math.random() < 0.5;
 
@@ -167,8 +169,8 @@ function levelLottery0() {
             cm.sendOk("恭喜你！抽奖成功，获得了#b" + selectedSkin[1] + "#k皮肤，有效期7天！");
         } else {
             // 发放100点卷
-            player.gainMeso(100, true);
-            cm.sendOk("很遗憾，抽奖未中奖，获得安慰奖100点卷！");
+            player.getCashShop().gainCash(1, 未抽中返回的点卷);//点券
+            cm.sendOk("很遗憾，抽奖未中奖，获得安慰奖"+未抽中返回的点卷+"点卷！");
         }
     } else {
         cm.sendOk("你的点卷不足" + DRAW_COST + "，无法进行抽奖。");
@@ -226,11 +228,10 @@ function levelSelect2() {
 }
 
 function levelConfirmExchange(index) {
-    mSelectedIndex=index;
+    mSelectedIndex = index;
     // 点击上一步会自动调用level1，点击下一步会自动调用level3
-    cm.sendLastNextLevel("Select2", "Exchange", "#b是否确认消耗#v"+EXCHANGE_ITEM_ID+"#  x"+count+" 兑换 #e#r["+ComicList[mSelectedIndex][1]+"] #b? ");
+    cm.sendLastNextLevel("Select2", "Exchange", "#b是否确认消耗#v" + EXCHANGE_ITEM_ID + "#  x" + count + " 兑换 #e#r[" + ComicList[mSelectedIndex][1] + "] #b? ");
 }
-
 
 
 /*

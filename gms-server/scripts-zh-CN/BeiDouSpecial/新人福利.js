@@ -9,12 +9,17 @@ var status;
 var textMsg;
 var key = "新人福利礼包"
 var meso_id = 9999999;
+var cash_id = 9999998;
 
 var dailyRewards = [
-    {id: meso_id, qty: 100},
-    {id: 2029001, qty: 1},
-    {id: 2430033, qty: 10},
+    {id: meso_id, qty: 100},//金币单位W
+    {id: cash_id, qty: 25000},//点卷
+    {id: 2029001, qty: 1},//快捷菜单
+    {id: 4000325, qty: 1},//胡罗卜
+    {id: 2430033, qty: 10},//北斗书
 ];
+
+
 var icon = "#fUI/UIWindow.img/QuestIcon/7/0#";
 
 //Start
@@ -37,6 +42,8 @@ function action(mode, type, selection) {
                 dailyRewards.forEach(reward => {
                     if (reward.id === meso_id) {
                         text += icon + ` × ${reward.qty} W \t \r\n`;
+                    } else if (reward.id === cash_id) {
+                        text +=`点卷 × ${reward.qty} \t \r\n`;
                     } else {
                         text += `#v${reward.id}##t${reward.id}# x ${reward.qty}\r\n`;
                     }
@@ -49,12 +56,13 @@ function action(mode, type, selection) {
                 cm.saveOrUpdateCharacterExtendValue(key, "已领取");
                 dailyRewards.forEach(reward => {
                     if (reward.id === meso_id) {
-                        cm.gainMeso(reward.qty*10000);
+                        cm.gainMeso(reward.qty * 10000);
+                    } else if (reward.id === cash_id) {
+                        cm.getPlayer().getCashShop().gainCash(1, reward.qty);//点券
                     } else {
                         cm.gainItem(reward.id, reward.qty);
                     }
                 });
-                cm.getPlayer().getCashShop().gainCash(1, 300000);//点券
                 cm.sendOk("恭喜您获得新手奖励，祝您游戏愉快！");
                 cm.dispose();
             }

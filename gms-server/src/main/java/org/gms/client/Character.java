@@ -1372,7 +1372,8 @@ public class Character extends AbstractCharacterObject {
 
     /**
      * 玩家角色更改地图
-     * @param map   地图ID
+     *
+     * @param map 地图ID
      */
     public void changeMap(int map, Object pt) {
         MapleMap warpMap;
@@ -1716,6 +1717,7 @@ public class Character extends AbstractCharacterObject {
 
     /**
      * 玩家更改地图 内部方法
+     *
      * @param to
      * @param pos
      * @param warpPacket
@@ -1790,6 +1792,7 @@ public class Character extends AbstractCharacterObject {
 
     /**
      * 玩家角色是否处于切换地图的状态
+     *
      * @return boolean
      */
     public boolean isChangingMaps() {
@@ -1797,7 +1800,7 @@ public class Character extends AbstractCharacterObject {
     }
 
     /**
-     *  设置地图转换完成
+     * 设置地图转换完成
      */
     public void setMapTransitionComplete() {
         this.mapTransitioning.set(false);
@@ -1921,29 +1924,23 @@ public class Character extends AbstractCharacterObject {
      *
      * @param itemId 物品的唯一标识ID，应符合游戏物品ID规范（消耗品类ID以2开头）
      * @return boolean 消耗是否成功应用：
-     *                 - true: 道具效果已应用/处理完成
-     *                 - false: 非消耗品或无需立即使用
+     * - true: 道具效果已应用/处理完成
+     * - false: 非消耗品或无需立即使用
      * @throws NullPointerException 如果无法获取物品信息或效果对象可能抛出
-     *
-     * @description
-     * 实现以下核心逻辑：
+     * @description 实现以下核心逻辑：
      * 1. 验证物品是否为可消耗类型（ID首数字为2）
      * 2. 检查物品的"拾取即用"标记
      * 3. 处理队伍道具的特殊场景：
-     *    - 普通队伍道具：对同地图存活队友应用效果
-     *    - 全体治疗道具：解除队友异常状态
+     * - 普通队伍道具：对同地图存活队友应用效果
+     * - 全体治疗道具：解除队友异常状态
      * 4. 处理怪物卡片收集（ID 238xxxx类型）
-     *
-     * @example
-     * // 典型使用场景
+     * @example // 典型使用场景
      * if(applyConsumeOnPickup(2001000)) {
-     *     removeFromInventory(item); // 消耗后移除物品
+     * removeFromInventory(item); // 消耗后移除物品
      * }
-     *
-     * @note
-     * - 物品ID格式约定：
-     *   - 第1位：物品大类（2=消耗品）
-     *   - 第2-4位：物品子类（238=怪物卡片）
+     * @note - 物品ID格式约定：
+     * - 第1位：物品大类（2=消耗品）
+     * - 第2-4位：物品子类（238=怪物卡片）
      * - 队伍道具效果只会影响同地图的存活队友
      */
     public boolean applyConsumeOnPickup(final int itemId) {// 判断拾取后是否立即消耗道具的方法
@@ -2648,7 +2645,8 @@ public class Character extends AbstractCharacterObject {
 
     /**
      * 给玩家角色发送消息
-     * @param type  0=聊天窗[note]蓝色消息；1=中间弹窗；2=？；3=？；4=？；5=聊天窗红色消息；6=聊天窗黄色消息
+     *
+     * @param type    0=聊天窗[note]蓝色消息；1=中间弹窗；2=？；3=？；4=？；5=聊天窗红色消息；6=聊天窗黄色消息
      * @param message
      */
     public void dropMessage(int type, String message) {
@@ -4710,7 +4708,8 @@ public class Character extends AbstractCharacterObject {
 
     /**
      * 背包是否满了
-     * @param type 背包类型:1 装备 2 消耗 3 设置 4 其他 5 特殊
+     *
+     * @param type  背包类型:1 装备 2 消耗 3 设置 4 其他 5 特殊
      * @param count 查询的格子数量,最少1格
      * @return
      */
@@ -9113,6 +9112,9 @@ public class Character extends AbstractCharacterObject {
         }
     }
 
+    /**
+     * 精灵吊坠经验增加
+     */
     private void equipPendantOfSpirit() {   //精灵吊坠装备时长经验计算
         if (pendantOfSpirit == null) {
             pendantOfSpirit = TimerManager.getInstance().register(() -> {
@@ -9479,10 +9481,12 @@ public class Character extends AbstractCharacterObject {
 
     public int getReborns() {
         if (!GameConfig.getServerBoolean("use_rebirth_system")) {
-            yellowMessage(I18nUtil.getMessage("Character.USE_REBIRTH_SYSTEM")); //重生系统未启用
-            throw new NotEnabledException();
+            String tip = I18nUtil.getMessage("Character.USE_REBIRTH_SYSTEM");
+            yellowMessage(tip); //重生系统未启用
+//            throw new NotEnabledException();
+            log.error(tip);
+            return 0;
         }
-
         CharactersDO charactersDO = characterService.findById(id);
         return charactersDO == null ? 0 : Optional.ofNullable(charactersDO.getReborns()).orElse(0);
     }
@@ -9577,7 +9581,7 @@ public class Character extends AbstractCharacterObject {
         //返还sp或清除sp
         int realSp = 0;
         if (returnSp) {
-            realSp= getRemainingSp();
+            realSp = getRemainingSp();
             //根据职业返还sp
             int spLevel = rebirthLevel - 8;
             if (spLevel > 0) {
@@ -9774,7 +9778,7 @@ public class Character extends AbstractCharacterObject {
         }
     }
 
-    /////////////////////////////////////////////////////////////////////////////////
+    /// //////////////////////////////////////////////////////////////////////////////
     //module: 角色在线时间
     private int m_iCurrentOnlineTime = -1;//-1用于服务器重启时角色初始变量时间
 
@@ -9793,8 +9797,9 @@ public class Character extends AbstractCharacterObject {
 
     /**
      * 获取地图类
-     * @param mapid 地图ID
-     * @param showMsg   true = 地图不存在弹出提示，false = 不提示
+     *
+     * @param mapid   地图ID
+     * @param showMsg true = 地图不存在弹出提示，false = 不提示
      * @return
      */
     public MapleMap getMap(int mapid, boolean showMsg) {

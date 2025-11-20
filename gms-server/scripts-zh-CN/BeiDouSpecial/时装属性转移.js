@@ -58,7 +58,7 @@ function action(mode, type, selection) {
  */
 function showTransferRules() {
     const itemName = ii.getName(CONSUME_ITEM_ID) || "未知道具";
-    const ruleMsg = "\t\t\t\t\t#b【时装属性转移系统】#k\r\n\r\n"+
+    const ruleMsg = "\t\t\t\t\t#b【时装属性转移系统】#k\r\n\r\n" +
         `欢迎使用时装属性转移功能，请注意以下规则：\r\n` +
         `1.请将源装备放在装备栏第${slotSrc}位，目标装备放在第${slotDest}位\r\n` +
         `2.两件装备必须是同一部位的现金时装\r\n` +
@@ -89,11 +89,10 @@ function checkAndConsumeItem(player) {
 
     // 检查数量是否足够
     if (itemCount < CONSUME_ITEM_COUNT) {
-    // if (!cm.haveItem(4000313, CONSUME_ITEM_COUNT)) {
+        // if (!cm.haveItem(4000313, CONSUME_ITEM_COUNT)) {
         cm.sendOk(`#r转移失败：#k需要消耗 #v4000313##r${CONSUME_ITEM_COUNT} 个#k，当前仅拥有 #r${itemCount} 个`);
         return false;
     }
-    cm.gainItem(CONSUME_ITEM_ID, -CONSUME_ITEM_COUNT);
     return true;
 }
 
@@ -127,20 +126,27 @@ function handleFirstStep(eqpInv) {
         cm.dispose();
         return;
     }
-
+    if(不是永久时间(srcEquip)||不是永久时间(destEquip)){
+        cm.sendOk("装备必须是没有时间限制才能转移。");
+        cm.dispose();
+        return;
+    }
     // 源装备属性存在性检查
     if (!hasTransferableStats(srcEquip)) {
         cm.sendOk("源装备没有可转移的属性（至少需要力量、敏捷、运气、智力、攻击中的一项有值）。");
         cm.dispose();
         return;
     }
-
     // 显示确认信息
     const confirmMsg = `确认将以下时装属性转移到目标装备？\r\n` +
         `#b源装备：#i${itemId1}##t${itemId1}# (槽位 ${slotSrc})\r\n` +
         `目标装备(转移后)：#i${itemId2}##t${itemId2}# (槽位 ${slotDest})\r\n` +
         `#r注意：转移后源装备属性将被清空，目标装备原有属性会被覆盖！#k`;
     cm.sendYesNo(confirmMsg);
+}
+
+function 不是永久时间(equip) {
+    return equip.getExpiration() != -1;
 }
 
 /**
@@ -204,6 +210,8 @@ function handleSecondStep(eqpInv, player) {
             clearEquipStats(srcEquip);
             // 应用属性到目标装备
             applyStatsToEquip(destEquip, srcStats);
+            //消耗道具
+            cm.gainItem(CONSUME_ITEM_ID, -CONSUME_ITEM_COUNT);
         } finally {
             eqpInv.unlockInventory(); // 确保解锁
         }

@@ -18,7 +18,7 @@ var textMsg = [
 ];
 var getStatus = 0;//"0000000"
 var msg;
-var giftContent = [1, 2, 3, 4, 5, 6, 7];
+var giftContent = [1, 1, 1, 2, 2, 3, 5];
 var index = [0x01,0x10,0x100,0x1000,0x10000,0x100000,0x1000000];
 var kye="每日在线奖励领取状态";
 //Start
