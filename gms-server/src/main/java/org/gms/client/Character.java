@@ -2208,6 +2208,8 @@ public class Character extends AbstractCharacterObject {
     public static boolean deleteCharFromDB(Character player, int senderAccId) {
         try {
             characterService.deleteCharFromDB(player, senderAccId);
+            // NOTE: 删除缓存,防止角色槽满后无法再次建立角色
+            Server.getInstance().deleteCharacterEntry(senderAccId, player.getId());
             return true;
         } catch (Exception e) {
             log.error(I18nUtil.getLogMessage("Character.deleteCharFromDB.error1"), e);
@@ -2867,8 +2869,10 @@ public class Character extends AbstractCharacterObject {
     public void gainGachaExp() {
         int expgain = 0;
         long currentgexp = gachaExp.get();
-        if ((currentgexp + exp.get()) >= ExpTable.getExpNeededForLevel(level)) {
-            expgain += ExpTable.getExpNeededForLevel(level) - exp.get();
+
+        int levelUpNeed = ExpTable.getExpNeededForLevel(level) - exp.get();
+        if (currentgexp >= levelUpNeed) {
+            expgain += Math.max(0, levelUpNeed);
 
             int nextneed = ExpTable.getExpNeededForLevel(level + 1);
             if (currentgexp - expgain >= nextneed) {
