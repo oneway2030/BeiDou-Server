@@ -43,7 +43,7 @@ public final class NPCTalkHandler extends AbstractPacketHandler {
     @Override
     public void handlePacket(InPacket p, Client c) {
         if (c.getPlayer().getMapId() == MapId.JAIL) {   //监狱地图不可使用脚本
-            c.getPlayer().dropMessage(1,I18nUtil.getMessage("ActionHandler.map.message1"));
+            c.getPlayer().dropMessage(1, I18nUtil.getMessage("ActionHandler.map.message1"));
             c.sendPacket(PacketCreator.enableActions());
             return;
         } else if (!c.getPlayer().isAlive()) {
@@ -59,7 +59,7 @@ public final class NPCTalkHandler extends AbstractPacketHandler {
         int oid = p.readInt();
         MapObject obj = c.getPlayer().getMap().getMapObject(oid);
         if (obj instanceof NPC npc) {
-            if (GameConfig.getServerBoolean("use_debug") && c.getPlayer().isGM()) {
+            if (c.getPlayer().isPrintTip()) {
                 c.getPlayer().dropMessage(5, I18nUtil.getMessage("NPCTalkHandler.handlePacket.message1") + npc.getId());
             }
 

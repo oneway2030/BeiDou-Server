@@ -10,7 +10,7 @@ var 公测道具奖励 = [
     [2029003, 20],  // 双倍爆率卡
 ];
 // 存储键：用于标记是否已领取公测礼包（避免重复领取）
-const TEST_PACKAGE_KEY = "公测测试礼包领取状态1";
+const TEST_PACKAGE_KEY = "公测测试礼包领取状态";
 
 function start() {
     action(1, 0, 0)
@@ -83,7 +83,7 @@ function 公测奖励() {
     });
 
     cm.gainMeso(公测金币奖励 * 10000);  // 发放金币
-
+    cm.getPlayer().getCashShop().gainCash(1, 100000);//点券
     // 标记为已领取（通过AccountExtendValue存储，账号级唯一）
     cm.saveOrUpdateAccountExtendValue(TEST_PACKAGE_KEY, "1", true);
 

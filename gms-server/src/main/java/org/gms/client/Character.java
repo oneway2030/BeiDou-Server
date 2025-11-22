@@ -5571,6 +5571,16 @@ public class Character extends AbstractCharacterObject {
         return gmLevel > 1;
     }
 
+    /**
+     * 客户端是否打印提示
+     *
+     * @return
+     */
+    public boolean isPrintTip() {
+//        return GameConfig.getServerBoolean("use_debug") && isGM();
+        return GameConfig.getServerBoolean("use_debug");
+    }
+
     public boolean isMapObjectVisible(MapObject mo) {
         return visibleMapObjects.contains(mo);
     }

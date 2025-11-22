@@ -520,9 +520,9 @@ public class InventoryManipulator {
         }
         c.sendPacket(PacketCreator.modifyInventory(true, mods));
         // 添加物品代码提示
-        if (GameConfig.getServerBoolean("use_debug") && c.getPlayer().isGM()) { // 假设isGM()是检查玩家是否是管理员的方法
+        if (c.getPlayer().isPrintTip()) { // 假设isGM()是检查玩家是否是管理员的方法
             int itemID = source.getItemId();
-            c.getPlayer().dropMessage(5, I18nUtil.getMessage("InventoryManipulator.handlePacket.message1")  + itemID);
+            c.getPlayer().dropMessage(5, I18nUtil.getMessage("InventoryManipulator.handlePacket.message1") + itemID);
         }
     }
 
@@ -539,9 +539,9 @@ public class InventoryManipulator {
         Equip source = (Equip) eqpInv.getItem(src);
         int itemGender = ItemId.getGender(source.getItemId());
         //控制台参数为true时进行校验判断
-        if(GameConfig.getServerBoolean("use_equipment_gender_limit") && itemGender != 2 && itemGender != chr.getGender()) {  //判断装备是否要求角色性别
+        if (GameConfig.getServerBoolean("use_equipment_gender_limit") && itemGender != 2 && itemGender != chr.getGender()) {  //判断装备是否要求角色性别
             c.sendPacket(PacketCreator.enableActions());
-            chr.dropMessage(1,I18nUtil.getMessage("InventoryManipulator.equip.message1"));    //发送弹窗提示性别不符
+            chr.dropMessage(1, I18nUtil.getMessage("InventoryManipulator.equip.message1"));    //发送弹窗提示性别不符
             log.warn(I18nUtil.getLogMessage("InventoryManipulator.warn.equip.message1"),      //后台记录信息
                     chr.getName(),
                     chr.getGender() <= 0 ? I18nUtil.getMessage("Character.Gender0") : I18nUtil.getMessage("Character.Gender1"),
@@ -568,55 +568,55 @@ public class InventoryManipulator {
             itemChanged = true;
         }
         switch (dst) {
-        case -6: // unequip the overall
-            Item top = eqpdInv.getItem((short) -5);
-            if (top != null && ItemConstants.isOverall(top.getItemId())) {
-                if (eqpInv.isFull()) {
-                    c.sendPacket(PacketCreator.getInventoryFull());
-                    c.sendPacket(PacketCreator.getShowInventoryFull());
-                    return;
+            case -6: // unequip the overall
+                Item top = eqpdInv.getItem((short) -5);
+                if (top != null && ItemConstants.isOverall(top.getItemId())) {
+                    if (eqpInv.isFull()) {
+                        c.sendPacket(PacketCreator.getInventoryFull());
+                        c.sendPacket(PacketCreator.getShowInventoryFull());
+                        return;
+                    }
+                    unequip(c, (byte) -5, eqpInv.getNextFreeSlot());
                 }
-                unequip(c, (byte) -5, eqpInv.getNextFreeSlot());
-            }
-            break;
-        case -5:
-            final Item bottom = eqpdInv.getItem((short) -6);
-            if (bottom != null && ItemConstants.isOverall(source.getItemId())) {
-                if (eqpInv.isFull()) {
-                    c.sendPacket(PacketCreator.getInventoryFull());
-                    c.sendPacket(PacketCreator.getShowInventoryFull());
-                    return;
+                break;
+            case -5:
+                final Item bottom = eqpdInv.getItem((short) -6);
+                if (bottom != null && ItemConstants.isOverall(source.getItemId())) {
+                    if (eqpInv.isFull()) {
+                        c.sendPacket(PacketCreator.getInventoryFull());
+                        c.sendPacket(PacketCreator.getShowInventoryFull());
+                        return;
+                    }
+                    unequip(c, (byte) -6, eqpInv.getNextFreeSlot());
                 }
-                unequip(c, (byte) -6, eqpInv.getNextFreeSlot());
-            }
-            break;
-        case -10: // check if weapon is two-handed
-            Item weapon = eqpdInv.getItem((short) -11);
-            if (weapon != null && ii.isTwoHanded(weapon.getItemId())) {
-                if (eqpInv.isFull()) {
-                    c.sendPacket(PacketCreator.getInventoryFull());
-                    c.sendPacket(PacketCreator.getShowInventoryFull());
-                    return;
+                break;
+            case -10: // check if weapon is two-handed
+                Item weapon = eqpdInv.getItem((short) -11);
+                if (weapon != null && ii.isTwoHanded(weapon.getItemId())) {
+                    if (eqpInv.isFull()) {
+                        c.sendPacket(PacketCreator.getInventoryFull());
+                        c.sendPacket(PacketCreator.getShowInventoryFull());
+                        return;
+                    }
+                    unequip(c, (byte) -11, eqpInv.getNextFreeSlot());
                 }
-                unequip(c, (byte) -11, eqpInv.getNextFreeSlot());
-            }
-            break;
-        case -11:
-            Item shield = eqpdInv.getItem((short) -10);
-            if (shield != null && ii.isTwoHanded(source.getItemId())) {
-                if (eqpInv.isFull()) {
-                    c.sendPacket(PacketCreator.getInventoryFull());
-                    c.sendPacket(PacketCreator.getShowInventoryFull());
-                    return;
+                break;
+            case -11:
+                Item shield = eqpdInv.getItem((short) -10);
+                if (shield != null && ii.isTwoHanded(source.getItemId())) {
+                    if (eqpInv.isFull()) {
+                        c.sendPacket(PacketCreator.getInventoryFull());
+                        c.sendPacket(PacketCreator.getShowInventoryFull());
+                        return;
+                    }
+                    unequip(c, (byte) -10, eqpInv.getNextFreeSlot());
                 }
-                unequip(c, (byte) -10, eqpInv.getNextFreeSlot());
-            }
-            break;
-        case -18:
-            if (chr.getMapleMount() != null) {
-                chr.getMapleMount().setItemId(source.getItemId());
-            }
-            break;
+                break;
+            case -18:
+                if (chr.getMapleMount() != null) {
+                    chr.getMapleMount().setItemId(source.getItemId());
+                }
+                break;
         }
 
         //1112413, 1112414, 1112405 (Lilin's Ring)

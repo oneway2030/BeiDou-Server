@@ -461,7 +461,7 @@ public class Monster extends AbstractLoadedLife {
             return;
         }
 
-        if (GameConfig.getServerBoolean("use_debug") && from.isGM()) {
+        if (from.isPrintTip()) {
             from.dropMessage(5, I18nUtil.getMessage("Monster.applyDamage.message1") + this.getId() + ", OID " + this.getObjectId());
         }
 

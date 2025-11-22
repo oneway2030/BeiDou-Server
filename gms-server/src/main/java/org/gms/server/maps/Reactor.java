@@ -393,7 +393,7 @@ public class Reactor extends AbstractMapObject {
                     attackHit = wHit;  // 设置击中标志
 
                     Character player = c.getPlayer();
-                    if (GameConfig.getServerBoolean("use_debug") && player.isGM()) {
+                    if (player.isPrintTip()) {
                         player.dropMessage(5, "击中反应器 " + this.getId() + " 位置 " + charPos + " , 姿态 " + stance + " , 技能ID " + skillid + " , 状态 " + state + " 状态大小 " + stats.getStateSize(state));  // GM调试信息
                     }
                     ReactorScriptManager.getInstance().onHit(c, this);  // 调用击中脚本

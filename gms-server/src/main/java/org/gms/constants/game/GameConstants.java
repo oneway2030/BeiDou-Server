@@ -4,9 +4,7 @@ import org.gms.client.Disease;
 import org.gms.client.Job;
 import org.gms.config.GameConfig;
 import org.gms.constants.id.MapId;
-import org.gms.constants.skills.Aran;
-import org.gms.constants.skills.Hermit;
-import org.gms.constants.skills.ILWizard;
+import org.gms.constants.skills.*;
 import org.gms.provider.*;
 import org.gms.provider.wz.WZFiles;
 import org.gms.server.maps.FieldLimit;
@@ -25,7 +23,7 @@ import java.util.*;
 public class GameConstants {
     public static String[] WORLD_NAMES = {"Scania", "Bera", "Broa", "Windia", "Khaini", "Bellocan", "Mardia", "Kradia", "Yellonde", "Demethos", "Galicia", "El Nido", "Zenith", "Arcenia", "Kastia", "Judis", "Plana", "Kalluna", "Stius", "Croa", "Medere"};
     public static final String[] stats = {"tuc", "reqLevel", "reqJob", "reqSTR", "reqDEX", "reqINT", "reqLUK", "reqPOP", "cash", "cursed", "success", "setItemID", "equipTradeBlock", "durability", "randOption", "randStat", "masterLevel", "reqSkillLevel", "elemDefault", "incRMAS", "incRMAF", "incRMAI", "incRMAL", "canLevel", "skill", "charmEXP"};
-        public static final int[] CASH_DATA = new int[]{50200004, 50200069, 50200117, 50100008, 50000047};
+    public static final int[] CASH_DATA = new int[]{50200004, 50200069, 50200117, 50100008, 50000047};
 
     // Ronan's rates upgrade system
     private static final int[] DROP_RATE_GAIN = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
@@ -530,7 +528,7 @@ public class GameConstants {
     public static boolean isInJobTree(int skillId, int jobId) {
         int skillJob = skillId / 10000;
         //isSpecialSkills 过滤掉快速移动和二段跳，让其他职业也能保存到键盘上
-        if(isSpecialSkills(skillId)){
+        if (isSpecialSkills(skillId)) {
             return true;
         }
         if (!isInBranchJobTree(skillJob, jobId, 0)) {
@@ -562,7 +560,9 @@ public class GameConstants {
     }
 
     public static boolean isSpecialSkills(final int skill) {
-        return skill == Hermit.FLASH_JUMP ||skill == ILWizard.TELEPORT;
+        return skill == Hermit.FLASH_JUMP || skill == ILWizard.TELEPORT || skill == FPWizard.TELEPORT
+                || skill == Priest.HOLY_SYMBOL || skill == Hermit.MESO_UP || skill == ChiefBandit.PICKPOCKET
+                || skill == Buccaneer.SPEED_INFUSION || skill == Hero.ACHILLES;
     }
 
     public static boolean isFreeMarketRoom(int mapid) {

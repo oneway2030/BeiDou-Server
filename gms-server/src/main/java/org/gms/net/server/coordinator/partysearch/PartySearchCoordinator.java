@@ -419,7 +419,7 @@ public class PartySearchCoordinator {
             if (leader.isLoggedInWorld()) {
                 if (settings != null) {
                     recycledLeaders.add(new Pair<>(leader, settings));
-                    if (GameConfig.getServerBoolean("use_debug") && leader.isGM()) {
+                    if (leader.isPrintTip()) {
                         leader.dropMessage(5, "Your Party Search token session is now on waiting queue for up to 7 minutes, to get it working right away please stop your Party Search and retry again later.");
                     }
                 } else {

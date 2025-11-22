@@ -39,7 +39,7 @@ import org.gms.server.StatEffect;
 import org.gms.util.I18nUtil;
 import org.gms.util.PacketCreator;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.concurrent.TimeUnit.MINUTES;
 
 /**
  * 处理物品使用逻辑的处理器
@@ -202,22 +202,25 @@ public final class UseItemHandler extends AbstractPacketHandler {
         NPCScriptManager.getInstance().start(c, info.getNpc(), -1, info.getScript(), chr, false, "cm");
     }
 
+    /**
+     * 双倍三倍卡使用后获取效果生效时间半小时
+     */
     public void handleHasItem(Character chr, Client c, short slot, int itemId) {
-            AbstractPlayerInteraction player = c.getAbstractPlayerInteraction();
-            int targetItemId = ii.getHasItemId(itemId);
-            int quantity = ii.getHasItemQuantity(itemId);
-            int time = ii.getHasItemTime(itemId);
-            if (player.canHold(targetItemId, quantity)) {
-                player.gainItem(targetItemId, (short) quantity,false,true,SECONDS.toMillis(time));
-                if (ii.isRemove(itemId)) {
-                    removeItem(c, slot);
-                } else {
-                    c.sendPacket(PacketCreator.enableActions());
-                }
+        AbstractPlayerInteraction player = c.getAbstractPlayerInteraction();
+        int targetItemId = ii.getHasItemId(itemId);
+        int quantity = ii.getHasItemQuantity(itemId);
+        int time = ii.getHasItemTime(itemId);
+        if (player.canHold(targetItemId, quantity)) {
+            player.gainItem(targetItemId, (short) quantity, false, true, MINUTES.toMillis(time));
+            if (ii.isRemove(itemId)) {
+                removeItem(c, slot);
             } else {
-                player.dropMessage(1, "背包空间不足，无法获取");
+                c.sendPacket(PacketCreator.enableActions());
             }
-            c.sendPacket(PacketCreator.enableActions());
+        } else {
+            player.dropMessage(1, "背包空间不足，无法获取");
+        }
+        c.sendPacket(PacketCreator.enableActions());
     }
 
     /**
