@@ -168,21 +168,7 @@ function action(mode, type, selection) {
                 if (hpFlag && mpFlag) {
                     //cm.gainMeso(-cost);
                     cm.gainItem(4000313, -cost);
-                    // cm.changeJobById(selecta);
-                    cm.getPlayer().changeJobAndLevel(returnLevel, true, true, 职业[selecta][1]);
-                    //cm.getChar().executeRebornBM(10);  // 等级变为10级（北冥自定义脚本，北斗不支持）
-                    cm.resetStats();   // 重置属性点
-                    cm.getPlayer().equipChanged();
-                    if (hpCount > 0) {
-                        cm.gainItem(HP_ITEM_ID, hpCount);
-                        setWashValue(0,0);
-                    }
-                    if (mpCount > 0) {
-                        cm.gainItem(MP_ITEM_ID, mpCount);
-                        setWashValue(0,1);
-                    }
-                    cm.sendOk("更换职业成功！");
-                    cm.dispose();
+                    换职业(职业[selecta][1]);
                 } else {
                     cm.sendOk("背包空间不足，需要的材料不足");
                     cm.dispose();
@@ -199,6 +185,68 @@ function action(mode, type, selection) {
                 cm.dispose();
             }
         }
+    }
+}
+
+function 换职业(jobId) {
+    var player = cm.getChar();
+    // 重置技能
+    try {
+        var skillList = player.getSkills();
+        for (var skill in skillList) {
+            player.changeSkillLevel(skill, 0, 0, 0);
+        }
+
+        for (var i = 0; i < 10; ++i) {
+            player.gainSp(-99999999, i, false);
+        }
+    } catch (e) {
+        cm.sendOk("重置技能失败: " + e.message);
+        cm.dispose();
+        return;
+    }
+    // 重置属性点
+    try {
+        player.setStr(4); // 初始力量
+        player.setDex(4); // 初始敏捷
+        player.setInt(4); // 初始智力
+        player.setLuk(4); // 初始运气
+        player.setRemainingAp((cm.getChar().getReborns() * 250) + 5); // 每重生一次返还250属性点
+    } catch (e) {
+        cm.sendOk("重置属性点失败: " + e.message);
+        cm.dispose();
+        return;
+    }
+
+    // 设置HP和MP
+    try {
+        player.updateHpMaxHp(50, 50);
+        player.updateMpMaxMp(50, 50);
+        if (hpCount > 0) {
+            cm.gainItem(HP_ITEM_ID, hpCount);
+            setWashValue(0, 0);
+        }
+        if (mpCount > 0) {
+            cm.gainItem(MP_ITEM_ID, mpCount);
+            setWashValue(0, 1);
+        }
+    } catch (e) {
+        cm.sendOk("重置HP/MP失败: " + e.message);
+        cm.dispose();
+        return;
+    }
+
+    // 执行转生
+    try {
+        var Job = Java.type('org.gms.client.Job');
+        player.changeJob(Job.getById(jobId));
+        player.setLevel(0);
+        player.levelUp(true);
+        player.equipChanged();
+        cm.sendOk("恭喜你更换职业成功！");
+        cm.dispose()
+    } catch (e) {
+        cm.sendOk("更换职业过程中出现错误，请重试。" + e.message);
     }
 }
 

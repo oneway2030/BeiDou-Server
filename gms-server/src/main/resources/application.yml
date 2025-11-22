@@ -26,10 +26,10 @@ springdoc:
   # 生产环境需要关闭这2个参数
   api-docs:
     # 是否开启OpenApi，如果为false，则SwaggerUI也会被禁用
-    enabled: true
+    enabled: false
   swagger-ui:
     # 是否开启SwaggerUI，依赖OpenApi的开启
-    enabled: true
+    enabled: false
 
 spring:
   flyway:
