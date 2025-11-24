@@ -32,6 +32,7 @@ function action(mode, type, selection) {
         text += "#L0#领取节假日礼物#l\t\r\n\r\n";
         text += "#b#L1#领取公测测试礼包（正式开服无该礼包）#l\t\r\n\r\n";
         text += "#b#L2#常用指令查询#l\t\r\n\r\n";
+        text += "#b#L3#测试期间道具领取#l\t\r\n\r\n";
         cm.sendSimple(text);
     } else if (status === 1) {
         doSelect(selection);
@@ -51,6 +52,11 @@ function doSelect(selection) {
             break;
         case 2:
             openNpc("常用指令");
+            break;
+        case 3:
+            cm.gainItem(4032133, 500);
+            cm.gainItem(2049100, 500);
+            cm.gainItem(2029005, 200);
             break;
         default:
             cm.sendOk("该功能暂不支持，敬请期待！");

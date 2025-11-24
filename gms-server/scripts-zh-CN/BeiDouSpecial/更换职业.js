@@ -32,8 +32,12 @@ var relevelb = 10; //骑士团更换职业所需等级
 var status;
 var selecta;
 var returnLevel = 1;
-
 var 职业 = Array(
+    Array("冒险家", 0, 1, 0),
+    Array("初心者", 1000, 1, 0),
+    Array("战童", 2000, 1, 0),
+)
+var 职业2 = Array(
     Array("战士", 100, 10, 0),
 //	Array("战士", 100, 30, 100),
 //	Array("战士", 100, 70, 110),
@@ -105,6 +109,9 @@ var 职业 = Array(
 //	Array("战神", 2100, 70, 2110),
 //	Array("战神", 2100, 120, 2111));
     Array("战神", 2100, 10, 2000));
+var title = "\t\t\t\t\t#e#k欢迎来到#r[更换职业]#k系统#n\t\t\t\t\r\n";
+var itemId = 4000313;
+
 
 function start() {
     status = -1;
@@ -133,30 +140,44 @@ function action(mode, type, selection) {
             }
             var level = cm.getLevel();
             var job = cm.getJobId();
-            var aaa = false;
+            var text = title;
+            text += "\r\n";
+            text += "#r变更职业要求：#k\r\n";
+            text += "1.等级大于等于" + relevel + "级\r\n"
+            text += `2.消耗#v${itemId}##t${itemId}# × ${cost}\r\n\r\n`;
 
-            var text = "你已达到" + relevel + "级，可以消耗#v4000313#黄金枫叶" + cost + "个更换职业，\r\n#e#d更换职业后等级回到#r" + returnLevel + "级#d，请谨慎变更职业#n。\r\n"
+            text += "#r变更职业后：#k\r\n";
+            text += "#k1.等级回到#r#e " + returnLevel + " #n级\r\n";
+            text += "#b2.技能将清空#n#k\r\n"
+            text += "#k3.返还已使用的#b红色魔石#k和#b蓝色魔石#n#k\r\n"
+            text += "#k2.回到1级菜单将不可用.需要一转后才可以使用全部功能\r\n"
+            text += "#k3.骑士团和战童最好自己先去一转地图后在变更职业\r\n"
+            text += "#k4.温馨提示最好再准备一把0级武器#k\r\n";
+            text += "#r(请谨慎变更职业)\r\n\r\n";
+            text += "#r请选择您要变更的职业：\r\n";
             for (var i = 0; i < 职业.length; i++) {
-                //if(job == 职业[i][3] && level >= relevel && cm.haveItem(4000313, cost)) {
-                if (level >= relevel && cm.haveItem(4000313, cost)) {
-                    aaa = true;
-                    text += "#L" + i + "##r" + 职业[i][0] + "#k#l\r\n";
-                }
+                text += "#L" + i + "##b" + 职业[i][0] + "#k#l\r\n";
             }
-            if (aaa) {
-                cm.sendSimple(text);
-            } else {
-                cm.sendOk("我可以为你更换职业，#e#d更换职业后等级回到#r" + returnLevel + "级#d，请谨慎变更职业#k#n。\r\n如果你想要更换职业，需要#r等级" + relevel + "#k级，#v4000313##r黄金枫叶" + ptcost + "个#k。\r\n注意：如果你是骑士团则需要#r等级" + relevelb + "#k级，#v4000313##r黄金枫叶" + qscost + "个#k。\r\n");
-                cm.dispose();
-            }
+            cm.sendSimple(text)
         } else if (status == 1) {
+            var level = cm.getLevel();
+            if (level < relevel || !cm.haveItem(4000313, cost)) {
+                cm.sendOk("不满足变更职业条件，无法变更\r\n");
+                cm.dispose();
+                return;
+            }
             selecta = selection;
             hpCount = getWashValue(0);
             mpCount = getWashValue(1);
-            let text = "现在可以为你更换职业，#e#d更换职业后等级回到#r" + returnLevel + "级#d，请谨慎变更职业#k#n。\r\n请确认是否要更换职业为#r#e[" + 职业[selecta][0] + "]？";
+            let text = "#r确认提示：\r\n"
+            text += "#b#e请确认是否变更职业为#r#e[" + 职业[selecta][0] + "]？#k#n\r\n";
+            text += "#b#e请确认是否变更职业为#r#e[" + 职业[selecta][0] + "]？#k#n\r\n";
+            text += "#b#e请确认是否变更职业为#r#e[" + 职业[selecta][0] + "]？#k#n\r\n";
+
+            text += "#r#e变更职业后等级回到#r" + returnLevel + "级#d，#r#e请谨慎操作#k#n。";
             text += "\r\n\r\n";
-            text += "#b#n变更职业后将返还已使用洗血道具：\r\n";
-            text += "红色魔石：" + hpCount + "个\r\n";
+            text += "#k#n变更职业后将返还已使用洗血道具：\r\n";
+            text += "#b红色魔石：" + hpCount + "个\r\n";
             text += "蓝色魔石：" + mpCount + "个\r\n";
             text += "\r\n\r\n";
             cm.sendYesNo(text);

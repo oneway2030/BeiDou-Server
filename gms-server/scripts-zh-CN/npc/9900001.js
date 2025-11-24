@@ -26,7 +26,6 @@ function action(mode, type, selection) {
     }
     if (status === 0) {
         var OldTitle = "\t\t\t\t\t#e#k欢迎大佬 #r[" + cm.getPlayer().getName() + "] #k您的到来#n\t\t\t\t\r\n";
-        // var OldTitle = "\t\t\t\t\t#e欢迎来到#rBeiDou#k脚本中心#n\t\t\t\t\r\n";
         let text = OldTitle;
         text += " \r\n";
         text += "#k当前点券：#r" + cm.getPlayer().getCashShop().getCash(1) + "        #k签到天数:#r" + Number(cm.getCharacterExtendValue(DAILY_CHECK_IN_TOTAL));
@@ -35,23 +34,31 @@ function action(mode, type, selection) {
             text += "        #k转生次数:#r" + cm.getChar().getReborns() + " \r\n";
         }
         text += "\r\n";
-        text += "\t\t\t\t\t#L0 ##b自由市场#n#l\t\t #L17#新人福利#n#l\r\n";
-        text += " \r\n";
-        text += "#L1#" + icon + "#r万能传送#l\t#L2#随身仓库#l\t#L3#便利商店#l\t#L4#一键出售#l\r\n";
-        text += " \r\n";
-        text += "#b#L5#" + icon + "每日签到#l\t#L6#在线奖励#l\t#L7#任务大厅#l\t #L8#各种兑换#l\r\n";
-        text += " \r\n";
-        text += "#L9#" + icon + "职业中心#l\t#L10#技能中心#l\t#L11#装备中心#l\t#L12#时装暖暖#l\r\n";
-        text += " \r\n";
-        text += "#L13#" + icon + "额外仓库#l\t#L14#删除道具#l\t#L15#查询掉落#l\t#L16#其他功能#l\r\n";
-        text += " \r\n";
-        if (cm.getPlayer().isGM()) {
-            text += "\r\n";
-            text += "\t\t\t\t#r=====以下内容仅GM可见=====\r\n";
-            text += "#L100#巡逻#l\t\r\n\r\n";
-            text += "#L101#UI查询#l\t#L102#GM商店集合#l\r\n";
-            text += "#L103#一键删除道具#l\t#L104#一键刷道具#l\r\n";
-            text += "#L105#有状态脚本示例#l\t #L106#NextLevel脚本示例#l";
+        var jobId = cm.getPlayer().getJob().getId();
+        if ((jobId == 0 || jobId == 1000 || jobId == 2000) && !cm.getPlayer().isGM()) {
+            text += "#L999#新人福利#n#l\r\n\r\n\r\n";
+            text += "\t#b(一转后开启全部菜单功能)\r\n";
+        } else {
+            text += "\t\t\t\t\t#L0 ##b自由市场#n#l\t\t #L999#新人福利#n#l\r\n";
+            text += " \r\n";
+            text += "#L1#" + icon + "#r万能传送#l\t#L2#随身仓库#l\t#L3#便利商店#l\t#L4#一键出售#l\r\n";
+            text += " \r\n";
+            text += "#b#L5#" + icon + "每日签到#l\t#L6#在线奖励#l\t#L7#任务大厅#l\t #L8#各种兑换#l\r\n";
+            text += " \r\n";
+            text += "#L9#" + icon + "职业中心#l\t#L10#技能中心#l\t#L11#装备中心#l\t#L12#时装暖暖#l\r\n";
+            text += " \r\n";
+            text += "#L13#" + icon + "额外仓库#l\t#L14#删除道具#l\t#L15#查询掉落#l\t#L16#其他功能#l\r\n";
+            text += " \r\n";
+            text += "#L17#" + icon + "各种商店#l\t\r\n";
+            text += " \r\n";
+            if (cm.getPlayer().isGM()) {
+                text += "\r\n";
+                text += "\t\t\t\t#r=====以下内容仅GM可见=====\r\n";
+                text += "#L100#巡逻#l\t\r\n\r\n";
+                text += "#L101#UI查询#l\t#L102#GM商店集合#l\r\n";
+                text += "#L103#一键删除道具#l\t#L104#一键刷道具#l\r\n";
+                text += "#L105#有状态脚本示例#l\t #L106#NextLevel脚本示例#l";
+            }
         }
         cm.sendSimple(text);
     } else if (status === 1) {
@@ -119,8 +126,14 @@ function doSelect(selection) {
         case 16://其他功能
             openNpc("其他功能");
             break;
-        case 17://新人福利
+        case 999://新人福利
             openNpc("新人福利");
+            break;
+        case 17://各种商店
+            openNpc("各种商店");
+            break;
+        case 18://新人福利
+            openNpc("卷轴商店");
             break;
         // GM功能
         case 100://巡逻

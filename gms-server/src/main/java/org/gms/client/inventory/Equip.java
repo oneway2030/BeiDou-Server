@@ -331,6 +331,7 @@ public class Equip extends Item {
         // 1. 限制最大值（不超过配置上限）
         int maxAllowed = GameConfig.getServerInt("max_equipment_level_up_stat_up");
         int limit = Math.min(top, maxAllowed);
+        limit = maxAllowed;
         if (limit <= 0) {
             return 0; // 无增长可能
         }
@@ -804,7 +805,7 @@ public class Equip extends Item {
         int addLevelUp = GameConfig.getServerInt("each_time_reborn_equipment_add_level_up");
         int incremental = reborn * addLevelUp;
         int realMaxLevel = equipMaxLevel + incremental;
-        return Math.min(realMaxLevel, 50);
+        return Math.min(realMaxLevel, 51);
     }
 
     /**

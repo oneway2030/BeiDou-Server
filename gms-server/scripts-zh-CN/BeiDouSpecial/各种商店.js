@@ -1,0 +1,36 @@
+var status = 0;
+var shopList = [
+    {npc: 9201101, name: "新叶城隐藏商店（属性药水）"},
+    {npc: 1337, name: "GM商店1（GM套装/必成卷）"},
+    {npc: 9999998, name: "GM商店2（武器10%卷/龙王石）"},
+    {npc: 2082014, name: "卷轴商店"},
+];
+
+function start() {
+    status = -1;
+    action(1, 0, 0);
+}
+
+function action(mode, type, selection) {
+    if (mode == 1) {
+        status++;
+    } else {
+        cm.dispose();
+        return;
+    }
+    
+    if (status == 0) {
+        var menu = "请选择要打开的商店：";
+        for (var i = 0; i < shopList.length; i++) {
+            menu += "\r\n#L" + i + "#" + shopList[i].name + "#l";
+        }
+        cm.sendSimple(menu);
+    } else if (status == 1) {
+        if (selection >= 0 && selection < shopList.length) {
+            cm.openShopNPC(shopList[selection].npc);
+        } else {
+            cm.sendOk("选择无效，请重新执行脚本。");
+        }
+        cm.dispose();
+    }
+}

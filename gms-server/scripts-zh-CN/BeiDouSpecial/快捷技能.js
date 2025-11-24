@@ -6,8 +6,8 @@
  */
 
 var status;
-var textMsg;
 var Title = "#e注意事项:#r请确保Y按键上没有技能或者其他物品，#b领取后在键盘Y键上自动生成该技能.获取技能后是满级的,因此会各占用二转和三转技能点20点,加技能时会提示技能点不足,可以使用删除二段跳后在加点,加完可以重新学习\r\n";
+var 已偷学的技能key = "已偷学的技能";
 
 //Start
 function start() {
@@ -64,8 +64,24 @@ function doSelect(selection) {
 function getKill(killId) {
     cm.teachSkill(killId, 20, 20, -1);
     cm.getPlayer().addSkillToKeyboard(21, killId)
+    saveStolenSkill(killId);
     cm.sendOk("恭喜你，获取技能成功！");
     cm.dispose();
+}
+
+/**
+ * 保存已偷学的技能
+ * @param {number} skillId - 技能ID
+ */
+function saveStolenSkill(skillId) {
+    let stolenSkills = cm.getCharacterExtendValue(已偷学的技能key) || "";
+    const skillList = stolenSkills ? stolenSkills.split(",") : [];
+
+    // 确保技能ID不重复添加
+    if (!skillList.includes(String(skillId))) {
+        skillList.push(skillId);
+        cm.saveOrUpdateCharacterExtendValue(已偷学的技能key, skillList.join(","));
+    }
 }
 
 function CheckStatus(mode) {

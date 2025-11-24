@@ -1691,7 +1691,7 @@ public class Server {
             if (serverShutdownDTO.getShutdownMsg() != null) {
                 shutDownMsg = serverShutdownDTO.getShutdownMsg();
             }
-
+            //TODO 通知样式模板 看这里
             for (World w : Server.getInstance().getWorlds()) {
                 for (Character chr : w.getPlayerStorage().getAllCharacters()) {
                     if (serverShutdownDTO.getShowCenterMsg()) {

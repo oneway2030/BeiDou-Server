@@ -454,7 +454,17 @@ public class World {
     public void registerAccountCharacterView(Integer accountId, Character chr) {
         accountCharsLock.lock();
         try {
-            accountChars.get(accountId).put(chr.getId(), chr);
+            // 使用computeIfAbsent确保accountId对应的SortedMap存在，不存在则初始化TreeMap并打日志
+            SortedMap<Integer, Character> charMap = accountChars.computeIfAbsent(
+                    accountId,
+                    k -> {
+                        // 当accountId首次出现（映射为空）时，执行此lambda并打日志
+                        log.error("保存角色信息异常,首次初始化账号[{}]的角色映射，当前角色[{}]（ID:{}）",
+                                accountId, chr.getName(), chr.getId());
+                        return new TreeMap<>(); // 返回初始化的空映射
+                    }
+            );
+            charMap.put(chr.getId(), chr); // 存入角色信息
         } finally {
             accountCharsLock.unlock();
         }

@@ -5634,11 +5634,26 @@ public class Character extends AbstractCharacterObject {
     private int getUsedSp(Job job) {
         int jobId = job.getId();
         int spUsed = 0;
-
+        String stolenSkills = getAbstractPlayerInteraction().getCharacterExtendValue("已偷学的技能");
+        List<Integer> stolenIdList = new ArrayList<>(); // 使用ArrayList存储偷学的技能ID集合
+        if (stolenSkills != null && !stolenSkills.isEmpty()) {
+            String[] idStrs = stolenSkills.split(",");
+            for (String idStr : idStrs) {
+                try {
+                    // 去除空格并转换为整数后添加到集合
+                    int skillId = Integer.parseInt(idStr.trim());
+                    stolenIdList.add(skillId);
+                } catch (NumberFormatException e) {
+                    log.warn("无效的技能ID格式: {}", idStr, e);
+                }
+            }
+        }
         for (Entry<Skill, SkillEntry> s : this.getSkills().entrySet()) {
             Skill skill = s.getKey();
             if (GameConstants.isInJobTree(skill.getId(), jobId) && !skill.isBeginnerSkill()) {
-                spUsed += s.getValue().skillLevel;
+                if(!stolenIdList.isEmpty()&&!stolenIdList.contains(skill.getId())){
+                    spUsed += s.getValue().skillLevel;
+                }
             }
         }
 
@@ -6674,7 +6689,7 @@ public class Character extends AbstractCharacterObject {
             }
         }
         if (possesed > 0 && !MapId.isDojo(getMapId())) {
-            message(I18nUtil.getLogMessage("Character.useItem.message1"));  //使用安全护符，不扣经验
+            message(I18nUtil.getMessage("Character.useItem.message1"));  //使用安全护符，不扣经验
             InventoryManipulator.removeById(client, ItemConstants.getInventoryType(charmID[i]), charmID[i], 1, true, false);
             usedSafetyCharm = true;
         } else if (getJob() != Job.BEGINNER) { //Hmm...

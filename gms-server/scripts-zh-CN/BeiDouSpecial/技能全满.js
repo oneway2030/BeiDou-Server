@@ -10,8 +10,8 @@ const CONFIG = {
     ITEM_ID: 4000313,          // 消耗道具ID（黄金枫叶）
     NORMAL_ITEM_COST: 1,       // 普通职业道具消耗
     KNIGHT_ITEM_COST: 30,      // 骑士团职业道具消耗
-    NORMAL_LEVEL: 160,         // 普通职业等级要求
-    KNIGHT_LEVEL: 120,         // 骑士团职业等级要求
+    NORMAL_LEVEL: 10,         // 普通职业等级要求
+    KNIGHT_LEVEL: 10,         // 骑士团职业等级要求
     ITEM_DISPLAY: "#v4000313#" // 道具显示文本（带图标）
 };
 var currentCost;    // 当前职业消耗道具数量
