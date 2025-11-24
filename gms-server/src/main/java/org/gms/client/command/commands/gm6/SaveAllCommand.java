@@ -32,19 +32,35 @@ import org.gms.net.server.world.World;
 import org.gms.service.HpMpAlertService;
 import org.gms.util.I18nUtil;
 import org.gms.util.PacketCreator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 public class SaveAllCommand extends Command {
     {
         setDescription(I18nUtil.getMessage("SaveAllCommand.message1"));
     }
 
+    private static final Logger log = LoggerFactory.getLogger(SaveAllCommand.class);
+
     @Override
     public void execute(Client c, String[] params) {
         Character player = c.getPlayer();
-        for (World world : Server.getInstance().getWorlds()) {
-            for (Character chr : world.getPlayerStorage().getAllCharacters()) {
-                chr.saveCharToDB();
-                chr.message(I18nUtil.getMessage("SaveAllCommand.message3"));
+        List<World> worlds = Server.getInstance().getWorlds();
+
+        for (World world : worlds) {
+            Collection<Character> allCharacters = world.getPlayerStorage().getAllCharacters();
+            for (Character chr : new ArrayList<>(allCharacters)) {
+                try {
+                    chr.saveCharToDB();
+                    chr.message(I18nUtil.getMessage("SaveAllCommand.message3"));
+                } catch (Exception e) {
+                    log.warn("SaveAllCommand 保存发生异常:", e);
+                }
             }
         }
         Server.getInstance().broadcastGMMessage(c.getWorld(), PacketCreator.serverNotice(5, I18nUtil.getMessage("SaveAllCommand.message2", player.getName())));
