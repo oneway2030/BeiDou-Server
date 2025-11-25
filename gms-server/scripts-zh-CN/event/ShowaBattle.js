@@ -22,10 +22,11 @@
  * @author: Ronan
  * @event: Showa Boss Battle
  */
-
+const GameConfig = Java.type('org.gms.config.GameConfig');
+var 最大等级=GameConfig.getServerInt("mxj_max_level")
 var isPq = true;
 var minPlayers = 2, maxPlayers = 30;
-var minLevel = 100, maxLevel = 200;
+var minLevel = 100, maxLevel = 最大等级;
 var entryMap = 801040100;
 var exitMap = 801040004;
 var recruitMap = 801040004;
@@ -38,10 +39,9 @@ var eventTime = 60;     // 60 minutes for boss stg
 
 const maxLobbies = 1;
 
-const GameConfig = Java.type('org.gms.config.GameConfig');
 minPlayers = GameConfig.getServerBoolean("use_enable_solo_expeditions") ? 1 : minPlayers;  //如果解除远征队人数限制，则最低人数改为1人
 if(GameConfig.getServerBoolean("use_enable_party_level_limit_lift")) {  //如果解除远征队等级限制，则最低1级，最高999级。
-    minLevel = 1 , maxLevel = 999;
+    minLevel = 1 , maxLevel = 最大等级;
 }
 
 

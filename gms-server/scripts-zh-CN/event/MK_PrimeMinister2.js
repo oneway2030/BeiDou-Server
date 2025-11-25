@@ -1,19 +1,21 @@
+
+const GameConfig = Java.type('org.gms.config.GameConfig');
+var 最大等级=GameConfig.getServerInt("mxj_max_level")
 var eventTime = 10 * 60 * 1000;     // 10 minutes
 var entryMap = 106021601;
 var exitMap = 106021402;
 var recruitMap = 106021402;
 
 var minPlayers = 1, maxPlayers = 3;
-var minLevel = 30, maxLevel = 255;
+var minLevel = 30, maxLevel = 最大等级;
 
 var minMapId = 106021601;
 var maxMapId = 106021601;
 
 var mobId = 3300008; //Prime Minister
-const GameConfig = Java.type('org.gms.config.GameConfig');
 minPlayers = GameConfig.getServerBoolean("use_enable_solo_expeditions") ? 1 : minPlayers;  //如果解除远征队人数限制，则最低人数改为1人
 if(GameConfig.getServerBoolean("use_enable_party_level_limit_lift")) {  //如果解除远征队等级限制，则最低1级，最高999级。
-    minLevel = 1 , maxLevel = 999;
+    minLevel = 1 , maxLevel = 最大等级;
 }
 
 function init() {

@@ -22,10 +22,11 @@
  * @author: Ronan
  * @event: Pink Bean Battle
  */
-
+const GameConfig = Java.type('org.gms.config.GameConfig');
+var 最大等级=GameConfig.getServerInt("mxj_max_level")
 var isPq = true;
 var minPlayers = 6, maxPlayers = 30;
-var minLevel = 120, maxLevel = 200;
+var minLevel = 120, maxLevel = 最大等级;
 var entryMap = 270050100;
 var exitMap = 270050300;
 var recruitMap = 270050000;
@@ -38,10 +39,9 @@ var eventTime = 140;     // 140 minutes
 
 const maxLobbies = 1;
 
-const GameConfig = Java.type('org.gms.config.GameConfig');
 minPlayers = GameConfig.getServerBoolean("use_enable_solo_expeditions") ? 1 : minPlayers;  //如果解除远征队人数限制，则最低人数改为1人
 if(GameConfig.getServerBoolean("use_enable_party_level_limit_lift")) {  //如果解除远征队等级限制，则最低120级，最高200级。
-    minLevel = 120 , maxLevel = 200;
+    minLevel = 120 , maxLevel = 最大等级;
 }
 
 function init() {

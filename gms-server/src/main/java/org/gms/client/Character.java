@@ -357,7 +357,7 @@ public class Character extends AbstractCharacterObject {
     private final Set<Monster> controlled = new LinkedHashSet<>();
     private final Map<Integer, String> entered = new LinkedHashMap<>();
     private final Set<MapObject> visibleMapObjects = Collections.newSetFromMap(new ConcurrentHashMap<>());
-    private final Map<Skill, SkillEntry> skills = new LinkedHashMap<>();
+    private final Map<Skill, SkillEntry> skills = new ConcurrentHashMap<>();
     private final Map<Integer, Integer> activeCoupons = new LinkedHashMap<>();
     private final Map<Integer, Integer> activeCouponRates = new LinkedHashMap<>();
     private final EnumMap<BuffStat, BuffStatValueHolder> effects = new EnumMap<>(BuffStat.class);
@@ -5577,7 +5577,9 @@ public class Character extends AbstractCharacterObject {
      * @return
      */
     public boolean isPrintTip() {
-//        return GameConfig.getServerBoolean("use_debug") && isGM();
+        if (!isGM()) {
+            return GameConfig.getServerBoolean("use_debug_regular_user");
+        }
         return GameConfig.getServerBoolean("use_debug");
     }
 
@@ -9513,7 +9515,7 @@ public class Character extends AbstractCharacterObject {
             String tip = I18nUtil.getMessage("Character.USE_REBIRTH_SYSTEM");
             yellowMessage(tip); //重生系统未启用
 //            throw new NotEnabledException();
-            log.error(tip);
+//            log.error(tip);
             return 0;
         }
         CharactersDO charactersDO = characterService.findById(id);

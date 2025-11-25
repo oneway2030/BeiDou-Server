@@ -1,4 +1,6 @@
 // 事件实例化变量
+const GameConfig = Java.type('org.gms.config.GameConfig');
+var 最大等级=GameConfig.getServerInt("mxj_max_level")
 var isPq = true; // 是否为PQ（Party Quest）类型事件。
 var minPlayers = 1, maxPlayers = 6; // 该事件实例允许的队伍成员数量范围。
 var minLevel = 25, maxLevel = 90;     // 合格队伍成员的等级范围。
@@ -22,10 +24,9 @@ var BossDropList = [2000005];                  // 掉落物品列表
 var BossDropCount = [5];                 // 掉落最大数量
 var BossDropChance = [0.4];                // 掉率
 
-const GameConfig = Java.type('org.gms.config.GameConfig');
 minPlayers = GameConfig.getServerBoolean("use_enable_solo_expeditions") ? 1 : minPlayers;  //如果解除远征队人数限制，则最低人数改为1人
 if(GameConfig.getServerBoolean("use_enable_party_level_limit_lift")) {  //如果解除远征队等级限制，则最高200级。
-    minLevel = 25 , maxLevel = 200;
+    minLevel = 25 , maxLevel = 最大等级;
 }
 /**
  * 初始化事件，设置事件要求。

@@ -1656,7 +1656,9 @@ public class World {
                 int timeOn = dm.getValue().getRight();
                 HiredMerchant hm = dm.getValue().getLeft();
                 //这里修改雇佣商人移除时间
-                if (timeOn <= 144*2) {   // 1440 minutes == 24hrs
+                int day = GameConfig.getServerInt("hired_merchants_exist_time");
+                day = Math.max(day, 1);
+                if (timeOn <= 144 * day) {   // 1440 minutes == 24hrs
                     activeMerchants.put(hm.getOwnerId(), new Pair<>(dm.getValue().getLeft(), timeOn + 1));
                 } else {
                     hm.forceClose();

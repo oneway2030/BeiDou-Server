@@ -22,7 +22,8 @@
  * @author: Ronan
  * @event: Ellin PQ
  */
-
+const GameConfig = Java.type('org.gms.config.GameConfig');
+var 最大等级=GameConfig.getServerInt("mxj_max_level")
 var isPq = true;
 var minPlayers = 4, maxPlayers = 6;
 var minLevel = 45, maxLevel = 55;
@@ -38,10 +39,9 @@ var eventTime = 30;     // 30 minutes
 
 const maxLobbies = 1;
 
-const GameConfig = Java.type('org.gms.config.GameConfig');
 minPlayers = GameConfig.getServerBoolean("use_enable_solo_expeditions") ? 1 : minPlayers;  //如果解除远征队人数限制，则最低人数改为1人
 if(GameConfig.getServerBoolean("use_enable_party_level_limit_lift")) {  //如果解除远征队等级限制，则最高200级。
-    minLevel = 45 , maxLevel = 200;
+    minLevel = 45 , maxLevel = 最大等级;
 }
 
 function init() {

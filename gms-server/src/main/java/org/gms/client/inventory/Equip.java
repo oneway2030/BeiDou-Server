@@ -986,7 +986,7 @@ public class Equip extends Item {
                         }
                 );
                 mUpgradeHistoryList.addAll(list);
-                log.info("设置装备升级历史成功：" + mUpgradeHistoryList.toString());
+//                log.info("设置装备升级历史成功：" + mUpgradeHistoryList.toString());
             } catch (Exception e) {
                 log.error("解析装备升级历史失败", e);
                 mUpgradeHistoryList = new LinkedList<>();

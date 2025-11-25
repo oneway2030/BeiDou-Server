@@ -22,13 +22,14 @@
  * @author: Ronan
  * @event: Zakum PQ
  */
-
+const GameConfig = Java.type('org.gms.config.GameConfig');
+var 最大等级=GameConfig.getServerInt("mxj_max_level")
 /** 是否为远征队(Party Quest)模式 */
 var isPq = true;
 /** minPlayers - 队伍最小人数 , maxPlayers - 队伍最大人数 */
 var minPlayers = 1, maxPlayers = 6;
 /** minLevel - 最低等级限制 , maxLevel - 最高等级限制 */
-var minLevel = 50, maxLevel = 200;
+var minLevel = 50, maxLevel = 最大等级;
 /** entryMap - 入口地图ID , exitMap - 退出地图ID */
 var entryMap = 280010000, exitMap = 211042300;
 /** recruitMap - 招募地图ID , clearMap - 清除地图ID */
@@ -41,10 +42,9 @@ var eventTime = 30;
 const maxLobbies = 1;
 
 // 从游戏配置获取是否启用单人远征队设置
-const GameConfig = Java.type('org.gms.config.GameConfig');
 minPlayers = GameConfig.getServerBoolean("use_enable_solo_expeditions") ? 1 : minPlayers;  //如果解除远征队人数限制，则最低人数改为1人
 if(GameConfig.getServerBoolean("use_enable_party_level_limit_lift")) {  //如果解除远征队等级限制，则最低50级，最高200级。
-    minLevel = 50 , maxLevel = 200;
+    minLevel = 50 , maxLevel = 最大等级;
 }
 /**
  * 初始化事件，设置事件要求

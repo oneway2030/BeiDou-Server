@@ -44,3 +44,13 @@ VALUES ( 'server', 'Game Mechanics', 'java.lang.Integer', 'max_reborn_count', '5
 INSERT INTO `lang_resources` (`lang_type`, `lang_base`, `lang_code`, `lang_value`) VALUES ('zh-CN', 'game_config', 'max_reborn_count', '转生后的等级,默认10级,重启服务器生效');
 INSERT INTO `lang_resources` (`lang_type`, `lang_base`, `lang_code`, `lang_value`) VALUES ('en-US', 'game_config', 'max_reborn_count', 'Level after Rebirth.');
 
+INSERT INTO `game_config` ( `config_type`, `config_sub_type`, `config_clazz`, `config_code`, `config_value`, `config_desc`)
+VALUES ( 'server', 'Game Mechanics', 'java.lang.Boolean', 'use_debug_regular_user', 'false', 'use_debug_regular_user');
+INSERT INTO `lang_resources` (`lang_type`, `lang_base`, `lang_code`, `lang_value`) VALUES ('zh-CN', 'game_config', 'use_debug_regular_user', '普通用户是否显示debug.');
+INSERT INTO `lang_resources` (`lang_type`, `lang_base`, `lang_code`, `lang_value`) VALUES ('en-US', 'game_config', 'use_debug_regular_user', '普通用户是否显示debug.');
+
+INSERT INTO `game_config` ( `config_type`, `config_sub_type`, `config_clazz`, `config_code`, `config_value`, `config_desc`)
+VALUES ( 'server', 'Game Mechanics', 'java.lang.Integer', 'hired_merchants_exist_time', '1', 'hired_merchants_exist_time');
+INSERT INTO `lang_resources` (`lang_type`, `lang_base`, `lang_code`, `lang_value`) VALUES ('zh-CN', 'game_config', 'hired_merchants_exist_time', '雇佣商人存在时间单位天，默认1天后消失.');
+INSERT INTO `lang_resources` (`lang_type`, `lang_base`, `lang_code`, `lang_value`) VALUES ('en-US', 'game_config', 'hired_merchants_exist_time', '雇佣商人存在时间单位天，默认1天后消失.');
+

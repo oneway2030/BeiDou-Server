@@ -22,11 +22,12 @@
  * @author: Ronan
  * @event: Amoria PQ
  */
-
+const GameConfig = Java.type('org.gms.config.GameConfig');
+var 最大等级=GameConfig.getServerInt("mxj_max_level")
 var isPq = true;
 var onlyMarriedPlayers = true;
 var minPlayers = 6, maxPlayers = 6;
-var minLevel = 40, maxLevel = 200;
+var minLevel = 40, maxLevel = 最大等级;
 var entryMap = 670010200;
 var exitMap = 670011000;
 var recruitMap = 670010100;
@@ -39,10 +40,9 @@ var eventTime = 75;     // 75 minutes
 
 const maxLobbies = 1;
 
-const GameConfig = Java.type('org.gms.config.GameConfig');
 minPlayers = GameConfig.getServerBoolean("use_enable_solo_expeditions") ? 1 : minPlayers;  //如果解除远征队人数限制，则最低人数改为1人
 if(GameConfig.getServerBoolean("use_enable_party_level_limit_lift")) {  //如果解除远征队等级限制，则最低40级，最高200级。
-    minLevel = 40 , maxLevel = 200;
+    minLevel = 40 , maxLevel = 最大等级;
 }
 
 function init() {
