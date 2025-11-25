@@ -15,10 +15,10 @@
     </canvas>
     <int name="hungry" value="3"/>
     <int name="cash" value="1"/>
-    <int name="life" value="0"/>
+    <int name="life" value="90"/>
+    <int name="tradeBlock" value="1"/>
     <int name="chatBalloon" value="37"/>
     <int name="nameTag" value="39"/>
-    <int name="permanent" value="1"/>
   </imgdir>
   <imgdir name="interact">
     <imgdir name="0">
@@ -579,7 +579,7 @@
       <int name="l1" value="30"/>
       <imgdir name="success">
         <imgdir name="0">
-          <string name="act" value="jump"/>
+          <string name="act" value="guitar"/>
           <string name="0" value="c23_s1"/>
           <string name="1" value="c23_s2"/>
           <string name="2" value="c23_s3"/>

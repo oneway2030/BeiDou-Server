@@ -16,21 +16,22 @@
     <int name="hungry" value="2"/>
     <int name="cash" value="1"/>
     <int name="life" value="90"/>
-    <int name="chatBalloon" value="31"/>
-    <int name="nameTag" value="33"/>
     <int name="evol" value="1"/>
     <int name="evol1" value="5000049"/>
     <int name="evol2" value="5000050"/>
     <int name="evol3" value="5000052"/>
     <int name="evol4" value="5000053"/>
-    <int name="evolProb1" value="495"/>
-    <int name="evolProb2" value="495"/>
-    <int name="evolProb3" value="9"/>
-    <int name="evolProb4" value="1"/>
+    <int name="evolProb1" value="90"/>
+    <int name="evolProb2" value="90"/>
+    <int name="evolProb3" value="10"/>
+    <int name="evolProb4" value="10"/>
     <int name="evolNo" value="4"/>
     <int name="evolReqItemID" value="5380000"/>
     <int name="evolReqPetLvl" value="15"/>
     <int name="autoReact" value="1"/>
+    <int name="chatBalloon" value="31"/>
+    <int name="nameTag" value="33"/>
+    <int name="tradeBlock" value="1"/>
   </imgdir>
   <imgdir name="interact">
     <imgdir name="0">
@@ -1343,18 +1344,18 @@
       <vector name="lt" x="-40" y="-58"/>
       <vector name="rb" x="36" y="1"/>
     </canvas>
-    <uol name="5" value="0"/>
-    <uol name="6" value="1"/>
-    <uol name="7" value="2"/>
-    <uol name="8" value="3"/>
-    <uol name="9" value="0"/>
-    <uol name="10" value="1"/>
-    <uol name="11" value="2"/>
-    <uol name="12" value="3"/>
-    <uol name="13" value="0"/>
-    <uol name="14" value="1"/>
-    <uol name="15" value="2"/>
-    <uol name="16" value="3"/>
+    <uol name="10" value="2"/>
+    <uol name="11" value="3"/>
+    <uol name="12" value="0"/>
+    <uol name="13" value="1"/>
+    <uol name="14" value="2"/>
+    <uol name="15" value="3"/>
+    <uol name="4" value="0"/>
+    <uol name="5" value="1"/>
+    <uol name="6" value="2"/>
+    <uol name="8" value="0"/>
+    <uol name="7" value="3"/>
+    <uol name="9" value="1"/>
   </imgdir>
   <imgdir name="cry">
     <canvas name="0" width="99" height="53">
@@ -1381,18 +1382,18 @@
       <vector name="lt" x="-44" y="-52"/>
       <vector name="rb" x="55" y="1"/>
     </canvas>
-    <uol name="5" value="0"/>
-    <uol name="6" value="1"/>
-    <uol name="7" value="2"/>
-    <uol name="8" value="3"/>
-    <uol name="9" value="0"/>
-    <uol name="10" value="1"/>
-    <uol name="11" value="2"/>
-    <uol name="12" value="3"/>
-    <uol name="13" value="0"/>
-    <uol name="14" value="1"/>
-    <uol name="15" value="2"/>
-    <uol name="16" value="3"/>
+    <uol name="10" value="2"/>
+    <uol name="11" value="3"/>
+    <uol name="12" value="0"/>
+    <uol name="13" value="1"/>
+    <uol name="14" value="2"/>
+    <uol name="15" value="3"/>
+    <uol name="4" value="0"/>
+    <uol name="5" value="1"/>
+    <uol name="6" value="2"/>
+    <uol name="7" value="3"/>
+    <uol name="8" value="0"/>
+    <uol name="9" value="1"/>
   </imgdir>
   <imgdir name="fly">
     <canvas name="0" width="99" height="66">
