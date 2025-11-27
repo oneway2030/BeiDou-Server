@@ -89,15 +89,13 @@ function levelSelectPlayer(index) {
 
         // 跨频道处理
         if (targetChannel !== currentChannel) {
+            self.changeMap(targetMap, targetPos);
             // 切换频道并传送到目标位置
             client.changeChannel(targetChannel);
-            self.changeMap(targetMap, targetPos);
         } else {
             // 同频道直接传送
             self.changeMap(targetMap, targetPos);
         }
-
-        cm.sendOk(`已传送到 #b${target.getName()}#k（${targetChannel}线-${targetMap.getName()}）身边`);
         cm.dispose();
     } catch (e) {
         cm.sendOk("传送失败：" + e.message);

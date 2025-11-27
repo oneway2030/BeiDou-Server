@@ -42,8 +42,8 @@ function action(mode, type, selection) {
     if (status === 0) {
         let text = OldTitle;
         text += " \r\n";
-        text += "#L0#时装属性转移#l\t\r\n\r\n";
         text += "#L1#装备洗练#l\t\r\n\r\n";
+        text += "#L0#时装属性转移#l\t\r\n\r\n";
         text += "#L2#装备制作#l\t\r\n\r\n";
         cm.sendSimple(text);
     } else if (status === 1) {

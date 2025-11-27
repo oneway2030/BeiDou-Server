@@ -232,7 +232,7 @@ function 换职业(jobId) {
         player.setDex(4); // 初始敏捷
         player.setInt(4); // 初始智力
         player.setLuk(4); // 初始运气
-        player.setRemainingAp((cm.getChar().getReborns() * 250) + 5); // 每重生一次返还250属性点
+        player.setRemainingAp((cm.getChar().getReborns() * 255) + 5); // 每重生一次返还255属性点
     } catch (e) {
         cm.sendOk("重置属性点失败: " + e.message);
         cm.dispose();

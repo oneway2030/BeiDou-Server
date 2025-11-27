@@ -62,6 +62,8 @@ var hair15 = Array(37000, 47000, 47010, 47020, 47030, 47040, 47050, 47060, 47070
 //天空之城女理发
 var hair16 = Array(30040, 48050, 48060, 48070, 47640,  47090, 48350, 47270, 61150, 47540, 47541, 44840, 47550, 47030, 48960, 44650, 47280, 44515, 61370, 37930, 41750, 48632, 37000, 48000, 48010, 48020, 48030,  48090, 48100, 48130, 48140, 48150, 48160, 48170, 48180, 48190, 48200, 48210, 48220, 48230, 48320, 48330, 48340, 48350, 48360, 48370, 48380, 48390, 48400, 48410, 48430, 48440, 48450, 48460, 48470, 48480, 48490, 48500, 48510, 48520, 48530, 48540, 48550, 48560, 48570, 48580, 48590, 48600, 48610, 48620, 48630, 48640, 48650, 48660, 48670, 48680, 48690, 48700, 48710, 48730, 48740, 48750, 48760, 48770, 48780, 48790, 48800, 48810, 48820, 48830, 48840, 48850, 48860, 48870, 48880, 48890, 48900, 48910, 48920, 48930, 48940, 48950, 48960, 48970, 48990);
 
+var item=5150001;
+// 4032133
 //女射手皇家用
 function start() {
     status = -1;
@@ -88,7 +90,7 @@ function action(mode, type, selection) {
             textz += "您好，我是这间美发店的老板娜塔丽. \r\n如果你有 #b#i5150001##t5150001##k 请允许我把你的头发护理。\r\n请选择一个你想要的：\r\n";
 
             //textz += "\t\t#L0#购买 #b#i5150001##t5150001#(#r1000点卷#b)#l#k\r\n\r\n\r\n";
-            if (cm.getPlayer().getGender() == 1) {//男
+            // if (cm.getPlayer().getGender() == 1) {//男
                 textz += "#L1#指定发型第#r1#k版(#r男#k)x#r" + hair1.length + "#k款#l  #L3#指定发型第#r2#k版(#r男#k)x#r" + hair3.length + "#k款#l\r\n\r\n";
                 textz += "#L5#指定发型第#r3#k版(#r男#k) x#r" + hair5.length + "#k款#l #L6#指定发型第#r4#k版(#r男#k) x#r" + hair6.length + "#k款#l\r\n\r\n";
                 textz += "#L9#指定发型第#r5#k版(#r男#k) x#r" + hair9.length + "#k款#l #L11#指定发型第#r6#k版(#r男#k) x#r" + hair11.length + "#k款#l\r\n\r\n";
@@ -102,7 +104,7 @@ function action(mode, type, selection) {
                 textz += "#L15#指定发型第#r7#k版(#r女#k) x#r"+hair15.length+"#k款#l #L16#指定发型第#r8#k版(#r女#k) x#r"+hair16.length+"#k款#l\r\n\r\n";
                 // textz += "#L15#指定发型第#r7#k版(#r女#k) x#r" + hair15.length + "#k款#l\r\n\r\n";
 
-            }
+            // }
 
 
             cm.sendSimple(textz);
@@ -111,7 +113,7 @@ function action(mode, type, selection) {
 
                 if (cm.getPlayer().getCSPoints(1) > 1000) {
                     cm.gainNX(-1000);
-                    cm.gainItem(5150001, 1);
+                    cm.gainItem(item, 1);
                     cm.sendOk("购买成功！快去享受吧！");
                     status = -1;
                 } else {
@@ -247,9 +249,8 @@ function action(mode, type, selection) {
             }
         } else if (status == 2) {
             cm.dispose();
-
-            if (cm.haveItem(5150001)) {
-                cm.gainItem(5150001, -1);
+            if (cm.haveItem(item)) {
+                cm.gainItem(item, -1);
                 cm.setHair(hairnew[selection]);
                 cm.sendOk("发型已变更,从现在开始你是世界上最靓的崽!!");
             } else {

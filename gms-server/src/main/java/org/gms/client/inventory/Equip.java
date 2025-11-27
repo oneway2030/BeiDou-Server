@@ -38,6 +38,7 @@ import org.gms.server.ItemInformationProvider;
 import org.gms.util.Pair;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class Equip extends Item {
     private static final Logger log = LoggerFactory.getLogger(Equip.class);
@@ -56,6 +57,24 @@ public class Equip extends Item {
         }
     }
 
+    /**
+     * incDEX：增加敏捷（Dexterity）
+     * incSTR：增加力量（Strength）
+     * incINT：增加智力（Intelligence）
+     * incLUK：增加幸运（Luck）
+     * incMHP：增加最大生命值（Maximum HP）
+     * incMMP：增加最大魔法值（Maximum MP）
+     * incPAD：增加物理攻击力（Physical Attack Damage）
+     * incMAD：增加魔法攻击力（Magical Attack Damage）
+     * incPDD：增加物理防御力（Physical Defense Damage）
+     * incMDD：增加魔法防御力（Magical Defense Damage）
+     * incEVA：增加闪避率（Evasion）
+     * incACC：增加命中率（Accuracy）
+     * incSpeed：增加速度（Speed）
+     * incJump：增加跳跃力（Jump）
+     * incVicious：减少金锤子使用次数（对应游戏中 “vicious” 相关的装备强化限制）
+     * incSlot：增加升级槽（可用于砸卷的次数）
+     */
     public enum StatUpgrade {
 
         incDEX(0), incSTR(1), incINT(2), incLUK(3),
@@ -306,63 +325,133 @@ public class Equip extends Item {
         }
     }
 
-//    /**
-//     * 老的随机逻辑
-//     */
-//    private static int randomizeStatUpgrade(int top) {
-//        int limit = Math.min(top, GameConfig.getServerInt("max_equipment_level_up_stat_up"));
-//
-//        int poolCount = (limit * (limit + 1) / 2) + limit;
-//        int rnd = Randomizer.rand(0, poolCount);
-//
-//        int stat = 0;
-//        if (rnd >= limit) {
-//            rnd -= limit;
-//            stat = 1 + (int) Math.floor((-1 + Math.sqrt((8 * rnd) + 1)) / 2);    // optimized randomizeStatUpgrade author: David A.
-//        }
-//
-//        return stat;
-//    }
-
     /**
-     * 新的随机逻辑
+     * 老的随机逻辑
      */
     private static int randomizeStatUpgrade(int top) {
-        // 1. 限制最大值（不超过配置上限）
-        int maxAllowed = GameConfig.getServerInt("max_equipment_level_up_stat_up");
-        int limit = Math.min(top, maxAllowed);
-        limit = maxAllowed;
+        int limit = Math.min(top, GameConfig.getServerInt("max_equipment_level_up_stat_up"));
+
+        int poolCount = (limit * (limit + 1) / 2) + limit;
+        int rnd = Randomizer.rand(0, poolCount);
+
+        int stat = 0;
+        if (rnd >= limit) {
+            rnd -= limit;
+            stat = 1 + (int) Math.floor((-1 + Math.sqrt((8 * rnd) + 1)) / 2);    // optimized randomizeStatUpgrade author: David A.
+        }
+
+        return stat;
+    }
+
+    /**
+     * 根据属性升级规则，生成一个加权随机的属性增加值（自定义0概率版）。
+     * 特点：
+     * 1. 0值的概率可以精确配置，不随maxAllowed变化。
+     * 2. 非0值的概率分布保持原版算法的特性（值越小，概率越高）。
+     * 3. 采用 O(1) 数学公式进行结果查找，性能极高。
+     *
+     * @param name 要升级的属性名称。
+     * @return 一个在 [0, limit] 范围内的随机整数。
+     */
+    private int randomizeStatUpgradeNew(StatUpgrade name) {
+        // 1. 计算基础上限 limit
+        int limit = getMaxAllowed(name);
         if (limit <= 0) {
             return 0; // 无增长可能
         }
+        // 2. 获取当前激活的属性数量
+        int valueQuantity = getValueQuantity();
 
-        // 2. 权重分配：0值权重降低（limit/2），1~limit权重严格递减（数值越大权重越低）
-        int zeroWeight = Math.max(1, limit / 2); // 0值权重=limit/2（至少1，避免0权重）
-        int[] numWeights = new int[limit + 1];  // 索引=数值，值=权重
-        numWeights[0] = zeroWeight;
+        // 3. 计算非零值的总权重 (1~limit的权重和，值越小权重越高)
+        long nonZeroTotalWeight = (long) limit * (limit + 1) / 2;
 
-        // 1~limit的权重：数值k的权重=limit - k + 1（严格递减，如limit=5时：5→5,4→4,...,1→1）
-        for (int k = 1; k <= limit; k++) {
-            numWeights[k] = limit - k + 1;
+        // --- 特殊情况处理：当只有一个属性时，必定升级 ---
+        if (valueQuantity == 1) {
+            // 使用数学公式直接计算非零值结果
+            int rnd = Randomizer.rand(1, (int) nonZeroTotalWeight);
+            double kReal = ((2.0 * limit + 1) - Math.sqrt(Math.pow(2.0 * limit + 1, 2) - 8.0 * (rnd - 1))) / 2.0;
+            int k = (int) Math.ceil(kReal);
+            // 边界保护
+            return Math.min(Math.max(k, 1), limit);
         }
 
-        // 3. 计算总权重和权重区间
-        int totalWeight = 0;
-        for (int w : numWeights) {
-            totalWeight += w;
+        // 4. 根据 valueQuantity 精确设定 0 值的目标概率
+        float targetZeroProbability;
+        if (valueQuantity == 2) {
+            targetZeroProbability = 0.05f; // 5%
+        } else if (valueQuantity == 3) {
+            targetZeroProbability = 0.10f; // 10%
+        } else if (valueQuantity == 4) {
+            targetZeroProbability = 0.15f; // 15%
+        } else if (valueQuantity == 5) {
+            targetZeroProbability = 0.20f; // 20%
+        } else { // valueQuantity >= 6
+            targetZeroProbability = 0.25f; // 25%
         }
 
-        // 4. 生成随机数并匹配结果
-        int rnd = Randomizer.rand(0, totalWeight);
-        int cumulative = 0;
-        for (int k = 0; k < numWeights.length; k++) {
-            cumulative += numWeights[k];
-            if (rnd < cumulative) {
-                return k; // k即属性值（0~limit）
+        // 5. 根据目标概率反向计算出 0 值需要的权重
+        // P(0) = zeroWeight / (zeroWeight + nonZeroTotalWeight)
+        // zeroWeight = (P(0) * nonZeroTotalWeight) / (1 - P(0))
+        float zeroWeight = (targetZeroProbability * nonZeroTotalWeight) / (1.0f - targetZeroProbability);
+
+        // 6. 计算总权重
+        float totalWeight = zeroWeight + nonZeroTotalWeight;
+
+        // 7. 生成随机数并决定结果
+        float randomFloat = Randomizer.nextFloat() * totalWeight;
+
+        // 判断是否为0值
+        if (randomFloat < zeroWeight) {
+            return 0;
+        }
+
+        // --- 使用 O(1) 数学公式查找非零值结果 ---
+        // 这部分逻辑与原版完全相同，确保了非0值的概率分布不变
+        double adjustedRandom = randomFloat - zeroWeight;
+
+        // 理论上adjustedRandom应大于等于0，此处为防止浮点数精度问题导致的异常
+        if (adjustedRandom <= 0) {
+            return 1;
+        }
+
+        double L = limit;
+        double discriminant = Math.pow(2 * L + 1, 2) - 8 * adjustedRandom;
+
+        // 理论上discriminant应大于等于0，此处为防止浮点数精度问题导致的异常
+        if (discriminant < 0) {
+            return limit;
+        }
+
+        double kReal = ((2 * L + 1) - Math.sqrt(discriminant)) / 2;
+        int k = (int) Math.ceil(kReal);
+
+        // 最终的边界保护，确保结果在[1, limit]范围内
+        return Math.min(Math.max(k, 1), limit);
+    }
+
+    private int getMaxAllowed(StatUpgrade name) {
+        int maxAllowed = GameConfig.getServerInt("max_equipment_level_up_stat_up");
+        //武器得攻击加的更多
+        if (getItemId() >= 1300000 && getItemId() < 1800000) {
+            if (name == StatUpgrade.incPAD) { //增加物理攻击力
+                return (int) Math.round(maxAllowed * 1.6);
+            } else if (name == StatUpgrade.incMAD) {//增加魔法攻击力
+                return (int) Math.round(maxAllowed * 3.0);
             }
         }
+        //智力,防御,血魔,值乘以2
+        if (name == StatUpgrade.incINT
+                || name == StatUpgrade.incPDD || name == StatUpgrade.incMDD
+                || name == StatUpgrade.incMHP || name == StatUpgrade.incMMP) {
+            return maxAllowed * 2;
+        }
+        return maxAllowed;
+    }
 
-        return 0; // 兜底逻辑（理论上不会触发）
+    public int getValueQuantity() {
+        return (int) IntStream.of(dex, str, _int, luk, hp, mp, watk, matk, wdef, mdef, avoid, acc, speed, jump)
+                .filter(stat -> stat > 0)
+                .count();
     }
 
     private static boolean isPhysicalWeapon(int itemid) {
@@ -386,8 +475,9 @@ public class Equip extends Item {
 
     private void getUnitStatUpgrade(List<Pair<StatUpgrade, Integer>> stats, StatUpgrade name, int curStat, boolean isAttribute) {
         isUpgradeable = true;
-        int maxUpgrade = randomizeStatUpgrade((int) (1 + (curStat / (getStatModifier(isAttribute) * (isNotWeaponAffinity(name) ? 2.7 : 1)))));
+        int maxUpgrade = randomizeStatUpgradeNew(name);
         //这里改一下0的时候也记录，防止不加属性，导致不能洗练
+//        int maxUpgrade = randomizeStatUpgrade((int) (1 + (curStat / (getStatModifier(isAttribute) * (isNotWeaponAffinity(name) ? 2.7 : 1)))));
 //        if (maxUpgrade == 0) {
 //            return;
 //        }

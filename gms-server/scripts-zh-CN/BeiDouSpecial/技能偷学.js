@@ -109,7 +109,7 @@ function 学习技能(index) {
     }
 
     // 执行技能教授
-    cm.teachSkill(skillId, 1, maxLevel, -1);
+    cm.teachSkill(skillId, maxLevel, maxLevel, -1);
     // 检查技能是否已在其他按键，如有则移除
     player.removeBySkillId(skillId)
     // 无论是否已存在，强制设置到21号按键（Y键）

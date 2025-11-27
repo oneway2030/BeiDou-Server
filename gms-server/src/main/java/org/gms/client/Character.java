@@ -1812,12 +1812,16 @@ public class Character extends AbstractCharacterObject {
 
     public void changeSkillLevel(Skill skill, byte newLevel, int newMasterlevel, long expiration) {
         if (newLevel > -1) {
-            skills.put(skill, new SkillEntry(newLevel, newMasterlevel, expiration));
+            if (skill != null) {
+                skills.put(skill, new SkillEntry(newLevel, newMasterlevel, expiration));
+            }
             if (!GameConstants.isHiddenSkills(skill.getId())) {
                 sendPacket(PacketCreator.updateSkill(skill.getId(), newLevel, newMasterlevel, expiration));
             }
         } else {
-            skills.remove(skill);
+            if (skill != null) {
+                skills.remove(skill);
+            }
             sendPacket(PacketCreator.updateSkill(skill.getId(), newLevel, newMasterlevel, -1)); //Shouldn't use expiration anymore :)
             characterService.removeSkill(SkillsDO.builder().skillid(skill.getId()).characterid(getId()).build());
         }
@@ -4799,7 +4803,11 @@ public class Character extends AbstractCharacterObject {
     }
 
     public int getMasterLevel(int skill) {
-        SkillEntry ret = skills.get(SkillFactory.getSkill(skill));
+        Skill skillKey = SkillFactory.getSkill(skill);
+        if (skillKey == null) {
+            return 0;
+        }
+        SkillEntry ret = skills.get(skillKey);
         if (ret == null) {
             return 0;
         }
@@ -4807,6 +4815,9 @@ public class Character extends AbstractCharacterObject {
     }
 
     public int getMasterLevel(Skill skill) {
+        if (skill == null) {
+            return 0;
+        }
         if (skills.get(skill) == null) {
             return 0;
         }
@@ -5305,7 +5316,11 @@ public class Character extends AbstractCharacterObject {
     }
 
     public int getSkillLevel(int skill) {
-        SkillEntry ret = skills.get(SkillFactory.getSkill(skill));
+        Skill skillKey = SkillFactory.getSkill(skill);
+        if (skillKey == null) {
+            return 0;
+        }
+        SkillEntry ret = skills.get(skillKey);
         if (ret == null) {
             return 0;
         }
@@ -5313,6 +5328,9 @@ public class Character extends AbstractCharacterObject {
     }
 
     public byte getSkillLevel(Skill skill) {
+        if (skill == null) {
+            return 0;
+        }
         if (skills.get(skill) == null) {
             return 0;
         }
@@ -5320,7 +5338,11 @@ public class Character extends AbstractCharacterObject {
     }
 
     public long getSkillExpiration(int skill) {
-        SkillEntry ret = skills.get(SkillFactory.getSkill(skill));
+        Skill skillKey = SkillFactory.getSkill(skill);
+        if (skillKey == null) {
+            return -1;
+        }
+        SkillEntry ret = skills.get(skillKey);
         if (ret == null) {
             return -1;
         }
@@ -5328,6 +5350,9 @@ public class Character extends AbstractCharacterObject {
     }
 
     public long getSkillExpiration(Skill skill) {
+        if (skill == null) {
+            return -1;
+        }
         if (skills.get(skill) == null) {
             return -1;
         }
@@ -5653,7 +5678,7 @@ public class Character extends AbstractCharacterObject {
         for (Entry<Skill, SkillEntry> s : this.getSkills().entrySet()) {
             Skill skill = s.getKey();
             if (GameConstants.isInJobTree(skill.getId(), jobId) && !skill.isBeginnerSkill()) {
-                if(!stolenIdList.isEmpty()&&!stolenIdList.contains(skill.getId())){
+                if (!stolenIdList.isEmpty() && !stolenIdList.contains(skill.getId())) {
                     spUsed += s.getValue().skillLevel;
                 }
             }

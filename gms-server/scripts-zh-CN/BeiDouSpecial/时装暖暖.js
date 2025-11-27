@@ -343,10 +343,16 @@ function doSelect(selection) {
         case 3://发色
             beauty = 1;
             var currentBaseHair = parseInt(cm.getPlayer().getHair() / 10) * 10;
-            for (var i = 0; i < hairColors[currentBaseHair].length; i++) {
-                newHairs.push(currentBaseHair + hairColors[currentBaseHair][i]);
+            let hairColor = hairColors[currentBaseHair];
+            if (hairColor != null) {
+                for (var i = 0; i < hairColor.length; i++) {
+                    newHairs.push(currentBaseHair + hairColor[i]);
+                }
+                cm.sendStyle("挑选一款发色吧！#b需要消耗" + DRAW_COST + "点卷！", newHairs);
+            } else {
+                cm.sendOk("该发型不支持改变发色");
+                cm.dispose();
             }
-            cm.sendStyle("挑选一款发色吧！#b需要消耗" + DRAW_COST + "点卷！", newHairs);
             break;
         case 4://脸色
             beauty = 2;

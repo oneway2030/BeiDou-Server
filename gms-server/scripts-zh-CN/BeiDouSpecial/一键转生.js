@@ -162,8 +162,8 @@ function 偷学技能点获取() {
         // 执行偷学技能点增加操作
         saveStealKillCount(1);
         // 移除偷学技能书（ID:2430674）
-        const skillBookId = 2430674;
-        cm.gainItem(skillBookId, -1);
+        // const skillBookId = 2430674;
+        // cm.gainItem(skillBookId, -1);
         // 提示用户操作结果
         cm.getPlayer().dropMessage(5, `恭喜你！成功获取一点偷学技能点！当前偷学技能点：${getStealKillCount()}`);
     } catch (e) {

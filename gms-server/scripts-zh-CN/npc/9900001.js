@@ -12,6 +12,8 @@ function start() {
         action(1, 0, 0)
     } catch (e) {
         cm.dispose();
+        // 打印错误日志便于调试
+        console.error("主菜单脚本错误===》:", e);
     }
 }
 
