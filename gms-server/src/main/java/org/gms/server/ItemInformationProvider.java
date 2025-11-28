@@ -377,7 +377,13 @@ public class ItemInformationProvider {
                     ret = 100;
                 }
             } else {
-                ret = inventoryType.canChangeSlotMax() && itemSlotMax > 0 ? itemSlotMax : (short) DataTool.getInt(smEntry);
+                //如果物品配置的只能一个，则不适用最大堆叠
+                int xmlSlotMax = DataTool.getInt(smEntry);
+                if (xmlSlotMax == 1) {
+                    ret = (short) xmlSlotMax;
+                } else {
+                    ret = inventoryType.canChangeSlotMax() && itemSlotMax > 0 ? itemSlotMax : (short) xmlSlotMax;
+                }
             }
         }
 
@@ -762,7 +768,7 @@ public class ItemInformationProvider {
 
     /**
      * @param nEquip
-     * @param range        混沌范围
+     * @param range     混沌范围
      * @param isForward true 正向随机  false 正负范围随机
      */
     private void scrollEquipWithChaos(Equip nEquip, int range, boolean isForward) {
@@ -810,7 +816,6 @@ public class ItemInformationProvider {
                     } else {
                         temp = nEquip.getStr() + chscrollRandomizedStat(range, isForward);
                     }
-
                     curStr = getMaximumShortMaxIfOverflow(temp, curStr);
                 }
 
