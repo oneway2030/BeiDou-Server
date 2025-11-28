@@ -172,6 +172,8 @@ public class ItemId {
     private static final int CARNIVAL_PARTY_ALL_CURE = 2022163;
     public static final int WHITE_ELIXIR = 2022544;
 
+    public final static int FORWARD_CHAOTIC_SCROLL = 2049115;//正向混沌卷
+
     public static boolean isPartyAllCure(int itemId) {
         return itemId == DOJO_PARTY_ALL_CURE || itemId == CARNIVAL_PARTY_ALL_CURE;
     }

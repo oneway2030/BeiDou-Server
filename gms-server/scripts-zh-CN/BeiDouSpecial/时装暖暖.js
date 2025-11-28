@@ -342,17 +342,18 @@ function doSelect(selection) {
             break;
         case 3://发色
             beauty = 1;
-            var currentBaseHair = parseInt(cm.getPlayer().getHair() / 10) * 10;
-            let hairColor = hairColors[currentBaseHair];
-            if (hairColor != null) {
-                for (var i = 0; i < hairColor.length; i++) {
-                    newHairs.push(currentBaseHair + hairColor[i]);
-                }
-                cm.sendStyle("挑选一款发色吧！#b需要消耗" + DRAW_COST + "点卷！", newHairs);
-            } else {
-                cm.sendOk("该发型不支持改变发色");
-                cm.dispose();
-            }
+            openNpc("发色选择");
+            // var currentBaseHair = parseInt(cm.getPlayer().getHair() / 10) * 10;
+            // let hairColor = hairColors[currentBaseHair];
+            // if (hairColor != null) {
+            //     for (var i = 0; i < hairColor.length; i++) {
+            //         newHairs.push(currentBaseHair + hairColor[i]);
+            //     }
+            //     cm.sendStyle("挑选一款发色吧！#b需要消耗" + DRAW_COST + "点卷！", newHairs);
+            // } else {
+            //     cm.sendOk("该发型不支持改变发色");
+            //     cm.dispose();
+            // }
             break;
         case 4://脸色
             beauty = 2;
