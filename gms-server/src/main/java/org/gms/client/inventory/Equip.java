@@ -58,20 +58,20 @@ public class Equip extends Item {
     }
 
     /**
-     * incDEX：增加敏捷（Dexterity）
-     * incSTR：增加力量（Strength）
-     * incINT：增加智力（Intelligence）
-     * incLUK：增加幸运（Luck）
-     * incMHP：增加最大生命值（Maximum HP）
-     * incMMP：增加最大魔法值（Maximum MP）
-     * incPAD：增加物理攻击力（Physical Attack Damage）
-     * incMAD：增加魔法攻击力（Magical Attack Damage）
-     * incPDD：增加物理防御力（Physical Defense Damage）
-     * incMDD：增加魔法防御力（Magical Defense Damage）
-     * incEVA：增加闪避率（Evasion）
-     * incACC：增加命中率（Accuracy）
-     * incSpeed：增加速度（Speed）
-     * incJump：增加跳跃力（Jump）
+     * incDEX：增加敏捷（Dexterity）-dex
+     * incSTR：增加力量（Strength）-str
+     * incINT：增加智力（Intelligence）-_int
+     * incLUK：增加幸运（Luck）-luk
+     * incMHP：增加最大生命值（Maximum HP）-hp
+     * incMMP：增加最大魔法值（Maximum MP）-mp
+     * incPAD：增加物理攻击力（Physical Attack Damage）-watk
+     * incMAD：增加魔法攻击力（Magical Attack Damage）-matk
+     * incPDD：增加物理防御力（Physical Defense Damage）-wdef
+     * incMDD：增加魔法防御力（Magical Defense Damage）-mdef
+     * incEVA：增加闪避率（Evasion）-avoid
+     * incACC：增加命中率（Accuracy）-acc
+     * incSpeed：增加速度（Speed）-speed
+     * incJump：增加跳跃力（Jump）-jump
      * incVicious：减少金锤子使用次数（对应游戏中 “vicious” 相关的装备强化限制）
      * incSlot：增加升级槽（可用于砸卷的次数）
      */
@@ -1220,6 +1220,15 @@ public class Equip extends Item {
                     }
                     break;
             }
+        }
+    }
+
+    public String getName() {
+        if (ii != null) {
+
+            return ii.getName(this.getItemId());
+        } else {
+            return "未知道具";
         }
     }
 }

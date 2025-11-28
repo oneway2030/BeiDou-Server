@@ -8,6 +8,7 @@ let firstEquip;
 let selectedUpgradeIndex; // 存储选中的升级记录索引
 var 需要道具 = [{id: 4032133, qty: 1}]; // 洗练所需道具
 var newStats;
+var newStatsDes;
 
 function start() {
     status = -1;
@@ -31,7 +32,7 @@ function action(mode, type, selection) {
             main(); // 显示主菜单（装备属性+升级历史）
             break;
         case 1:
-            if(selection===999){
+            if (selection === 999) {
                 洗练范围说明();
                 return;
             }
@@ -99,7 +100,7 @@ function main() {
             propStr += `#b#e升级属性历史:#d#n\r\n`;
             for (var i = 0; i < upgradeHistoryDesList.size(); i++) {
                 var history = upgradeHistoryDesList.get(i);
-                history=formatStatsWithColors(history)
+                history = formatStatsWithColors(history)
                 let index = i + 1;
                 propStr += `#L${i}#第${index}次升级：${history}  #b(${str})#k\r\n\r\n`;
             }
@@ -165,7 +166,7 @@ function showAttrConfirmPage() {
 
     // 获取新旧属性描述
     newStats = firstEquip.getNewStats();
-    var newStatsDes = newStats && newStats.size() > 0 ? firstEquip.gainStatsDes(newStats) : "无新增属性";
+    newStatsDes = newStats && newStats.size() > 0 ? firstEquip.gainStatsDes(newStats) : "无新增属性";
     var oldStatsDes = firstEquip.getUpgradeHistoryDes(selectedUpgradeIndex) || "无原始属性";
 
     // 构建确认页面文本（增加道具消耗提示）
@@ -179,7 +180,6 @@ function showAttrConfirmPage() {
     confirmText += formatStatsWithColors(oldStatsDes) + "\r\n\r\n";
     confirmText += "#r【新洗练属性】#k\r\n";
     confirmText += formatStatsWithColors(newStatsDes) + "\r\n\r\n";
-    confirmText += "#d是否确认消耗道具并覆盖当前属性？#n\r\n\r\n";
     confirmText += "#L0##b确认覆盖（使用新的洗练属性）#l\r\n\r\n";
     confirmText += "#L2##r重新洗练（当前属性不覆盖，会重新消耗道具）#l\r\n\r\n"; // 新增：重新洗练选项
     confirmText += "#L1##r取消（保留原来的属性）#l\r\n\r\n";
@@ -203,6 +203,7 @@ function handleConfirmResult(selection) {
                     consumeRequiredItems();
                     cm.sendOk("#b属性洗练成功！#n\r\n" +
                         "已消耗所需道具，新属性已覆盖原第" + (selectedUpgradeIndex + 1) + "次升级属性~");
+                    全服通告();
                     cm.dispose();
                 } else {
                     cm.sendOk("#r数据异常，请联系管理员~");
@@ -229,6 +230,12 @@ function handleConfirmResult(selection) {
     }
 }
 
+function 全服通告() {
+    const PacketCreator = Java.type('org.gms.util.PacketCreator');
+    var player = cm.getPlayer();
+    let tip = `恭喜玩家${player.getName()}对[${firstEquip.getName()}]洗练出属性:${newStatsDes}`;
+    player.getWorldServer().broadcastPacket(PacketCreator.serverNotice(6, tip));
+}
 
 /**
  * 根据属性值的大小，为属性字符串添加颜色标签
@@ -320,7 +327,7 @@ function formatStatsWithColors(statsDes) {
     return formattedStats.join('; ');
 }
 
-function  洗练范围说明(){
+function 洗练范围说明() {
     var propStr = "\t\t\t\t\t#e#k欢迎来到#r[装备洗练中心]#k系统#n\t\t\t\t\r\n\r\n";
     propStr += "#b洗练范围说明#k\r\n";
     propStr += "1.武器攻击力0-8,魔法力0-15\r\n";

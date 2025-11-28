@@ -57,7 +57,7 @@ function start() {
     rebirthLevel = Math.max(1, baseRebirthLevel); // 确保最低为1级
     rebirthLevel = Math.min(rebirthLevel, cm.getPlayer().getMaxClassLevel()); // 限制不超过职业最大等级
     reborns = cm.getChar().getReborns();
-    maxRebornCount =GameConfig.getServerInt("max_reborn_count");
+    maxRebornCount = GameConfig.getServerInt("max_reborn_count");
 
 
     // 检查涅槃条件
@@ -151,8 +151,14 @@ function levelRebirth() {
     cm.gainItem(item_mp_id, item_mp_count);
     cm.gainMeso(-meso * 10000);
     cm.gainItem(4000313, -cost);
+    全服通告();
     cm.sendOk("#r恭喜你，涅槃成功！");
     cm.dispose();
+}
+
+function 全服通告() {
+    let tip = `恭喜肝帝大佬[${cm.getPlayer().getName()}]完成第${cm.getChar().getReborns()}次涅槃,恐怖如斯!~`;
+    cm.getPlayer().SendFullServerBroadcast(tip);
 }
 
 var 偷学技能点key = "偷学技能点";

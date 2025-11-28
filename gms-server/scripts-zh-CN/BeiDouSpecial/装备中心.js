@@ -1,8 +1,8 @@
 /*
-	This file is part of the OdinMS Maple Story Server
+    This file is part of the OdinMS Maple Story Server
     Copyright (C) 2008 Patrick Huy <patrick.huy@frz.cc>
-		       Matthias Butz <matze@odinms.de>
-		       Jan Christian Meyer <vimes@odinms.de>
+               Matthias Butz <matze@odinms.de>
+               Jan Christian Meyer <vimes@odinms.de>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as
@@ -42,6 +42,7 @@ function action(mode, type, selection) {
     if (status === 0) {
         let text = OldTitle;
         text += " \r\n";
+        text += "#L3#精灵吊坠每日强化#l\t\r\n\r\n";
         text += "#L1#装备洗练#l\t\r\n\r\n";
         text += "#L0#时装属性转移#l\t\r\n\r\n";
         text += "#L2#装备制作#l\t\r\n\r\n";
@@ -64,6 +65,9 @@ function doSelect(selection) {
         case 2:
             cm.sendOk("开发中，敬请期待！");
             cm.dispose();
+            break;
+        case 3:
+            openNpc("每日装备强化");
             break;
         default:
             cm.sendOk("该功能暂不支持，敬请期待！");

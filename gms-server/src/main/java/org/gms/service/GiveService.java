@@ -82,7 +82,7 @@ public class GiveService {
     }
 
     private void giveChr(GiveResourceReqDTO submitData) {
-        //TODO 给用户物品对应web上
+        //TODO 参考给用户物品对应web上
         Integer wId = submitData.getWorldId();
         Integer cId = submitData.getPlayerId();
         if (wId == null || wId < 0 || cId == null || cId < 1) {

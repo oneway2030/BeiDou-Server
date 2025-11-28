@@ -9921,5 +9921,22 @@ public class Character extends AbstractCharacterObject {
         return mExtraStorageUtil.takeOutItem(getClient(), itemId, quantity, type);
     }
 
+    public void SendFullServerBroadcast(String Msg) {
+        SendFullServerBroadcast(Msg, 5121009);
+    }
+
+    /**
+     * 发送全服屏幕中央广播
+     *
+     * @param Msg      消息
+     * @param effectId 5121009 火红玫瑰
+     */
+    public void SendFullServerBroadcast(String Msg, int effectId) {
+        for (World w : Server.getInstance().getWorlds()) {
+            for (Character chr : w.getPlayerStorage().getAllCharacters()) {
+                chr.startMapEffect(Msg, effectId);
+            }
+        }
+    }
 
 }
