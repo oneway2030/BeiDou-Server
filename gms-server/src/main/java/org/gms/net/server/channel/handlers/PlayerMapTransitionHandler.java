@@ -25,6 +25,7 @@ import org.gms.client.Character;
 import org.gms.client.Client;
 import org.gms.net.AbstractPacketHandler;
 import org.gms.net.packet.InPacket;
+import org.gms.net.server.channel.ChannelListenerManager;
 import org.gms.server.life.Monster;
 import org.gms.server.maps.MapObject;
 import org.gms.util.PacketCreator;
@@ -41,14 +42,13 @@ public final class PlayerMapTransitionHandler extends AbstractPacketHandler {
 
     @Override
     public final void handlePacket(InPacket p, Client c) {
-
         Character chr = c.getPlayer();
-        chr.setMapTransitionComplete();
+        int oldMapId = chr.getMapId(); // 记录切换前的地图ID
+        chr.setMapTransitionComplete(); // 标记地图切换完成
 
         int beaconid = chr.getBuffSource(BuffStat.HOMING_BEACON);
         if (beaconid != -1) {
             chr.cancelBuffStats(BuffStat.HOMING_BEACON);
-
             final List<Pair<BuffStat, Integer>> stat = Collections.singletonList(new Pair<>(BuffStat.HOMING_BEACON, 0));
             chr.sendPacket(PacketCreator.giveBuff(1, beaconid, stat));
         }
@@ -69,5 +69,8 @@ public final class PlayerMapTransitionHandler extends AbstractPacketHandler {
                 }
             }
         }
+        // 触发地图切换完成回调（核心扩展点）
+        int newMapId = chr.getMapId(); // 切换后的地图ID
+        ChannelListenerManager.onMapTransitionComplete(chr, oldMapId, newMapId);
     }
 }

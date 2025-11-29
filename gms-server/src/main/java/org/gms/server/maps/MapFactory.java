@@ -406,9 +406,9 @@ public class MapFactory {
         } else if (mapid >= 700000000 && mapid < 782000005) {
             builder.append("china");
         } else if (mapid >= 500000000 && mapid < 501030106) {
-            builder.append("china");
-        } else {
             builder.append("thai");
+        } else {
+            builder.append("etc");
         }
         builder.append("/").append(mapid);
         return builder.toString();

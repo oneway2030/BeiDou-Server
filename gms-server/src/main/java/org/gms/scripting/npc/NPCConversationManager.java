@@ -44,6 +44,7 @@ import org.gms.net.server.guild.Guild;
 import org.gms.net.server.guild.GuildPackets;
 import org.gms.net.server.world.Party;
 import org.gms.net.server.world.PartyCharacter;
+import org.gms.server.maps.*;
 import org.gms.service.GachaponService;
 import org.gms.util.packets.WeddingPackets;
 import org.slf4j.Logger;
@@ -59,10 +60,6 @@ import org.gms.server.expeditions.Expedition;
 import org.gms.server.expeditions.ExpeditionType;
 import org.gms.server.life.LifeFactory;
 import org.gms.server.life.PlayerNPC;
-import org.gms.server.maps.MapManager;
-import org.gms.server.maps.MapObject;
-import org.gms.server.maps.MapObjectType;
-import org.gms.server.maps.MapleMap;
 import org.gms.server.partyquest.AriantColiseum;
 import org.gms.server.partyquest.MonsterCarnival;
 import org.gms.server.partyquest.Pyramid;
@@ -1375,7 +1372,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
      * 对应sendSimple
      *
      * @param nextLevel 方法前缀，如果脚本有多次要选择的地方，可以通过不同的前缀区分
-     * @param text   对话内容
+     * @param text      对话内容
      * @param speaker   说话者，0,1,8,9 = NPC；2,3 = 玩家；4,5,6,7 = 客户端报38错误；其它数字未测试。
      */
     public void sendNextSelectLevel(String nextLevel, String text, byte speaker) {
@@ -1396,7 +1393,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
      * @param speaker   说话者，0,1,8,9 = NPC；2,3 = 玩家；4,5,6,7 = 客户端报38错误；其它数字未测试。
      */
     public void getPnpcInputNumberLevel(String nextLevel, String text, int def, int min, int max, byte speaker) {
-        sendGetNumber(text, def, min, max,speaker);
+        sendGetNumber(text, def, min, max, speaker);
         nextLevelContext.setLevelType(NextLevelType.GET_INPUT_NUMBER);
         nextLevelContext.setNextLevel(nextLevel);
     }
@@ -1422,7 +1419,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
      * @param decLineLevel 拒绝方法
      * @param acceptLevel  接受方法
      * @param text         对话内容
-     * @param speaker   说话者，0,1,8,9 = NPC；2,3 = 玩家；4,5,6,7 = 客户端报38错误；其它数字未测试。
+     * @param speaker      说话者，0,1,8,9 = NPC；2,3 = 玩家；4,5,6,7 = 客户端报38错误；其它数字未测试。
      */
     public void sendAcceptDeclineLevel(String decLineLevel, String acceptLevel, String text, byte speaker) {
         sendAcceptDecline(text, speaker);
@@ -1438,7 +1435,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
      * @param noLevel  否方法
      * @param yesLevel 是方法
      * @param text     对话内容
-     * @param speaker   说话者，0,1,8,9 = NPC；2,3 = 玩家；4,5,6,7 = 客户端报38错误；其它数字未测试。
+     * @param speaker  说话者，0,1,8,9 = NPC；2,3 = 玩家；4,5,6,7 = 客户端报38错误；其它数字未测试。
      */
     public void sendYesNoLevel(String noLevel, String yesLevel, String text, byte speaker) {
         sendYesNo(text, speaker);
@@ -1463,5 +1460,13 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
             return true;
         }
         return false;
+    }
+
+    public void forceChangeMap(MapleMap target, Portal pto) {
+        getPlayer().forceChangeMap(target, pto);
+    }
+
+    public void forceChangeMap(MapleMap target, Point pos) {
+        getPlayer().forceChangeMap(target, pos);
     }
 }

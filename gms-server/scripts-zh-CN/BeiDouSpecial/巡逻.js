@@ -1,6 +1,6 @@
 /**
  * @description 在线角色传送功能实现
- * 支持跨频道传送至目标角色位置，自动过滤自身角色
+ * 支持跨频道传送至目标角色位置，自动过滤自身角色，并对副本玩家做特殊处理
  * @author 吃瓜群众
  */
 
@@ -15,7 +15,7 @@ function start() {
 }
 
 /**
- * @description 显示在线角色列表（过滤自身），格式：[频道线]-[地图名称]-[角色名]-[等级]-[职业]
+ * @description 显示在线角色列表（过滤自身）
  */
 function levelStart() {
     var worldS = Server.getInstance().getWorlds();
@@ -23,7 +23,6 @@ function levelStart() {
     var text2 = "";
     var index = 0;
     allCharacters = new ArrayList();
-    // 获取当前玩家信息
     const self = cm.getPlayer();
     const selfId = self.getId();
 
@@ -32,26 +31,21 @@ function levelStart() {
         var characters = world.getPlayerStorage().getAllCharacters();
         for (let j = 0; j < characters.size(); j++) {
             var character = characters.get(j);
-            var id = character.getId();
+            if (character.getId() === selfId) {
+                continue; // 过滤自身
+            }
 
-            // 过滤自身角色
-            // if (id === selfId) {
-            //     continue;
-            // }
-
-            // 获取角色信息
             var name = character.getName();
             var job = character.getJob();
-            var level = character.getLevel(); // 角色等级
+            var level = character.getLevel();// 角色等级
             var channel = character.getClient().getChannel(); // 频道线
-            var map = character.getMap(); // 地图对象
-            var mapName = map.getMapName(); // 地图名称
+            var map = character.getMap();// 地图对象
+            var mapName = map.getMapName();// 地图名称
 
             // 按格式拼接显示文本：[频道]-[地图]-[名字]-[等级]-[职业]
             // 【几线-地图】使用#b#e（蓝色加粗），后续使用#b（常规蓝色）
             text2 += `#L${index}#` +
                 `#b#e[ ${channel}线- ${mapName} ]  #n#r${name} - Lv ${level} - ${job.getName()}#l\r\n`;
-
 
             index++;
             allCharacters.add(character);
@@ -64,41 +58,70 @@ function levelStart() {
 }
 
 /**
- * @description 处理角色选择，执行跨频道传送
+ * @description 处理角色选择，执行跨频道传送（支持副本地图）
  * @param {String} index 选中的角色索引
  */
 function levelSelectPlayer(index) {
-    try {
-        const targetIndex = parseInt(index, 10);
-        const target = allCharacters.get(targetIndex);
-        const self = cm.getPlayer();
-        const client = cm.getClient();
-
-        // 检查目标是否在线（防止查询后下线的情况）
-        if (!target.isLoggedIn()) {
-            cm.sendOk("目标玩家已下线");
-            cm.dispose();
-            return;
-        }
-
-        // 获取目标所在频道和地图
-        const targetChannel = target.getClient().getChannel();
-        const currentChannel = client.getChannel();
-        const targetMap = target.getMap();
-        const targetPos = target.getPosition();
-
-        // 跨频道处理
-        if (targetChannel !== currentChannel) {
-            self.changeMap(targetMap, targetPos);
-            // 切换频道并传送到目标位置
-            client.changeChannel(targetChannel);
-        } else {
-            // 同频道直接传送
-            self.changeMap(targetMap, targetPos);
-        }
+    const targetIndex = parseInt(index, 10);
+    const target = allCharacters.get(targetIndex);
+    const self = cm.getPlayer();
+    const client = cm.getClient();
+    const targetPos = target.getPosition();
+    console.info("位置===》:" + targetPos);
+    // 校验目标玩家状态
+    if (!target || !target.isLoggedIn()) {
+        cm.sendOk("目标玩家不存在或已下线。");
         cm.dispose();
+        return;
+    }
+    if (target.isBanned() || target.getTrade() !== null || target.isChangingMaps()) {
+        cm.sendOk("目标玩家当前无法接收传送请求。");
+        cm.dispose();
+        return;
+    }
+
+    // 获取目标玩家的地图和频道信息
+    const targetMap = target.getMap();
+    const targetChannel = target.getClient().getChannel();
+    const currentChannel = client.getChannel();
+    const targetEim = targetMap.getEventInstance(); // 目标所在副本实例（可能为null）
+
+    // 执行传送逻辑
+    if (targetChannel !== currentChannel) {
+        // 跨频道传送：先切换频道，再处理副本/普通地图
+        client.changeChannel(targetChannel, (c, newCh) => {
+            传送到指定玩家(self, target, targetEim, targetMap, targetPos);
+        });
+    } else {
+        传送到指定玩家(self, target, targetEim, targetMap, targetPos);
+    }
+}
+
+function 传送到指定玩家(self, target, targetEim, targetMap, targetPos) {
+    try {
+        if (targetEim) {
+            传送到副本(self, target, targetEim, targetMap, targetPos);
+        } else {
+            传送普通地图(self, target, targetMap, targetPos);
+        }
     } catch (e) {
-        cm.sendOk("传送失败：" + e.message);
+        cm.sendOk(`跨频道传送失败：${e.message}`);
+    } finally {
         cm.dispose();
     }
+}
+
+function 传送普通地图(self, target, targetMap, targetPos) {
+    self.changeMap(targetMap, targetPos);
+}
+
+function 传送到副本(self, target, targetEim, targetMap, targetPos) {
+    // 副本场景：通过目标副本实例获取地图
+    const instanceMap = targetEim.getMapInstance(targetMap.getId());
+    if (!instanceMap) {
+        cm.sendOk("目标副本地图实例已失效。");
+        return;
+    }
+    const portal = instanceMap.findClosestPortal(target.getPosition());
+    cm.forceChangeMap(instanceMap, targetPos);
 }

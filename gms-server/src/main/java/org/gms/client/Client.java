@@ -38,6 +38,7 @@ import org.gms.net.packet.logging.LoggingUtil;
 import org.gms.net.packet.logging.MonitoredChrLogger;
 import org.gms.net.server.Server;
 import org.gms.net.server.channel.Channel;
+import org.gms.net.server.channel.ChannelListenerManager;
 import org.gms.net.server.coordinator.login.LoginBypassCoordinator;
 import org.gms.net.server.coordinator.session.Hwid;
 import org.gms.net.server.coordinator.session.SessionCoordinator;
@@ -1491,6 +1492,10 @@ public class Client extends ChannelInboundHandlerAdapter {
     }
 
     public void changeChannel(int channel) {
+        changeChannel(channel, null);
+    }
+
+    public void changeChannel(int channel, ChannelListenerManager.MapTransitionCallback callback) {
         Server server = Server.getInstance();
         if (player.isBanned()) {
             disconnect(false, false);
@@ -1555,6 +1560,16 @@ public class Client extends ChannelInboundHandlerAdapter {
 
         player.setSessionTransitionState();
         try {
+            if (callback != null) {
+                ChannelListenerManager.addListener(new ChannelListenerManager.MapTransitionCallback() {
+                    @Override
+                    public void onMapTransitionComplete(Character chr, int oldMapId, int newMapId) {
+                        if (callback != null) {
+                            callback.onMapTransitionComplete(chr, oldMapId, newMapId);
+                        }
+                    }
+                });
+            }
             sendPacket(PacketCreator.getChannelChange(InetAddress.getByName(socket[0]), Integer.parseInt(socket[1])));
         } catch (IOException e) {
             e.printStackTrace();

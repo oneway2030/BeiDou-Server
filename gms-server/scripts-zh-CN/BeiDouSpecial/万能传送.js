@@ -318,6 +318,8 @@ function levelFuben(selection) {
 	cm.gainMeso(-fubenmaps[selection][1]);
 	cm.getPlayer().saveLocationOnWarp();
 	cm.warp(fubenmaps[selection][0]);
+	//传送到指定位置
+	// cm.getPlayer().changeMap(instanceMap, targetPos);
 	cm.dispose();
 }
 //----------------------------------------------------------------------------------

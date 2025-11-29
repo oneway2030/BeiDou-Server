@@ -1474,6 +1474,29 @@ public class Character extends AbstractCharacterObject {
         eventAfterChangedMap(this.getMapId());
     }
 
+    public void forceChangeMap(final MapleMap target, Point pos) {
+        canWarpCounter++;
+        eventChangedMap(MapId.NONE);
+        EventInstanceManager mapEim = target.getEventInstance();
+        if (mapEim != null) {
+            EventInstanceManager playerEim = this.getEventInstance();
+            if (playerEim != null) {
+                playerEim.exitPlayer(this);
+                if (playerEim.getPlayerCount() == 0) {
+                    playerEim.dispose();
+                }
+            }
+            mapEim.registerPlayer(this, false);
+        }
+        changeMapInternal(target, pos, PacketCreator.getWarpToMap(target, 0x80, pos, this));
+        canWarpMap = false;
+        canWarpCounter--;
+        if (canWarpCounter == 0) {
+            canWarpMap = true;
+        }
+        eventAfterChangedMap(this.getMapId());
+    }
+
     private boolean buffMapProtection() {
         int thisMapid = mapId;
         int returnMapid = client.getChannelServer().getMapFactory().getMap(thisMapid).getReturnMapId();
