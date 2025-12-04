@@ -70,7 +70,7 @@ function main() {
 }
 
 function 获取废弃副本完成次数() {
-    let dayCount = cm.getCharacterExtendValue(KERNING_COMPLETION_COUNT);
+    let dayCount = cm.getCharacterExtendValue(KERNING_COMPLETION_COUNT, true);
     return Number(dayCount) || 0; // 处理未完成过的情况
 }
 

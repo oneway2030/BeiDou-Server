@@ -6,7 +6,7 @@ var 奖励 = [
     [2029005, 10]   //三倍经验
 ];
 const targetCounts = [5, 10, 15, 20, 25];
-var 基础任务ID = 200100;  // 任务ID基础值，用于标记完成状态
+var 基础任务ID = 700100;  // 任务ID基础值，用于标记完成状态
 var completedCount = 0;
 
 function start() {

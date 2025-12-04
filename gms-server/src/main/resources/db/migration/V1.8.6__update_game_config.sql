@@ -41,8 +41,8 @@ INSERT INTO `lang_resources` (`lang_type`, `lang_base`, `lang_code`, `lang_value
 
 INSERT INTO `game_config` ( `config_type`, `config_sub_type`, `config_clazz`, `config_code`, `config_value`, `config_desc`)
 VALUES ( 'server', 'Game Mechanics', 'java.lang.Integer', 'max_reborn_count', '5', 'max_reborn_count');
-INSERT INTO `lang_resources` (`lang_type`, `lang_base`, `lang_code`, `lang_value`) VALUES ('zh-CN', 'game_config', 'max_reborn_count', '转生后的等级,默认10级,重启服务器生效');
-INSERT INTO `lang_resources` (`lang_type`, `lang_base`, `lang_code`, `lang_value`) VALUES ('en-US', 'game_config', 'max_reborn_count', 'Level after Rebirth.');
+INSERT INTO `lang_resources` (`lang_type`, `lang_base`, `lang_code`, `lang_value`) VALUES ('zh-CN', 'game_config', 'max_reborn_count', '能转生的最大次数');
+INSERT INTO `lang_resources` (`lang_type`, `lang_base`, `lang_code`, `lang_value`) VALUES ('en-US', 'game_config', 'max_reborn_count', '能转生的最大次数');
 
 INSERT INTO `game_config` ( `config_type`, `config_sub_type`, `config_clazz`, `config_code`, `config_value`, `config_desc`)
 VALUES ( 'server', 'Game Mechanics', 'java.lang.Boolean', 'use_debug_regular_user', 'false', 'use_debug_regular_user');

@@ -53,7 +53,19 @@ var icon = "#fUI/UIWindow.img/QuestIcon/7/0#";
 var status = -1;
 var 玩家等级 = 0;
 var 选中任务索引 = -1;
-var 基础任务ID = 100001; // 任务ID基础值
+var 基础任务ID = 600001; // 任务ID基础值
+var old基础任务ID = 100001; // 任务ID基础值
+
+/**
+ * 更换了id，同步之前的id到新数据
+ */
+function initOldData() {
+    for (var i = 0; i < 3; i++) {
+        if (cm.isQuestCompleted(old基础任务ID + i) && !cm.isQuestCompleted(基础任务ID + i)) {
+            cm.completeQuest(基础任务ID + i);
+        }
+    }
+}
 
 function start() {
     玩家等级 = cm.getPlayer().getLevel();
@@ -90,8 +102,8 @@ function action(mode, type, selection) {
  * 显示所有任务列表, 根据状态设置颜色
  */
 function 显示任务列表() {
+    initOldData();
     var 任务列表文本 = "欢迎来到主线任务中心！以下是所有主线任务列表：\r\n\r\n";
-
     for (var i = 0; i < 等级.length; i++) {
         var 任务ID = 基础任务ID + i;
         var 任务状态 = "";

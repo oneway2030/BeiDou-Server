@@ -41,7 +41,7 @@ function action(mode, type, selection) {
             var outText = "如果出去了,如果想要再挑战就要从头再来了.确定要离开吗?";
             if (mapId == 103000805) {
                 outText = "确定要离开吗?\r\n";
-                outText += `#b(每天只有前面#r${max_reward_count}次#b副本才有额外奖励,当前已完成#r${max_reward_count}次#b)`;
+                outText += `#b(每天只有前面#r${max_reward_count}次#b副本才有额外奖励,当前已完成#r${completionCount}次#b)`;
             }
             cm.sendYesNo(outText);
         } else if (mode == 1) {
@@ -100,10 +100,10 @@ function 能获取奖励() {
 }
 
 function 获取废弃副本完成次数() {
-    let dayCount = cm.getCharacterExtendValue(KERNING_COMPLETION_COUNT);
+    let dayCount = cm.getCharacterExtendValue(KERNING_COMPLETION_COUNT, true);
     return Number(dayCount) || 0; // 处理未签到过的情况
 }
 
 function 保存废弃副本完成次数() {
-    cm.saveOrUpdateCharacterExtendValue(KERNING_COMPLETION_COUNT, String(获取废弃副本完成次数() + 1));
+    cm.saveOrUpdateCharacterExtendValue(KERNING_COMPLETION_COUNT, String(获取废弃副本完成次数() + 1), true);
 }

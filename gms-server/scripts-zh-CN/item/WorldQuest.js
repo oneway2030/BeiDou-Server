@@ -51,23 +51,23 @@ function start() {
     显示当前任务详情();
 }
 
-// function action(mode, type, selection) {
-//     if (mode === -1) {
-//         im.dispose();
-//         return;
-//     }
-//
-//     if (mode === 0) {
-//         // 玩家取消操作
-//         im.dispose();
-//         return;
-//     }
-//
-//     if (status === 0) {
-//         // 处理任务提交
-//         处理任务提交();
-//     }
-// }
+function action(mode, type, selection) {
+    if (mode === -1) {
+        im.dispose();
+        return;
+    }
+
+    if (mode === 0) {
+        // 玩家取消操作
+        im.dispose();
+        return;
+    }
+
+    if (status === 0) {
+        // 处理任务提交
+        处理任务提交();
+    }
+}
 
 /**
  * 显示当前任务的详情信息

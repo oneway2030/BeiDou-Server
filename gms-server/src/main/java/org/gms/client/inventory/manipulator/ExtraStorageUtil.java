@@ -42,22 +42,22 @@ public class ExtraStorageUtil {
             chr.dropMessage("背包中矿石数量不足");
             return false;
         }
-
-        // 从背包移除矿石
-        InventoryManipulator.removeById(
-                c,
-                ItemConstants.getInventoryType(itemId),
-                itemId,
-                quantity,
-                false,
-                true
-        );
-
         // 存入矿石仓库
-        chr.getExtraStorage().addItem(itemId, quantity,type);
-        // 持久化数据
-        chr.getExtraStorage().saveToDB();
-        return true;
+        if(chr.getExtraStorage().addItem(itemId, quantity,type)){
+            // 持久化数据
+            chr.getExtraStorage().saveToDB();
+            // 从背包移除矿石
+            InventoryManipulator.removeById(
+                    c,
+                    ItemConstants.getInventoryType(itemId),
+                    itemId,
+                    quantity,
+                    false,
+                    true
+            );
+            return true;
+        }
+        return false;
     }
 
     /**

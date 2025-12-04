@@ -38,6 +38,7 @@ public class ExtraStorage {
     public ExtraStorage(long accountId, long characterId) {
         this.accountId = accountId;
         this.characterId = characterId;
+        log.info("accountId=" + accountId + " characterId=" + characterId);
     }
 
     /**
@@ -113,18 +114,23 @@ public class ExtraStorage {
 
     /**
      * 添加矿石到仓库
-     * @param itemId 矿石物品ID
+     *
+     * @param itemId   矿石物品ID
      * @param quantity 数量
-     * @param type 物品类型
+     * @param type     物品类型
      */
-    public void addItem(long itemId, int quantity, int type) {
+    public boolean addItem(long itemId, int quantity, int type) {
+        if (characterId == 0 && accountId == 0) {
+            log.error("ExtraStorage 存储失败");
+            return false;
+        }
         lock.lock();
         try {
             // 检查是否已有该矿石，若有则累加数量
             for (ExtraStorageDO item : mCache) {
                 if (item.getItemid() == itemId && item.getType() == type) {
                     item.setQuantity(item.getQuantity() + quantity);
-                    return;
+                    break;
                 }
             }
             // 新增矿石记录
@@ -136,19 +142,28 @@ public class ExtraStorage {
                     .type(type)
                     .build();
             mCache.add(newItem);
+        } catch (Exception e) {
+            log.error("ExtraStorage 存储失败", e);
+            return false;
         } finally {
             lock.unlock();
         }
+        return true;
     }
 
     /**
      * 从仓库移除矿石
-     * @param itemId 矿石物品ID
+     *
+     * @param itemId   矿石物品ID
      * @param quantity 数量
-     * @param type 物品类型
+     * @param type     物品类型
      * @return 是否移除成功
      */
     public boolean removeItem(long itemId, int quantity, int type) {
+        if (characterId == 0 && accountId == 0) {
+            log.error("ExtraStorage 移除失败");
+            return false;
+        }
         lock.lock();
         try {
             for (ExtraStorageDO item : mCache) {
@@ -165,6 +180,9 @@ public class ExtraStorage {
                 }
             }
             return false; // 未找到矿石
+        } catch (Exception e) {
+            log.error("ExtraStorage 移除失败", e);
+            return false;
         } finally {
             lock.unlock();
         }
@@ -186,6 +204,10 @@ public class ExtraStorage {
      * 查找指定矿石的数量
      */
     public int getItemQuantity(long itemId, int type) {
+        if (characterId == 0 && accountId == 0) {
+            log.error("ExtraStorage 查找失败");
+            return 0;
+        }
         lock.lock();
         try {
             for (ExtraStorageDO item : mCache) {
@@ -193,6 +215,9 @@ public class ExtraStorage {
                     return item.getQuantity();
                 }
             }
+            return 0;
+        } catch (Exception e) {
+            log.error("ExtraStorage 查找失败", e);
             return 0;
         } finally {
             lock.unlock();

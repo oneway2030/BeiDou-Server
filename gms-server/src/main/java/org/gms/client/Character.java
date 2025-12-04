@@ -510,7 +510,6 @@ public class Character extends AbstractCharacterObject {
         }
         quests = new LinkedHashMap<>();
         setPosition(new Point(0, 0));
-        initExtraStorage();
     }
 
     public Job getJobStyle(byte opt) {
@@ -6269,6 +6268,7 @@ public class Character extends AbstractCharacterObject {
                     inv.addItemFromDB(item);
                 }
             }
+
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
@@ -9910,15 +9910,22 @@ public class Character extends AbstractCharacterObject {
     private ExtraStorage mExtraStorage;
     private ExtraStorageUtil mExtraStorageUtil;
 
-    public void initExtraStorage() {
+    public void initExtraStorage(int accountId, int id) {
         // 基于角色ID和账号ID初始化
-        this.mExtraStorage = new ExtraStorage(getAccountId(), getId());
+        this.mExtraStorage = new ExtraStorage(accountId, id);
         // 从数据库加载已有矿石数据
         this.mExtraStorage.loadFromDB();
         mExtraStorageUtil = new ExtraStorageUtil();
     }
 
+    public synchronized void checkExtraStorage() {
+        if (mExtraStorage == null) {
+            initExtraStorage(getAccountId(), getId());
+        }
+    }
+
     public ExtraStorage getExtraStorage() {
+        checkExtraStorage();
         return mExtraStorage;
     }
 
@@ -9930,6 +9937,7 @@ public class Character extends AbstractCharacterObject {
      * @param type
      */
     public boolean storeExtraItem(int itemId, int quantity, int type) {
+        checkExtraStorage();
         return mExtraStorageUtil.storeItem(getClient(), itemId, quantity, type);
     }
 
@@ -9941,6 +9949,7 @@ public class Character extends AbstractCharacterObject {
      * @param type
      */
     public boolean takeOutExtraItem(int itemId, int quantity, int type) {
+        checkExtraStorage();
         return mExtraStorageUtil.takeOutItem(getClient(), itemId, quantity, type);
     }
 

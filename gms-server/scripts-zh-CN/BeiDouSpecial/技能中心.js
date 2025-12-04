@@ -23,7 +23,7 @@ function action(mode, type, selection) {
         let text = OldTitle;
         text += " \r\n";
         text += "#L1##b快捷技能(获取二段跳)#l\t\r\n\r\n";
-        text += "#L2#技能全满#l\t\r\n\r\n";
+        // text += "#L2#技能全满#l\t\r\n\r\n";
         text += "#L3#三宠技能#l\t\r\n\r\n";
         text += "#L4#技能偷学#l\t\r\n\r\n";
         cm.sendSimple(text);

@@ -293,6 +293,7 @@ function action(mode, type, selection) {
         text += "#L3#发色#l\t\r\n\r\n";
         text += "#L4#脸色#l\t\r\n\r\n";
         text += "#L5#肤色#l\t\r\n\r\n";
+        text += "#L6#宠物#l\t\r\n\r\n";
         // text += "#L2#真漂亮医院#l\t\r\n\r\n";
         text += "#L99#动漫皮肤#l\t\r\n\r\n";
         cm.sendSimple(text);
@@ -368,9 +369,9 @@ function doSelect(selection) {
             beauty = 3;
             cm.sendStyle("挑选一款肤色吧！#b需要消耗" + DRAW_COST + "点卷！", skins);
             break;
-        // case 3://发色
-        //     openNpc("Salon");
-        //     break;
+        case 6://宠物
+            openNpc("宠物");
+            break;
         case 99:
             openNpc("动漫皮肤");
             break;

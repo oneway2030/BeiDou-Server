@@ -50,14 +50,13 @@ import org.gms.util.Pair;
 
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import static java.util.concurrent.TimeUnit.DAYS;
 
 public final class CashOperationHandler extends AbstractPacketHandler {
     private static final Logger log = LoggerFactory.getLogger(CashOperationHandler.class);
-
+    private static final int CASH_COUNT =2000;
     private final NoteService noteService;
 
     public CashOperationHandler(NoteService noteService) {
@@ -163,7 +162,7 @@ public final class CashOperationHandler extends AbstractPacketHandler {
                     byte mode = p.readByte();
                     if (mode == 0) {
                         byte type = p.readByte();
-                        if (cs.getCash(cash) < 4000) {
+                        if (cs.getCash(cash) < CASH_COUNT) {
                             c.enableCSActions();
                             return;
                         }
@@ -172,7 +171,7 @@ public final class CashOperationHandler extends AbstractPacketHandler {
                             c.enableCSActions();
                             return;
                         }
-                        cs.gainCash(cash, -4000);
+                        cs.gainCash(cash, -CASH_COUNT);
                         if (chr.gainSlots(type, qty, false)) {
                             c.sendPacket(PacketCreator.showBoughtInventorySlots(type, chr.getSlots(type)));
                             c.sendPacket(PacketCreator.showCash(chr));
@@ -208,7 +207,7 @@ public final class CashOperationHandler extends AbstractPacketHandler {
                     int cash = p.readInt();
                     byte mode = p.readByte();
                     if (mode == 0) {
-                        if (cs.getCash(cash) < 4000) {
+                        if (cs.getCash(cash) < CASH_COUNT) {
                             c.enableCSActions();
                             return;
                         }
@@ -217,7 +216,7 @@ public final class CashOperationHandler extends AbstractPacketHandler {
                             c.enableCSActions();
                             return;
                         }
-                        cs.gainCash(cash, -4000);
+                        cs.gainCash(cash, -CASH_COUNT);
                         if (chr.getStorage().gainSlots(qty)) {
                             log.debug("Chr {} bought {} slots to their account storage.", c.getPlayer().getName(), qty);
                             chr.setUsedStorage();

@@ -4,8 +4,7 @@
 var OldTitle = "\t\t\t\t\t#e#k欢迎来到#r[其他功能]#k系统#n\t\t\t\t\r\n";
 var status = -1;
 var 公测金币奖励 = 5000;  // 修正为1000W金币（原1000单位可能为笔误）
-var 公测道具奖励 = [
-    [4000313, 800],  // 黄金枫叶
+var 公测道具奖励 = [[4000313, 800],  // 黄金枫叶
     [2029005, 20],    // 三倍经验卡
     [2029003, 20],  // 双倍爆率卡
 ];
@@ -29,10 +28,10 @@ function action(mode, type, selection) {
     if (status === 0) {
         let text = OldTitle;
         text += " \r\n";
-        text += "#L0#领取节假日礼物#l\t\r\n\r\n";
-        text += "#b#L1#领取公测测试礼包（正式开服无该礼包）#l\t\r\n\r\n";
+        text += "#L0#维护补偿#l\t\r\n\r\n";
         text += "#b#L2#常用指令查询#l\t\r\n\r\n";
-        text += "#b#L3#测试期间道具领取#l\t\r\n\r\n";
+        // text += "#b#L1#领取公测测试礼包（正式开服无该礼包）#l\t\r\n\r\n";
+        // text += "#b#L3#测试期间道具领取#l\t\r\n\r\n";
         cm.sendSimple(text);
     } else if (status === 1) {
         doSelect(selection);
@@ -41,14 +40,11 @@ function action(mode, type, selection) {
     }
 }
 
+
 function doSelect(selection) {
     switch (selection) {
         case 0:
-            cm.sendOk("还不是节假日！");
-            cm.dispose();
-            break;
-        case 1:
-            公测奖励();
+            发放补偿奖励()
             break;
         case 2:
             openNpc("常用指令");
@@ -63,6 +59,34 @@ function doSelect(selection) {
             cm.dispose();
     }
 }
+
+
+var 枫叶奖励 = 4001126;
+var 枫叶数量 = 50;
+var 补偿奖励_KEY = "补偿奖励_v1"
+
+function 发放补偿奖励() {
+    //检查是否已领取过礼包
+    if (cm.getAccountExtendValue(补偿奖励_KEY) === "1") {
+        cm.sendOk("你已经领取过维护补偿啦！");
+        cm.dispose();
+        return;
+    }
+    var player = cm.getPlayer();
+    if (cm.canHold(枫叶奖励, 枫叶数量)) {
+        cm.gainItem(枫叶奖励, 枫叶数量);
+        cm.getPlayer().getCashShop().gainCash(1, 5000);//点券
+        cm.saveOrUpdateAccountExtendValue(补偿奖励_KEY, "1");
+        cm.sendOk("恭喜你领取成功");
+        const PacketCreator = Java.type('org.gms.util.PacketCreator');
+        player.getWorldServer().broadcastPacket(PacketCreator.serverNotice(6, "恭喜玩家 " + player.getName() + " 领取维护补偿!"));
+        cm.dispose();
+    } else {
+        cm.sendOk("背包空间不足");
+        cm.dispose();
+    }
+}
+
 
 function 公测奖励() {
     //检查是否已领取过礼包
