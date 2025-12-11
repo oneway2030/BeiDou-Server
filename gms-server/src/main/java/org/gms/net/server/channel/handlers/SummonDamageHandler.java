@@ -41,11 +41,16 @@ import org.gms.server.life.MonsterInformationProvider;
 import org.gms.server.maps.Summon;
 import org.gms.util.PacketCreator;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public final class SummonDamageHandler extends AbstractDealDamageHandler {
     private static final Logger log = LoggerFactory.getLogger(SummonDamageHandler.class);
+    private static final Set<Integer> SKILL_WHITELIST = Collections.unmodifiableSet(new HashSet<Integer>() {{
+        add(2221005);   // 火魔兽
+        add(2121005);   // 冰魔兽
+        add(2311006);   // 圣龙
+        add(2321003);   // 强化圣龙
+    }});
 
     public final class SummonAttackEntry {
 
@@ -111,8 +116,11 @@ public final class SummonDamageHandler extends AbstractDealDamageHandler {
                 if (damage > maxDmg) {
                     AutobanFactory.DAMAGE_HACK.alert(c.getPlayer(), "Possible packet editing summon damage exploit.");
                     final String mobName = MonsterInformationProvider.getInstance().getMobNameFromId(target.getId());
-                    log.info("Possible exploit - chr {} used a summon of skillId {} to attack {} with damage {} (max: {})",
-                            c.getPlayer().getName(), summon.getSkill(), mobName, damage, maxDmg);
+                    //白名单里的技能不打印
+                    if (!SKILL_WHITELIST.contains(summon.getSkill())) {
+                        log.info("Possible exploit - chr {} used a summon of skillId {} to attack {} with damage {} (max: {})",
+                                c.getPlayer().getName(), summon.getSkill(), mobName, damage, maxDmg);
+                    }
                     damage = maxDmg;
                 }
 

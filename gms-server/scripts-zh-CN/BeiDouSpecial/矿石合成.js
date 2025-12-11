@@ -38,7 +38,7 @@ function action(mode, type, selection) {
     // 直接从选择冶炼类型开始，跳过初始确认
     if (status == 0) {
         var selStr = "我喜欢你的作风！我们现在就开工吧。你想要冶炼哪种母矿？ #b";
-        var options = ["冶炼矿石母矿", "冶炼宝石母矿", "冶炼水晶母矿", "高级矿石合成"];
+        var options = ["精炼矿石", "精炼宝石", "精炼水晶矿石", "精炼稀有宝石", "制作材料", "高级矿石合成"];
         for (var i = 0; i < options.length; i++) {
             selStr += "\r\n#L" + i + "# " + options[i] + "#l \r\n";
         }
@@ -63,13 +63,29 @@ function action(mode, type, selection) {
             equip = false;
         } else if (selectedType == 2) { //Crystal refine
             var selStr = "水晶？这可真是稀有。别担心，我冶炼它们的手艺就像对矿石和宝石那样熟练。你想要冶炼哪种水晶？#b";
-            var crystals = ["#i4005000##t4005000#", "#i4005000##t4005000#", "#i4005002##t4005002#", "#i4005003##t4005003#"];
+            var crystals = ["#i4005000##t4005000#", "#i4005001##t4005001#", "#i4005002##t4005002#", "#i4005003##t4005003#", "#i4005004##t4005004#"];
             for (var i = 0; i < crystals.length; i++) {
                 selStr += "\r\n#L" + i + "# " + crystals[i] + "#l";
             }
             cm.sendSimple(selStr);
             equip = false;
-        }else if (selectedType == 3) { //Crystal refine
+        } else if (selectedType == 3) { //Crystal refine
+            var selStr = "想制作稀有宝石吗？你想制作哪一种呢？#b";
+            var items = ["#i4011007##t4011007#", "#i4021009##t4021009#"];
+            for (var i = 0; i < items.length; i++) {
+                selStr += "\r\n#L" + i + "# " + items[i] + "#l";
+            }
+            cm.sendSimple(selStr);
+            equip = false;
+        } else if (selectedType == 4) { //Crystal refine
+            var selStr = "材料吗？我有几种可以为你制作的材料……#b";
+            var materials = ["使用树枝制作加工木材", "使用木块制作加工木材", "制作螺丝（15个）"];
+            for (var i = 0; i < materials.length; i++) {
+                selStr += "\r\n#L" + i + "# " + materials[i] + "#l";
+            }
+            cm.sendSimple(selStr);
+            equip = false;
+        } else if (selectedType == 5) { //Crystal refine
             cm.dispose();
             cm.openNpc(9900001, "高等宝石兑换");
         }
@@ -94,16 +110,33 @@ function action(mode, type, selection) {
             matQty = matQtySet[selectedItem];
             cost = costSet[selectedItem];
         } else if (selectedType == 2) { //Crystal refine
-            var itemSet = [4005000, 4005001, 4005002, 4005003];
-            var matSet = [4004000, 4004001, 4004002, 4004003];
-            var matQtySet = [10, 10, 10, 10];
-            var costSet = [4500, 4500, 4500, 4500];
+            var itemSet = [4005000, 4005001, 4005002, 4005003, 4005004];
+            var matSet = [4004000, 4004001, 4004002, 4004003, 4004004];
+            var matQtySet = [10, 10, 10, 10, 10];
+            var costSet = [5000, 5000, 5000, 5000, 1000000];
+            item = itemSet[selectedItem];
+            mats = matSet[selectedItem];
+            matQty = matQtySet[selectedItem];
+            cost = costSet[selectedItem];
+        } else if (selectedType == 3) { //Crystal refine
+            var itemSet = [4011007, 4021009];
+            var matSet = [[4011000, 4011001, 4011002, 4011003, 4011004, 4011005, 4011006], [4021000, 4021001, 4021002, 4021003, 4021004, 4021005, 4021006, 4021007, 4021008]];
+            var matQtySet = [[1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1]];
+            var costSet = [10000, 15000];
+            item = itemSet[selectedItem];
+            mats = matSet[selectedItem];
+            matQty = matQtySet[selectedItem];
+            cost = costSet[selectedItem];
+        } else if (selectedType == 4) { //Crystal refine
+            var itemSet = [4003001, 4003001, 4003000];
+            var matSet = [4000003, 4000018, [4011000, 4011001]];
+            var matQtySet = [10, 5, [1, 1]];
+            var costSet = [0, 0, 0];
             item = itemSet[selectedItem];
             mats = matSet[selectedItem];
             matQty = matQtySet[selectedItem];
             cost = costSet[selectedItem];
         }
-
         var prompt = "想要制作#t" + item + "#，对吗？那么，你想制作多少？";
         cm.sendGetNumber(prompt, 1, 1, 100)
     } else if (status == 3 && mode == 1) {

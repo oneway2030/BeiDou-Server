@@ -23,9 +23,9 @@
  * @event: Treasure PQ
  */
 const GameConfig = Java.type('org.gms.config.GameConfig');
-var 最大等级=GameConfig.getServerInt("mxj_max_level")
+var 最大等级 = GameConfig.getServerInt("mxj_max_level")
 var isPq = true;
-var minPlayers = 4, maxPlayers = 6;
+var minPlayers = 2, maxPlayers = 6;
 var minLevel = 140, maxLevel = 最大等级;
 var entryMap = 674030000;
 var exitMap = 674030100;
@@ -41,7 +41,7 @@ var bonusTime = 10;     // 10 minutes
 const maxLobbies = 1;
 
 minPlayers = GameConfig.getServerBoolean("use_enable_solo_expeditions") ? 1 : minPlayers;  //如果解除远征队人数限制，则最低人数改为1人
-if(GameConfig.getServerBoolean("use_enable_party_level_limit_lift")) {  //如果解除远征队等级限制，则最低140级，最高200级。
+if (GameConfig.getServerBoolean("use_enable_party_level_limit_lift")) {  //如果解除远征队等级限制，则最低140级，最高200级。
     minLevel = 140 , maxLevel = 最大等级;
 }
 
@@ -134,7 +134,8 @@ function setup(level, lobbyid) {
     return eim;
 }
 
-function afterSetup(eim) {}
+function afterSetup(eim) {
+}
 
 function respawnStages(eim) {
     eim.getMapInstance(674030000).instanceMapRespawn();
@@ -150,7 +151,8 @@ function scheduledTimeout(eim) {
     end(eim);
 }
 
-function playerUnregistered(eim, player) {}
+function playerUnregistered(eim, player) {
+}
 
 function playerExit(eim, player) {
     eim.unregisterPlayer(player);
@@ -181,7 +183,8 @@ function changedLeader(eim, leader) {
     }
 }
 
-function playerDead(eim, player) {}
+function playerDead(eim, player) {
+}
 
 function playerRevive(eim, player) { // player presses ok on the death pop up.
     if (eim.isEventTeamLackingNow(true, minPlayers, player)) {
@@ -257,8 +260,11 @@ function monsterKilled(mob, eim) {
     }
 }
 
-function allMonstersDead(eim) {}
+function allMonstersDead(eim) {
+}
 
-function cancelSchedule() {}
+function cancelSchedule() {
+}
 
-function dispose(eim) {}
+function dispose(eim) {
+}

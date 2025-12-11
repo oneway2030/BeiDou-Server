@@ -71,11 +71,16 @@ function levelSell() {
     for (let i = start; i <= end; i++) {
         const item = inventory.getItem(i);
         if (item) {
-            const quantity = item.getQuantity();
-            // 执行出售操作
-            shop.sell(cm.getClient(), sellType, i, quantity);
-            // 累加价格（使用ii单例，避免重复获取）
-            totalPrice += ii.getPrice(item.getItemId(), quantity);
+            //不允许卖点装
+            if (sellType === InventoryType.EQUIP && ii.isCashItem(item.getItemId())) {
+                continue;
+            } else {
+                const quantity = item.getQuantity();
+                // 执行出售操作
+                shop.sell(cm.getClient(), sellType, i, quantity);
+                // 累加价格（使用ii单例，避免重复获取）
+                totalPrice += ii.getPrice(item.getItemId(), quantity);
+            }
         }
     }
     cm.sendOk(`#k出售 #r${start}-${end} 格 【${column[curChoose]}】#k物品成功！\r\n总计获取金币：#r${cm.numberWithCommas(totalPrice)}#k`);

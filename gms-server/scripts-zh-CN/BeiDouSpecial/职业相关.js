@@ -43,7 +43,9 @@ function action(mode, type, selection) {
     if (status === 0) {
         let text = OldTitle;
         text += " \r\n";
-        // text += "#L1##b快速转职#l\t\r\n\r\n";
+        if (cm.getPlayer().isGM()) {
+            text += "#L1##b快速转职#l\t\r\n\r\n";
+        }
         text += "#L2#更换职业#l\t\r\n\r\n";
         text += "#L3#九转涅槃#l\t\r\n\r\n";
         text += "#L4#洗血系统#l\t\r\n\r\n";

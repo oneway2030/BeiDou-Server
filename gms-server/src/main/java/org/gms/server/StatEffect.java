@@ -89,6 +89,7 @@ import org.gms.constants.skills.SuperGM;
 import org.gms.constants.skills.ThunderBreaker;
 import org.gms.constants.skills.WhiteKnight;
 import org.gms.constants.skills.WindArcher;
+import org.gms.model.pojo.SkillEntry;
 import org.gms.net.packet.Packet;
 import org.gms.net.server.Server;
 import org.gms.net.server.world.Party;
@@ -112,14 +113,12 @@ import org.gms.server.partyquest.CarnivalFactory;
 import org.gms.server.partyquest.CarnivalFactory.MCSkill;
 import org.gms.util.PacketCreator;
 import org.gms.util.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Matze
@@ -127,6 +126,8 @@ import java.util.Map;
  * @author Ronan
  */
 public class StatEffect {
+    private static final Logger log = LoggerFactory.getLogger(StatEffect.class);
+
     private short watk, matk, wdef, mdef, acc, avoid, speed, jump;
     private short hp, mp;
     private double hpR, mpR;
@@ -135,7 +136,7 @@ public class StatEffect {
     private short mpCon, hpCon;
     private int duration, target, barrier, mob;
     private boolean overTime, repeatEffect;
-    private int sourceid,expbuff;
+    private int sourceid, expbuff;
     private int moveTo;
     private int cp, nuffSkill;
     private List<Disease> cureDebuffs;
@@ -150,6 +151,21 @@ public class StatEffect {
     private short bulletCount, bulletConsume;
     private byte mapProtection;
     private CardItemupStats cardStats;
+
+    private static final Set<Integer> BUFF_BLACKLIST = Set.of(
+            2121004,   //终极无限
+            2221004,   //终极无限
+            2321004);
+
+    //疾风步
+    private static final Set<Integer> BUFF_WHITELIST = Set.of(1001,   //团队治疗
+            1002);
+
+    private static final Map<Integer, Integer> CUSTOM_BUFF_TIME_LIST = Map.of(
+            2121004, 60000,
+            2221004, 60000,
+            2321004, 60000);
+
 
     private static class CardItemupStats {
         protected int itemCode, prob;
@@ -1228,16 +1244,46 @@ public class StatEffect {
         return bounds;
     }
 
-    public int getBuffLocalDuration() {
-        if (skill) {
-            return !GameConfig.getServerBoolean("use_buff_everlasting") ? duration : Integer.MAX_VALUE;
-        }else{
+    // 新增：判断技能是否为角色自身职业的技能
+    private boolean isOwnSkill(Character chr) {
+        // 通过技能ID获取技能对象（假设sourceid为技能ID）
+        int skillId = this.sourceid;
+        // 技能在黑名单中 → 强制视为非自身技能
+        if (BUFF_BLACKLIST.contains(skillId)) {
+            return false;
+        } else if (BUFF_WHITELIST.contains(skillId)) {
+            //白名单的技能直接无限时间
+            return true;
+        }
+        Skill curSkill = SkillFactory.getSkill(skillId);
+
+        Map<Skill, SkillEntry> skillsMap = chr.getSkills();
+        Set<Skill> skills = skillsMap.keySet();
+        return skills.contains(curSkill);
+    }
+
+    // 修改后的获取时长方法，需要传入角色对象用于判定
+    public int getBuffLocalDuration(Character chr) {
+        //非技能类效果（如物品buff）直接视为非自身技能
+        if (!skill) {
             return duration;
         }
+        if (!GameConfig.getServerBoolean("use_buff_everlasting")) {
+            return duration;
+        }
+        //判断是否是自定义技能时间
+        Integer customTime = CUSTOM_BUFF_TIME_LIST.get(this.sourceid);
+        if (customTime != null && customTime > 0) {
+            return customTime;
+        }
+        if (isOwnSkill(chr)) {
+            return Integer.MAX_VALUE;
+        }
+        return 30*60*1000;//30分钟
     }
 
     public void silentApplyBuff(Character chr, long localStartTime) {
-        int localDuration = getBuffLocalDuration();
+        int localDuration = getBuffLocalDuration(chr);
         localDuration = alchemistModifyVal(chr, localDuration, false);
         //CancelEffectAction cancelAction = new CancelEffectAction(chr, this, starttime);
         //ScheduledFuture<?> schedule = TimerManager.getInstance().schedule(cancelAction, ((starttime + localDuration) - Server.getInstance().getCurrentTime()));
@@ -1275,7 +1321,7 @@ public class StatEffect {
     }
 
     public void updateBuffEffect(Character target, List<Pair<BuffStat, Integer>> activeStats, long starttime) {
-        int localDuration = getBuffLocalDuration();
+        int localDuration = getBuffLocalDuration(target);
         localDuration = alchemistModifyVal(target, localDuration, false);
 
         long leftDuration = (starttime + localDuration) - Server.getInstance().getCurrentTime();
@@ -1294,7 +1340,7 @@ public class StatEffect {
         }
 
         List<Pair<BuffStat, Integer>> localstatups = statups;
-        int localDuration = getBuffLocalDuration();
+        int localDuration = getBuffLocalDuration(applyto);
         int localsourceid = sourceid;
         int seconds = localDuration / 1000;
         Mount givemount = null;

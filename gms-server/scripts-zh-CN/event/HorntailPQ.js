@@ -25,7 +25,7 @@
 const GameConfig = Java.type('org.gms.config.GameConfig');
 var 最大等级=GameConfig.getServerInt("mxj_max_level")
 var isPq = true;
-var minPlayers = 2, maxPlayers = 6;
+var minPlayers = 1, maxPlayers = 6;
 var minLevel = 120, maxLevel = 最大等级;
 var entryMap = 240050100;
 var exitMap = 240050000;

@@ -146,6 +146,7 @@ function action(mode, type, selection) {
                 status = 6;
             } else if (selection == 2) {
                 var min = exped.getMinSize();
+                min = 1;
                 var size = expedition.getMemberList().size();
                 if (size < min) {
                     cm.sendOk("你的远征队至少需要有" + min + "名玩家注册。");

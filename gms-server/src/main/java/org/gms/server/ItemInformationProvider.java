@@ -1700,7 +1700,7 @@ public class ItemInformationProvider {
         Data itemData = getItemData(ItemId);
         Data childByPath = itemData.getChildByPath("info/cash");
         if (childByPath == null) {
-            childByPath = childByPath.getChildByPath("cash");
+            childByPath = itemData.getChildByPath("cash");
         }
         if (childByPath == null) {
             return false;

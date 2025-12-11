@@ -39,8 +39,13 @@ function action(mode, type, selection) {
             // 选中升级记录后，先检查道具是否充足
             selectedUpgradeIndex = selection;
             if (checkRequiredItems()) {
+                // 消耗道具
+                consumeRequiredItems();
                 // 道具充足，进入属性预览确认页
                 showAttrConfirmPage();
+            } else {
+                cm.sendOk("洗练所需材料不足,无法洗练");
+                cm.dispose();
             }
             break;
         case 2:
@@ -123,20 +128,15 @@ function main() {
  */
 function checkRequiredItems() {
     // 遍历检查每个所需道具
-    let text = "洗练所需道具不足：\r\n";
     let 是否满足条件 = true;
     for (var i = 0; i < 需要道具.length; i++) {
         let item = 需要道具[i];
         var 持有数量 = cm.getPlayer().getItemQuantity(item.id, false);
         if (持有数量 < item.qty) {
             是否满足条件 = false;
-            // 只添加不足的道具信息
-            text += `#v${item.id}##t${item.id}##k 数量不足！需要 ${item.qty} 个, 当前只有 ${持有数量} 个\r\n`;
         }
     }
     if (!是否满足条件) {
-        cm.sendOk(text);
-        cm.dispose();
         return false;
     }
     return true;
@@ -181,7 +181,9 @@ function showAttrConfirmPage() {
     confirmText += "#r【新洗练属性】#k\r\n";
     confirmText += formatStatsWithColors(newStatsDes) + "\r\n\r\n";
     confirmText += "#L0##b确认覆盖（使用新的洗练属性）#l\r\n\r\n";
-    confirmText += "#L2##r重新洗练（当前属性不覆盖，会重新消耗道具）#l\r\n\r\n"; // 新增：重新洗练选项
+    if (checkRequiredItems()) {
+        confirmText += "#L2##r重新洗练（当前属性不覆盖，会重新消耗道具）#l\r\n\r\n"; // 新增：重新洗练选项
+    }
     confirmText += "#L1##r取消（保留原来的属性）#l\r\n\r\n";
     cm.sendSimple(confirmText);
 }
@@ -192,27 +194,22 @@ function showAttrConfirmPage() {
  */
 function handleConfirmResult(selection) {
     if (selection === 0) {
-        // 二次确认后再次检查道具（防止中途消耗）
-        if (checkRequiredItems()) {
-            if (newStats && newStats.size() > 0) {
-                var client = cm.getPlayer().getClient();
-                // 执行洗练逻辑
-                var isSuccess = firstEquip.replaceUpgradeHistory(client, selectedUpgradeIndex, newStats);
-                if (isSuccess) {
-                    // 消耗道具
-                    consumeRequiredItems();
-                    cm.sendOk("#b属性洗练成功！#n\r\n" +
-                        "已消耗所需道具，新属性已覆盖原第" + (selectedUpgradeIndex + 1) + "次升级属性~");
-                    全服通告();
-                    cm.dispose();
-                } else {
-                    cm.sendOk("#r数据异常，请联系管理员~");
-                    cm.dispose();
-                }
+        if (newStats && newStats.size() > 0) {
+            var client = cm.getPlayer().getClient();
+            // 执行洗练逻辑
+            var isSuccess = firstEquip.replaceUpgradeHistory(client, selectedUpgradeIndex, newStats);
+            if (isSuccess) {
+                cm.sendOk("#b属性洗练成功！#n\r\n" +
+                    "已消耗所需道具，新属性已覆盖原第" + (selectedUpgradeIndex + 1) + "次升级属性~");
+                全服通告();
+                cm.dispose();
             } else {
-                cm.sendOk("#b数据异常，未生成新属性，请联系管理员。");
+                cm.sendOk("#r数据异常，请联系管理员~");
                 cm.dispose();
             }
+        } else {
+            cm.sendOk("#b数据异常，未生成新属性，请联系管理员。");
+            cm.dispose();
         }
     } else if (selection === 1) {
         // 用户取消，直接返回首页
@@ -226,6 +223,8 @@ function handleConfirmResult(selection) {
             // 将状态重置为1，以便再次调用 showAttrConfirmPage 生成新属性
             status = 1;
             showAttrConfirmPage();
+        } else {
+            cm.getPlayer().message("洗练道具不足，无法洗练");
         }
     }
 }
@@ -233,7 +232,7 @@ function handleConfirmResult(selection) {
 function 全服通告() {
     const PacketCreator = Java.type('org.gms.util.PacketCreator');
     var player = cm.getPlayer();
-    let tip = `恭喜玩家${player.getName()}对[${firstEquip.getName()}]洗练出属性:${newStatsDes}`;
+    let tip = `恭喜玩家[${player.getName()}]对[${firstEquip.getName()}]洗练出属性:${newStatsDes}`;
     player.getWorldServer().broadcastPacket(PacketCreator.serverNotice(6, tip));
 }
 

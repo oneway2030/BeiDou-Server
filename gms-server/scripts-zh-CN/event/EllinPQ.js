@@ -23,7 +23,7 @@
  * @event: Ellin PQ
  */
 const GameConfig = Java.type('org.gms.config.GameConfig');
-var 最大等级=GameConfig.getServerInt("mxj_max_level")
+var 最大等级 = GameConfig.getServerInt("mxj_max_level")
 var isPq = true;
 var minPlayers = 4, maxPlayers = 6;
 var minLevel = 45, maxLevel = 55;
@@ -40,7 +40,8 @@ var eventTime = 30;     // 30 minutes
 const maxLobbies = 1;
 
 minPlayers = GameConfig.getServerBoolean("use_enable_solo_expeditions") ? 1 : minPlayers;  //如果解除远征队人数限制，则最低人数改为1人
-if(GameConfig.getServerBoolean("use_enable_party_level_limit_lift")) {  //如果解除远征队等级限制，则最高200级。
+minPlayers = 1;
+if (GameConfig.getServerBoolean("use_enable_party_level_limit_lift")) {  //如果解除远征队等级限制，则最高200级。
     minLevel = 45 , maxLevel = 最大等级;
 }
 
@@ -82,7 +83,8 @@ function setEventExclusives(eim) {
     eim.setExclusiveItems(itemSet);
 }
 
-function setEventRewards(eim) {}
+function setEventRewards(eim) {
+}
 
 function getEligibleParty(party) {      //selects, from the given party, the team that is allowed to attempt this event
     var eligible = [];
@@ -134,7 +136,8 @@ function setup(level, lobbyid) {
     return eim;
 }
 
-function afterSetup(eim) {}
+function afterSetup(eim) {
+}
 
 function respawnStg2(eim) {
     if (!eim.getMapInstance(930000200).getPlayers().isEmpty()) {
@@ -170,7 +173,8 @@ function scheduledTimeout(eim) {
     end(eim);
 }
 
-function playerUnregistered(eim, player) {}
+function playerUnregistered(eim, player) {
+}
 
 function playerExit(eim, player) {
     eim.unregisterPlayer(player);
@@ -183,7 +187,8 @@ function playerLeft(eim, player) {
     }
 }
 
-function playerDead(eim, player) {}
+function playerDead(eim, player) {
+}
 
 function playerRevive(eim, player) { // player presses ok on the death pop up.
     if (eim.isEventTeamLackingNow(true, minPlayers, player)) {
@@ -254,8 +259,11 @@ function monsterKilled(mob, eim, hasKiller) {
     }
 }
 
-function allMonstersDead(eim) {}
+function allMonstersDead(eim) {
+}
 
-function cancelSchedule() {}
+function cancelSchedule() {
+}
 
-function dispose(eim) {}
+function dispose(eim) {
+}

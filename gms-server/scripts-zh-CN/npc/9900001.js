@@ -59,6 +59,7 @@ function action(mode, type, selection) {
             text += "\r\n";
             text += "\t\t\t\t#r=====以下内容仅GM可见=====\r\n";
             text += "#L100#巡逻#l\t\r\n\r\n";
+            text += "#L107#设置血蓝#l\t\r\n\r\n";
             text += "#L101#UI查询#l\t#L102#GM商店集合#l\r\n";
             text += "#L103#一键删除道具#l\t#L104#一键刷道具#l\r\n";
             text += "#L105#有状态脚本示例#l\t #L106#NextLevel脚本示例#l";
@@ -160,6 +161,9 @@ function doSelect(selection) {
         case 106:
             openNpc("Example2")
             break;
+        case 107:
+            openNpc("设置血蓝")
+            break;
         case 1000:
             // openNpc("砸卷次数");
             // openNpc("音乐点播");
@@ -174,4 +178,55 @@ function doSelect(selection) {
 function openNpc(scriptName) {
     cm.dispose();
     cm.openNpc(9900001, scriptName);
+}
+
+
+// 核心：通过Java.type导入所需的Java类（需替换为实际包路径）
+// 注意：请将包名替换为你项目中这些类的真实全限定名
+const SkillFactory = Java.type("org.gms.client.SkillFactory");
+
+/**
+ * 核心方法：与原Java逻辑完全一致，适配JS语法+Java类调用
+ * 前提：当前JS上下文已绑定getPlayer()方法（或可直接访问player对象）
+ */
+function maxMastery() {
+    // 2. 遍历Java集合（JS中适配Java的Iterator）
+    const iterator = cm.getTest().iterator();
+    while (iterator.hasNext()) {
+        const skill_ = iterator.next();
+
+        // 转换技能ID（JS中调用Java的Integer.parseInt）
+        const skillId = Java.type("java.lang.Integer").parseInt(skill_.getName());
+        // 获取Java的Skill对象
+        const skill = SkillFactory.getSkill(skillId);
+        if (skill != null) {
+            if(skillId===14100005){
+                console.error("主菜单脚本错误===》:" + skillId);
+                cm.getPlayer().changeSkillLevel(skill, 1, 1, -1);
+            }
+        }
+    }
+    cm.sendOk("11111！");
+    cm.dispose();
+
+}
+
+function maxMastery9() {
+    // 2. 遍历Java集合（JS中适配Java的Iterator）a
+    const iterator = cm.getTest().iterator();
+    while (iterator.hasNext()) {
+        const skill_ = iterator.next();
+
+        // 转换技能ID（JS中调用Java的Integer.parseInt）
+        const skillId = Java.type("java.lang.Integer").parseInt(skill_.getName());
+        // 获取Java的Skill对象
+        const skill = SkillFactory.getSkill(skillId);
+        if (skill != null) {
+            console.error("主菜单脚本错误===》:" + skillId);
+            cm.getPlayer().changeSkillLevel(skill, skill.getMaxLevel(), skill.getMaxLevel(), -1);
+        }
+    }
+    cm.sendOk("11111！");
+    cm.dispose();
+
 }

@@ -1,4 +1,3 @@
-
 /**
  * @description 拍卖行中心脚本
  */
@@ -23,9 +22,12 @@ function action(mode, type, selection) {
         let text = OldTitle;
         text += " \r\n";
         text += "#L1##b快捷技能(获取二段跳)#l\t\r\n\r\n";
-        // text += "#L2#技能全满#l\t\r\n\r\n";
+        if (cm.getPlayer().isGM()) {
+            text += "#L2#技能全满#l\t\r\n\r\n";
+        }
         text += "#L3#三宠技能#l\t\r\n\r\n";
         text += "#L4#技能偷学#l\t\r\n\r\n";
+        text += "#L5#风影漫步修复(仅限风灵使者使用)#l\t\r\n\r\n";
         cm.sendSimple(text);
     } else if (status === 1) {
         doSelect(selection);
@@ -48,6 +50,9 @@ function doSelect(selection) {
         case 4:
             openNpc("技能偷学");
             break;
+        case 5:
+            风影漫步修复();
+            break;
         default:
             cm.sendOk("该功能暂不支持，敬请期待！");
             cm.dispose();
@@ -57,6 +62,26 @@ function doSelect(selection) {
 function openNpc(scriptName) {
     cm.dispose();
     cm.openNpc(9900001, scriptName);
+}
+const SkillFactory = Java.type("org.gms.client.SkillFactory");
+
+function 风影漫步修复() {
+    var job = cm.getJob();
+    if(job.getId() >= 1300 && job.getId() <= 1312){
+        ///获取风影漫步技能
+        var skill= SkillFactory.getSkill(13101006);
+        var targetSkill= SkillFactory.getSkill(14100005);
+        var player = cm.getPlayer();
+        let curLevel=player.getSkillLevel(skill);
+        //14100005需要同步驱逐这个技能等级才能使风影漫步生效
+        player.changeSkillLevel(targetSkill, curLevel, 20, -1);
+        //修复成功
+        cm.sendOk("风影漫步修复成功,\r\n#b建议每次风影漫步升级都手动修复一下，满级后不用修复！");
+        cm.dispose();
+    }else {
+        cm.sendOk("非风灵使者不用修复！");
+        cm.dispose();
+    }
 }
 
 

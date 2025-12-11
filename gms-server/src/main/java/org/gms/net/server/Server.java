@@ -1713,5 +1713,9 @@ public class Server {
         TimerManager.getInstance().schedule(Server.getInstance().shutdown(false), time);
     }
 
+    public void resetLoggedInByAccountId(int accountId){
+        accountService.resetAllLoggedIn(accountId);
+    }
+
 
 }

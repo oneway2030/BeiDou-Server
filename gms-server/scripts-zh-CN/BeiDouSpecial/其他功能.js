@@ -44,7 +44,14 @@ function action(mode, type, selection) {
 function doSelect(selection) {
     switch (selection) {
         case 0:
-            发放补偿奖励()
+            try {
+                发放补偿奖励();
+            } catch (e) {
+                cm.dispose();
+                // 打印错误日志便于调试
+                console.error("主菜单脚本错误===》:", e);
+            }
+
             break;
         case 2:
             openNpc("常用指令");
@@ -61,9 +68,20 @@ function doSelect(selection) {
 }
 
 
-var 枫叶奖励 = 4001126;
-var 枫叶数量 = 50;
-var 补偿奖励_KEY = "补偿奖励_v1"
+var 枫叶奖励 = 4032133;
+var 枫叶数量 = 5;
+var 补偿奖励_KEY = "补偿奖励_v3"
+var meso_id = 9999999;
+var cash_id = 9999998;
+
+var rewards = [
+    {id: cash_id, qty: 10000},//点卷
+    {id: 4032133, qty: 15},//红色钻石
+    {id: 2029005, qty: 4},//三倍经验
+    {id: 2029002, qty: 2},//双倍爆率
+    {id: 4032170, qty: 20},//血量 200
+    {id: 4032171, qty: 20},//蓝量 200
+];
 
 function 发放补偿奖励() {
     //检查是否已领取过礼包
@@ -73,16 +91,21 @@ function 发放补偿奖励() {
         return;
     }
     var player = cm.getPlayer();
-    if (cm.canHold(枫叶奖励, 枫叶数量)) {
-        cm.gainItem(枫叶奖励, 枫叶数量);
-        cm.getPlayer().getCashShop().gainCash(1, 5000);//点券
+    if (!cm.isNotCanHold(1) && !cm.isNotCanHold(2) && !cm.isNotCanHold(3, 3)) {
+        rewards.forEach(reward => {
+            if (reward.id === meso_id) {
+                cm.gainMeso(reward.qty * 10000);
+            } else if (reward.id === cash_id) {
+                cm.getPlayer().getCashShop().gainCash(1, reward.qty);//点券
+            } else {
+                cm.gainItem(reward.id, reward.qty);
+            }
+        });
+        sendEquipment(1102039);
         cm.saveOrUpdateAccountExtendValue(补偿奖励_KEY, "1");
         cm.sendOk("恭喜你领取成功");
         const PacketCreator = Java.type('org.gms.util.PacketCreator');
         player.getWorldServer().broadcastPacket(PacketCreator.serverNotice(6, "恭喜玩家 " + player.getName() + " 领取维护补偿!"));
-        cm.dispose();
-    } else {
-        cm.sendOk("背包空间不足");
         cm.dispose();
     }
 }
@@ -125,4 +148,26 @@ function 公测奖励() {
 function openNpc(scriptName) {
     cm.dispose();
     cm.openNpc(9900001, scriptName);
+}
+
+function sendEquipment(fashionItemId) {
+    cm.getPlayer().gainEquip(fashionItemId,
+        10,
+        10,
+        10,
+        10,
+        100,
+        100,
+        10,
+        20,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        -1
+    );
 }

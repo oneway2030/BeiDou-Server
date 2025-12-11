@@ -121,19 +121,24 @@ public class ExtraStorage {
      */
     public boolean addItem(long itemId, int quantity, int type) {
         if (characterId == 0 && accountId == 0) {
-            log.error("ExtraStorage 存储失败");
+            log.error("ExtraStorage 存储失败：角色ID和账号ID均为空");
             return false;
         }
         lock.lock();
         try {
-            // 检查是否已有该矿石，若有则累加数量
+            // 遍历缓存，检查是否已有相同物品（同一角色+itemId+type）
             for (ExtraStorageDO item : mCache) {
-                if (item.getItemid() == itemId && item.getType() == type) {
+                // 匹配条件：物品ID、类型相同，且属于当前角色（通过characterid/accountid关联）
+                if (item.getItemid() == itemId
+                        && item.getType() == type
+                        && item.getCharacterid() == characterId
+                        && item.getAccountid() == accountId) { // 确保是当前角色的物品
+                    // 找到则累加数量
                     item.setQuantity(item.getQuantity() + quantity);
-                    break;
+                    return true; // 直接返回，避免执行后续新增逻辑
                 }
             }
-            // 新增矿石记录
+            // 未找到相同物品，才执行新增
             ExtraStorageDO newItem = ExtraStorageDO.builder()
                     .characterid(characterId)
                     .accountid(accountId)
@@ -142,13 +147,13 @@ public class ExtraStorage {
                     .type(type)
                     .build();
             mCache.add(newItem);
+            return true;
         } catch (Exception e) {
             log.error("ExtraStorage 存储失败", e);
             return false;
         } finally {
             lock.unlock();
         }
-        return true;
     }
 
     /**

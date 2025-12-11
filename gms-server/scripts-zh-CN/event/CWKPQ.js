@@ -23,7 +23,7 @@
  * @event: Crimsonwood Keep PQ
  */
 const GameConfig = Java.type('org.gms.config.GameConfig');
-var 最大等级=GameConfig.getServerInt("mxj_max_level")
+var 最大等级 = GameConfig.getServerInt("mxj_max_level")
 var isPq = true;
 var minPlayers = 6, maxPlayers = 30;
 var minLevel = 90, maxLevel = 最大等级;
@@ -40,7 +40,8 @@ var eventTime = 3;     // 3 minutes for first stg
 const maxLobbies = 1;
 
 minPlayers = GameConfig.getServerBoolean("use_enable_solo_expeditions") ? 1 : minPlayers;  //如果解除远征队人数限制，则最低人数改为1人
-if(GameConfig.getServerBoolean("use_enable_party_level_limit_lift")) {  //如果解除远征队等级限制，则最低90级，最高200级。
+minPlayers = 1;
+if (GameConfig.getServerBoolean("use_enable_party_level_limit_lift")) {  //如果解除远征队等级限制，则最低90级，最高200级。
     minLevel = 90 , maxLevel = 最大等级;
 }
 
@@ -302,9 +303,11 @@ function changedMap(eim, player, mapid) {
     }
 }
 
-function changedLeader(eim, leader) {}
+function changedLeader(eim, leader) {
+}
 
-function playerDead(eim, player) {}
+function playerDead(eim, player) {
+}
 
 function playerRevive(eim, player) {
     partyPlayersCheck(eim, player);
@@ -314,15 +317,18 @@ function playerDisconnected(eim, player) {
     partyPlayersCheck(eim, player);
 }
 
-function leftParty(eim, player) {}
+function leftParty(eim, player) {
+}
 
-function disbandParty(eim) {}
+function disbandParty(eim) {
+}
 
 function monsterValue(eim, mobId) {
     return 1;
 }
 
-function playerUnregistered(eim, player) {}
+function playerUnregistered(eim, player) {
+}
 
 function playerExit(eim, player) {
     eim.unregisterPlayer(player);
@@ -346,13 +352,18 @@ function clearPQ(eim) {
     eim.setEventCleared();
 }
 
-function monsterKilled(mob, eim) {}
+function monsterKilled(mob, eim) {
+}
 
-function allMonstersDead(eim) {}
+function allMonstersDead(eim) {
+}
 
-function cancelSchedule() {}
+function cancelSchedule() {
+}
 
-function dispose(eim) {}
+function dispose(eim) {
+}
+
 /**
  * 检测队伍人数是否满足最低人数要求
  * @param {ExpeditionInstanceManager} eim - 远征副本实例管理器

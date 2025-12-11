@@ -43,7 +43,7 @@ public final class LoginPasswordHandler implements PacketHandler {
 
     // 配置同一个IP或MAC允许的最大账号数量
     private int MAX_ACCOUNTS_PER_IP_OR_MAC = 0;
-    private static final Logger log = LoggerFactory.getLogger(Client.class);
+    private static final Logger log = LoggerFactory.getLogger(LoginPasswordHandler.class);
 
     @Override
     public boolean validateState(Client c) {
@@ -69,14 +69,12 @@ public final class LoginPasswordHandler implements PacketHandler {
 
         if (GameConfig.getServerBoolean("automatic_register") && loginok == 5) {
             try {
-                // 获取客户端IP和MAC地址
                 String clientIp = remoteHost;
                 String clientMac = c.getMacs().isEmpty() ? "" : c.getMacs().iterator().next();
 
-                // 检查IP和MAC的注册数量限制
                 if (!isAllowedRegistration(clientIp, clientMac)) {
-                    log.info("该IP或者Mac注册账号已达上线 ");
-                    c.sendPacket(PacketCreator.getLoginFailed(10)); // 超过注册限制
+                    log.info("该IP或者Mac注册账号已达上限");
+                    c.sendPacket(PacketCreator.getLoginFailed(10));
                     return;
                 }
                 // 执行账号注册
@@ -132,6 +130,8 @@ public final class LoginPasswordHandler implements PacketHandler {
         if (loginok == 3) {
             c.sendPacket(PacketCreator.getPermBan(c.getGReason()));//crashes but idc :D
             return;
+        } else if (loginok == 7) {
+            handleAccountKick(c);
         } else if (loginok != 0) {
             c.sendPacket(PacketCreator.getLoginFailed(loginok));
             return;
@@ -142,6 +142,18 @@ public final class LoginPasswordHandler implements PacketHandler {
         } else {
             c.sendPacket(PacketCreator.getLoginFailed(7));
         }
+    }
+
+    /**
+     * 如果loginok=7，需要顶号，重置在线状态
+     */
+    private void handleAccountKick(Client c) {
+        int accountId = c.getAccID();
+        if (accountId <= 0) {
+            return;
+        }
+        Server.getInstance().resetLoggedInByAccountId(accountId);
+        log.info("用户顶号 accountId="+accountId);
     }
 
     /**
