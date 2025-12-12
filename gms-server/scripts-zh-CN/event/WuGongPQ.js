@@ -3,7 +3,7 @@ const GameConfig = Java.type('org.gms.config.GameConfig');
 var 最大等级=GameConfig.getServerInt("mxj_max_level")
 var isPq = true; // 是否为PQ（Party Quest）类型事件。
 var minPlayers = 1, maxPlayers = 6; // 该事件实例允许的队伍成员数量范围。
-var minLevel = 25, maxLevel = 90;     // 合格队伍成员的等级范围。
+var minLevel = 25, maxLevel = 最大等级;     // 合格队伍成员的等级范围。
 var entryMap = 701010323;               // 事件启动时玩家进入的初始地图。
 var exitMap = 701010320;                // 玩家未能完成事件时被传送至此地图。
 var recruitMap = 701010322;             // 玩家必须在此地图上才能开始此事件。

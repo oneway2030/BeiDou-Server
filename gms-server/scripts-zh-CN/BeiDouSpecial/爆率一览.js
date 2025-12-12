@@ -15,16 +15,22 @@ var List_Mob;						   //普通怪物列表
 var namelength = 0;
 
 function start(){
-    if(MapObj == null) {		//首次打开进行初始化。
-        MonsterInformationProvider = Java.type('org.gms.server.life.MonsterInformationProvider');//导入 怪物信息 类
-        ItemInformationProvider = Java.type('org.gms.server.ItemInformationProvider');//导入 物品信息 类
-        QuestInfo = Java.type('org.gms.server.quest.Quest');//导入 任务 类
-        MapObj = cm.getMap();
-        List_Mob_All = MapObj.getAllMonsters(); //获取当前地图存活的怪物数量，由于未找到获取当前地图固定怪物列表方法，故用此方法代替。
-        //将怪物种类去重并按照Boss和普通怪物区分开
-        [List_Mob, List_Mob_Boss] = Object.values(List_Mob_All.reduce((acc, mob) => (acc.ids.has(mob.getId()) || (acc.ids.add(mob.getId()), mob.isBoss() ? acc.bosses : acc.mobs).push(mob), acc), { ids: new Set(), mobs: [], bosses: [] })).slice(-2);
+    try {
+        if(MapObj == null) {		//首次打开进行初始化。
+            MonsterInformationProvider = Java.type('org.gms.server.life.MonsterInformationProvider');//导入 怪物信息 类
+            ItemInformationProvider = Java.type('org.gms.server.ItemInformationProvider');//导入 物品信息 类
+            QuestInfo = Java.type('org.gms.server.quest.Quest');//导入 任务 类
+            MapObj = cm.getMap();
+            List_Mob_All = MapObj.getAllMonsters(); //获取当前地图存活的怪物数量，由于未找到获取当前地图固定怪物列表方法，故用此方法代替。
+            //将怪物种类去重并按照Boss和普通怪物区分开
+            [List_Mob, List_Mob_Boss] = Object.values(List_Mob_All.reduce((acc, mob) => (acc.ids.has(mob.getId()) || (acc.ids.add(mob.getId()), mob.isBoss() ? acc.bosses : acc.mobs).push(mob), acc), { ids: new Set(), mobs: [], bosses: [] })).slice(-2);
+        }
+        levelmain();
+    } catch (e) {
+        cm.dispose();
+        // 打印错误日志便于调试
+        console.error("爆率一览脚本错误===》:", e);
     }
-    levelmain();
 }
 
 function leveldispose() {

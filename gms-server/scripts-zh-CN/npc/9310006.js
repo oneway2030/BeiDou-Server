@@ -8,7 +8,7 @@ const isRepeat = true;	//true = 允许完成任务后重复进入。；false = �
 const mapID = 701010324;        //可怕的山丘
 const EventName = 'WuGongPQ';   //事件名称
 const EventLevel = 1;           //怪物HP倍率，提高此值可以成倍提高怪物血量。
-const LevelMin = 25 , LevelMax = 90;        //等级范围限制
+const LevelMin = 25 , LevelMax = 255;        //等级范围限制
 var em = null;     //事件实例
 
 function start() {
