@@ -13,37 +13,31 @@ var status = 0;
 var state;
 var em = null;
 var PartyInfo = null;
-const GameConfig = Java.type('org.gms.config.GameConfig');
-var 每日进入最大次数 = GameConfig.getServerInt("enter_max_count_yaoseng")
-var 妖僧已完成次数_KEY = "妖僧已完成次数"
 
-function checkcount() {
-    每日进入最大次数 = 每日进入最大次数 > 0 ? 每日进入最大次数 : 3
-}
+var enteredCountKey = "妖僧已完成次数";
+var maxEnterCountKey = "pq_enter_max_count_yaoseng";
+var maxEnterCount;
 
-function getCompletedCount() {
-    let count = cm.getCharacterExtendValue(妖僧已完成次数_KEY, true);
-    return Number(count) || 0; // 处理未签到过的情况
-}
-
-function saveCompletedCount() {
-    cm.saveOrUpdateCharacterExtendValue(妖僧已完成次数_KEY, String(getCompletedCount() + 1), true);
+function canEnter() {
+    maxEnterCount = cm.getPQEnterMaxCount(maxEnterCountKey)
+    if (cm.canEnterPQ(enteredCountKey, maxEnterCountKey)) {
+        cm.sendOk(`已达进入次数上限,每天最多进入${maxEnterCount}次`);
+        cm.dispose();
+        return false;
+    }
+    return true;
 }
 
 function start() {
-    checkcount();
-    var completedCount = getCompletedCount();
-    if (completedCount >= 每日进入最大次数) {
-        cm.sendOk(`已达进入次数上限,每天最多进入${每日进入最大次数}次`);
-        cm.dispose();
+    if (!canEnter()) {
         return;
     }
     if (!OpenRemotely && cm.getMapId() != recruitMap) {  //防止远程打开
         level();
         return;
     }
-    if(QuestID != null && QuestID > 0 && !cm.isQuestCompleted(QuestID)) {
-        cm.sendOkLevel('','尚未完成前置任务。');
+    if (QuestID != null && QuestID > 0 && !cm.isQuestCompleted(QuestID)) {
+        cm.sendOkLevel('', '尚未完成前置任务。');
         return;
     }
     if (em == null) {
@@ -68,7 +62,7 @@ function levelnull() {
 
 function levelStart() {
     let msg = `#e#b<组队任务> ${PartyName}#n\r\n${PartyInfo}#k\r\n`;
-    msg += `#r   每天最多进入${每日进入最大次数}次#k#l\r\n\r\n`;
+    msg += `#r   每天最多进入${maxEnterCount}次#k#l\r\n\r\n`;
     msg += `你和你的队伍成员一起完成任务怎么样？\r\n在这里，你会遇到障碍和问题，如果没有出色的团队合作，你是无法完成的。\r\n如果你想尝试，请告诉你的#b队长#k来找我谈谈。#b\r\n`;
     msg += `#L0#我想参加组队任务。#l\r\n`;
     msg += `#L1#我想 ${(cm.getPlayer().isRecvPartySearchInviteEnabled() ? "关闭" : "开启")} 组队搜索。#l\r\n`;
@@ -88,7 +82,7 @@ function level0() {
             if (!em.startInstance(cm.getParty(), cm.getPlayer().getMap(), EventLevel)) {//开始事件
                 msg = "另一个队伍已经进入了该频道的#r组队任务#k。请尝试其他频道，或者等待当前队伍完成。";
             } else {
-                saveCompletedCount();
+                cm.recordEntryPQ(enteredCountKey);
             }
         } else {
             list = em.getEligibleParty(cm.getParty());

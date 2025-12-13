@@ -5,8 +5,8 @@ var itemSet = Array(
     Array(5150044, 20000000),
     Array(4006000, 10000),
     Array(4006001, 10000),
-    Array(4031179, 1500000),
-    Array(4001017, 6000000),
+    Array(4031179, 10000000),
+    Array(4001017, 20000000),
     Array(4001107, 1000000),
     Array(4161021, 1000000),
     Array(4161018, 1000000),
@@ -55,12 +55,12 @@ function action(mode, type, selection) {
         cm.sendSimple(add);
     } else if (status == 2) {
         selectedItem = selection;
-        if(selectedItem===1000){
-            item=金币道具;
+        if (selectedItem === 1000) {
+            item = 金币道具;
             var bdd = `这里可以使用#i${item}##t${item}# x1 来进行兑换${兑换后的金币比例}万金币\r\n`;
             bdd += `请输入兑换几次${兑换后的金币比例}万\r`;
             cm.sendGetNumber(bdd, 1, 1, 100)
-        }else {
+        } else {
             item = itemSet[selectedItem][0];
             co = itemSet[selectedItem][1];
             var bdd = "你想要兑换：\r\n";

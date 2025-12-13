@@ -1,7 +1,7 @@
 /*
  * 世界任务
  */
-
+const ExpTable = Java.type('org.gms.constants.game.ExpTable');
 // 配置参数
 var 任务需要的道具 = [
     [[4000227, 888], [4000136, 111]],    //1 树果实  椰子果
@@ -36,16 +36,16 @@ var itemId
 var 奖励 = [
     [4032170, 10],  // 奖励道具1及数量
     [4032171, 10],    // 奖励道具2及数量
-    [2029004, 4],    //
-    [2029002, 2],    //
-    [4032133, 3],    //
+    [2029004, 2],    //
+    [2029002, 1],    //
+    [4032133, 2],    //
 ];
 var 首次完成金币 = 1000;  // 1000W金币
-var 重复完成金币 = 200;   // 200W金币
-var 基础任务ID = 200001;  // 任务ID基础值，用于标记完成状态
+var 重复完成金币 = 100;   // 200W金币
+var 基础任务ID = 200201;  // 任务ID基础值，用于标记完成状态
 var 当前任务 = -1;  // 当前任务编号（1-25）
 var 任务索引 = 当前任务 - 1;  // 转换为数组索引（0-24）
-var 经验奖励 = 5000;  // 千W经验
+var 经验奖励 = 50000000;  // 千W经验
 
 // 内部变量
 var status = -1;
@@ -53,10 +53,12 @@ var icon = "#fUI/UIWindow.img/QuestIcon/7/0#";
 var icon_exp = "#fUI/UIWindow.img/QuestIcon/8/0#";
 
 function start() {
+    获取奖励经验();
     显示当前任务详情();
 }
 
 function action(mode, type, selection) {
+    获取奖励经验();
     if (mode === -1) {
         im.dispose();
         return;
@@ -104,7 +106,7 @@ function 显示当前任务详情() {
     // 构建奖励文本
     var 奖励文本 = icon + ` × ${isCompleted ? 重复完成金币 : 首次完成金币} W \r\n`;
     if (!isCompleted) {
-        奖励文本 += icon_exp + ` × ${经验奖励} W \r\n`;
+        奖励文本 += icon_exp + ` × ${经验奖励}\r\n#b(等级越高获取的经验越多,最高5000W经验)#k\r\n`;
         for (var j = 0; j < 奖励.length; j++) {
             var 奖励ID = 奖励[j][0];
             var 奖励个数 = 奖励[j][1];
@@ -162,7 +164,7 @@ function 处理任务提交() {
             im.gainItem(奖励[k][0], 奖励[k][1]);
         }
         //发放经验奖励
-        im.gainExp(经验奖励 * 10000);
+        im.gainExp(经验奖励);
         // 标记任务完成
         im.completeQuest(任务ID);
     }
@@ -172,11 +174,24 @@ function 处理任务提交() {
     var 完成提示 = `恭喜你完成#r#e【世界任务${当前任务}】#n#k！\r\n获得奖励：\r\n\r\n`;
     完成提示 += icon + ` × ${金币奖励} W\r\n`;
     if (首次完成) {
-        完成提示 += icon_exp + ` × ${经验奖励} W \r\n`;
+        完成提示 += icon_exp + ` × ${经验奖励}\r\n`;
         for (var m = 0; m < 奖励.length; m++) {
             完成提示 += `#v${奖励[m][0]}##t${奖励[m][0]}##k × ${奖励[m][1]}\r\n`;
         }
     }
     im.sendOk(完成提示);
     im.dispose();
+}
+
+
+
+function 获取奖励经验() {
+    let levelExp = getNeedExp();
+    if (levelExp < 经验奖励) {
+        经验奖励 = levelExp;
+    }
+}
+
+function getNeedExp() {
+    return ExpTable.getExpNeededForLevel(im.getPlayer().getLevel());
 }

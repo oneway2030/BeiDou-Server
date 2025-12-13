@@ -243,15 +243,17 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         nextLevelContext.clear();
         getClient().sendPacket(PacketCreator.getNPCTalkText(npc, text, ""));
     }
-    public void sendGetNumber(String text, int def, int min, int max,byte speaker) {
+
+    public void sendGetNumber(String text, int def, int min, int max, byte speaker) {
         nextLevelContext.clear();
-        getClient().sendPacket(PacketCreator.getNPCTalkNum(npc, text, def, min, max,speaker));
+        getClient().sendPacket(PacketCreator.getNPCTalkNum(npc, text, def, min, max, speaker));
     }
 
-    public void sendGetText(String text,byte speaker) {
+    public void sendGetText(String text, byte speaker) {
         nextLevelContext.clear();
-        getClient().sendPacket(PacketCreator.getNPCTalkText(npc, text, "",speaker));
+        getClient().sendPacket(PacketCreator.getNPCTalkText(npc, text, "", speaker));
     }
+
     /*
      * 0 = ariant colliseum
      * 1 = Dojo
@@ -1217,7 +1219,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
      * 对应sendSimple
      *
      * @param nextLevel 方法前缀，如果脚本有多次要选择的地方，可以通过不同的前缀区分
-     * @param text   对话内容
+     * @param text      对话内容
      */
     public void sendNextSelectLevel(String nextLevel, String text) {
         sendSimple(text);
@@ -1346,8 +1348,8 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
      * 多个选项的对话，选择后自动路由到level + selection对应的方法
      * 对应sendSimple
      *
-     * @param text 对话内容
-     * @param speaker   说话者，0,1,8,9 = NPC；2,3 = 玩家；4,5,6,7 = 客户端报38错误；其它数字未测试。
+     * @param text    对话内容
+     * @param speaker 说话者，0,1,8,9 = NPC；2,3 = 玩家；4,5,6,7 = 客户端报38错误；其它数字未测试。
      */
     public void sendSelectLevel(String text, byte speaker) {
         sendSelectLevel("", text, speaker);
@@ -1357,9 +1359,9 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
      * 多个选项的对话，选择后自动路由到level + prefix + selection对应的方法
      * 对应sendSimple
      *
-     * @param prefix 方法前缀，如果脚本有多次要选择的地方，可以通过不同的前缀区分
-     * @param text   对话内容
-     * @param speaker   说话者，0,1,8,9 = NPC；2,3 = 玩家；4,5,6,7 = 客户端报38错误；其它数字未测试。
+     * @param prefix  方法前缀，如果脚本有多次要选择的地方，可以通过不同的前缀区分
+     * @param text    对话内容
+     * @param speaker 说话者，0,1,8,9 = NPC；2,3 = 玩家；4,5,6,7 = 客户端报38错误；其它数字未测试。
      */
     public void sendSelectLevel(String prefix, String text, byte speaker) {
         sendSimple(text, speaker);
@@ -1468,5 +1470,53 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public void forceChangeMap(MapleMap target, Point pos) {
         getPlayer().forceChangeMap(target, pos);
+    }
+
+    /**
+     * 副本进入的最大次数
+     */
+    public int getPQEnterMaxCount(String maxEnterCountKey) {
+        if (maxEnterCountKey == null || maxEnterCountKey.isEmpty()) {
+            return 0;
+        }
+        int count = GameConfig.getServerInt(maxEnterCountKey);
+        return count > 0 ? count : 1;
+    }
+
+    /**
+     * 副本已进入的次数
+     */
+    public int getPQEnteredCount(String enteredCountKey) {
+        if (enteredCountKey == null || enteredCountKey.isEmpty()) {
+            return 0;
+        }
+        String countStr = getCharacterExtendValue(enteredCountKey, true);
+        if (countStr == null || countStr.isEmpty()) {
+            return 0;
+        }
+        try {
+            return Integer.parseInt(countStr);
+        } catch (NumberFormatException e) {
+            log.error("getPQCompletedCount:", e);
+            return 0;
+        }
+    }
+
+    /**
+     * 记录进入一次副本
+     */
+    public void recordEntryPQ(String enteredCountKey) {
+        if (enteredCountKey == null || enteredCountKey.isEmpty()) {
+            log.error("recordEntryPQ error enteredCountKey is null or empty");
+            return;
+        }
+        saveOrUpdateCharacterExtendValue(enteredCountKey, String.valueOf(getPQEnteredCount(enteredCountKey) + 1), true);
+    }
+
+    /**
+     * 是否能进入副本
+     */
+    public boolean canEnterPQ(String enteredCountKey, String maxEnterCountKey) {
+        return getPQEnteredCount(enteredCountKey) >= getPQEnterMaxCount(maxEnterCountKey);
     }
 }

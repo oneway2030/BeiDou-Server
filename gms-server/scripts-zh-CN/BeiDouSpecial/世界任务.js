@@ -1,10 +1,12 @@
+const ExpTable = Java.type('org.gms.constants.game.ExpTable');
 var 完成金币 = 1000;  // 1000W金币
 var 基础经验奖励系数 = 2;  // e经验
 var 奖励 = [
     [4032170, 10],  // 奖励道具1及数量
     [4032171, 10],  // 奖励道具2及数量
-    [2029004, 10],  //双倍爆率
-    [2029005, 10]   //三倍经验
+    [2029004, 2],  //双倍爆率
+    [2029005, 2],    //三倍经验
+    [4032133, 2]   //钻石
 ];
 const targetCounts = [5, 10, 15, 20, 25];
 var 基础任务ID = 700200;  // 任务ID基础值，用于标记完成状态
@@ -67,7 +69,7 @@ function action(mode, type, selection) {
         if (status === 1) {
             // 根据选择的奖励等级判断是否可领取
             const targetCount = targetCounts[selection];
-            var realExp = (selection + 1) * 基础经验奖励系数
+            var realExp = 获取奖励经验(selection + 1);
             let 任务id = 基础任务ID + targetCount;
             // 重新计算已完成任务数量
             let completedCount = 0;
@@ -91,18 +93,18 @@ function action(mode, type, selection) {
                     // 发放100万金币奖励
                     cm.gainMeso(完成金币 * 10000);
                     //发放经验奖励
-                    cm.gainExp(realExp * 100000000);
+                    cm.gainExp(realExp);
                     //发放道具
                     for (var k = 0; k < 奖励.length; k++) {
                         cm.gainItem(奖励[k][0], 奖励[k][1]);
                     }
                     //标记领取过了
                     cm.completeQuest(任务id);
-                    let text = `#b恭喜你领取了${targetCount}次任务完成奖励#k` + 任务id + " =" + cm.isQuestCompleted(任务id)
+                    let text = `#b恭喜你领取了${targetCount}次任务完成奖励#k`
                     text += "\r\n\r\n";
                     text += "#fUI/CashShop.img/CSDiscount/bonus#：\r\n";
                     text += "金币" + 完成金币 + "W \r\n";
-                    text += icon_exp + ` × ${realExp} E \r\n`;
+                    text += icon_exp + ` × ${realExp}\r\n`;
                     for (var j = 0; j < 奖励.length; j++) {
                         var 奖励ID = 奖励[j][0];
                         var 奖励个数 = 奖励[j][1];
@@ -111,11 +113,12 @@ function action(mode, type, selection) {
                     cm.sendOk(text)
                 }
             } else {
+                let maxExp = 基础经验奖励系数 * (selection + 1)
                 let text = `#r无法领取,#k需要完成${targetCount}个世界任务才能领取该奖励哦！\r\n当前已完成：${completedCount}个`;
                 text += "\r\n\r\n";
                 text += "#fUI/CashShop.img/CSDiscount/bonus#：\r\n";
                 text += "金币" + 完成金币 + "W \r\n";
-                text += icon_exp + ` × ${realExp} E \r\n`;
+                text += icon_exp + ` × ${realExp}\r\n#b(等级越高获取的经验越多,最高${maxExp}E经验)#k\r\n`;
                 for (var j = 0; j < 奖励.length; j++) {
                     var 奖励ID = 奖励[j][0];
                     var 奖励个数 = 奖励[j][1];
@@ -126,4 +129,21 @@ function action(mode, type, selection) {
             cm.dispose();
         }
     }
+}
+
+
+function 获取奖励经验(Rate) {
+    var 经验奖励;
+    let levelExp = getNeedExp();
+    let realExp = 基础经验奖励系数 * 100000000 * Rate;
+    if (levelExp < realExp) {
+        经验奖励 = levelExp;
+    } else {
+        经验奖励 = realExp;
+    }
+    return 经验奖励;
+}
+
+function getNeedExp() {
+    return ExpTable.getExpNeededForLevel(cm.getPlayer().getLevel());
 }
