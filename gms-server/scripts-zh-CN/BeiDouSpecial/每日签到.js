@@ -105,14 +105,14 @@ function levelStart() {
 
 //每日签到
 function level0() {
-    text = cm.getCharacterExtendValue(DAILY_CHECK_IN, true);
+    text = cm.getAccountExtendValue(DAILY_CHECK_IN, true);
     if (text === "1") {
         cm.sendOk("您已经签到过了，请明天再来");
         cm.dispose();
     } else {
         if (!cm.isNotCanHold(2, dailyRewards.length)) { // 检查足够的背包空间
             saveCheckInCount();
-            cm.saveOrUpdateCharacterExtendValue(DAILY_CHECK_IN, "1", true);
+            cm.saveOrUpdateAccountExtendValue(DAILY_CHECK_IN, "1", true);
             // 构建每日奖励提示
             let rewardText = "签到成功！获得以下奖励：\r\n\r\n";
             dailyRewards.forEach(reward => {
@@ -123,6 +123,7 @@ function level0() {
             dailyRewards.forEach(reward => {
                 cm.gainItem(reward.id, reward.qty);
             });
+            cm.getPlayer().sendAllWordNoticeNew("每日签到",`恭喜玩家${cm.getPlayer().getName()}签到成功!`);
             cm.dispose();
         }
     }
@@ -130,12 +131,12 @@ function level0() {
 
 
 function getCheckInState() {
-    text = cm.getCharacterExtendValue(DAILY_CHECK_IN, true);
+    text = cm.getAccountExtendValue(DAILY_CHECK_IN, true);
     return text === "1" ? " #r(已签到)" : "(未签到)";
 }
 
 function getAccumulateCheckInState(type) {
-    text = cm.getCharacterExtendValue(type, true);
+    text = cm.getAccountExtendValue(type);
     return text === "1" ? " #r(已领取)" : "(未领取)";
 }
 
@@ -155,7 +156,7 @@ function levelChooseInventory(choose) {
     let index = column[choose - 1];
     let curCheckInCount = getCurCheckInCount();
     let tag = DAILY_CHECK_IN_TOTAL_CLAIM + index;
-    let isClaim = cm.getCharacterExtendValue(tag, true);
+    let isClaim = cm.getAccountExtendValue(tag);
     let rewards = accumulateRewards[index];
     if (curCheckInCount < Number(index) || isClaim === "1") {
         if (curCheckInCount < Number(index)) {
@@ -181,7 +182,8 @@ function levelChooseInventory(choose) {
             rewards.forEach(reward => {
                 cm.gainItem(reward.id, reward.qty);
             });
-            cm.saveOrUpdateCharacterExtendValue(tag, "1", true);
+            cm.saveOrUpdateAccountExtendValue(tag, "1");
+            cm.getPlayer().sendAllWordNoticeNew("累计签到",`恭喜玩家${cm.getPlayer().getName()}领取${index}天累计签到奖励!`);
             cm.dispose();
         }
     }
@@ -190,11 +192,11 @@ function levelChooseInventory(choose) {
 
 //当前签到次数
 function getCurCheckInCount() {
-    let dayCount = cm.getCharacterExtendValue(DAILY_CHECK_IN_TOTAL);
+    let dayCount = cm.getAccountExtendValue(DAILY_CHECK_IN_TOTAL);
     return Number(dayCount) || 0; // 处理未签到过的情况
 }
 
 //当前签到次数+1并保存
 function saveCheckInCount() {
-    cm.saveOrUpdateCharacterExtendValue(DAILY_CHECK_IN_TOTAL, String(getCurCheckInCount() + 1));
+    cm.saveOrUpdateAccountExtendValue(DAILY_CHECK_IN_TOTAL, String(getCurCheckInCount() + 1));
 }

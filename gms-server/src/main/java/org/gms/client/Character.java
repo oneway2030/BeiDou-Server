@@ -9953,22 +9953,58 @@ public class Character extends AbstractCharacterObject {
         return mExtraStorageUtil.takeOutItem(getClient(), itemId, quantity, type);
     }
 
-    public void SendFullServerBroadcast(String Msg) {
-        SendFullServerBroadcast(Msg, 5121009);
+    public void sendFullServerBroadcast(String msg) {
+        sendFullServerBroadcast(msg, 5121009);
     }
 
     /**
      * 发送全服屏幕中央广播
      *
-     * @param Msg      消息
+     * @param msg      消息
      * @param effectId 5121009 火红玫瑰
      */
-    public void SendFullServerBroadcast(String Msg, int effectId) {
+    public void sendFullServerBroadcast(String msg, int effectId) {
         for (World w : Server.getInstance().getWorlds()) {
             for (Character chr : w.getPlayerStorage().getAllCharacters()) {
-                chr.startMapEffect(Msg, effectId);
+                chr.startMapEffect(msg, effectId);
             }
         }
     }
+
+    /**
+     * 任意消息发全局广播，文字带红底
+     *
+     * @param msg 消息
+     */
+    public void sendAllWordNotice(String msg) {
+        sendAllWordNotice(msg, 3);
+    }
+
+    public void sendAllWordNotice(String msg, int msgType) {
+        Server.getInstance().broadcastMessage(getWorld(), PacketCreator.serverNotice(msgType, getClient().getChannel(), msg));
+    }
+
+    /**
+     * 副本完成全局广播
+     *
+     * @param pbName 副本名字
+     */
+    public void sendAllWordPQNotice(String pbName) {
+        String msg = I18nUtil.getMessage("Character.PQCompleted.globalNotice", getName(), pbName);
+        Server.getInstance().broadcastMessage(getWorld(), PacketCreator.serverNotice(3, getClient().getChannel(), msg));
+    }
+
+    public void sendAllWordNoticeNew(String title, String content) {
+        sendAllWordNoticeNew(3, title, content);
+    }
+
+    /**
+     * @param msgType 1弹窗 2灰底 3红底 5灰色文字无背景色 6蓝色文字无背景色
+     */
+    public void sendAllWordNoticeNew(int msgType, String title, String content) {
+        String msg = I18nUtil.getMessage("Character.WordNotice.Common", title, content);
+        Server.getInstance().broadcastMessage(getWorld(), PacketCreator.serverNotice(msgType, getClient().getChannel(), msg));
+    }
+
 
 }

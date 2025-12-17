@@ -29,6 +29,7 @@ import org.gms.client.inventory.Item;
 import org.gms.client.inventory.ItemFactory;
 import org.gms.client.inventory.Pet;
 import org.gms.config.GameConfig;
+import org.gms.constants.game.ExpTable;
 import org.gms.constants.game.GameConstants;
 import org.gms.constants.game.NextLevelType;
 import org.gms.constants.id.MapId;
@@ -1483,6 +1484,32 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         return count > 0 ? count : 1;
     }
 
+    public String getPQEnteredName(int pqType) {
+        String pqKey = "";
+        if (pqType == 1) {
+            pqKey = "废弃已完成次数";
+        } else if (pqType == 2) {
+            pqKey = "玩具已完成次数";
+        } else if (pqType == 3) {
+            pqKey = "海盗已完成次数";
+        } else if (pqType == 4) {
+            pqKey = "毒物已完成次数";
+        } else if (pqType == 5) {
+            pqKey = "女神已完成次数";
+        } else if (pqType == 6) {
+            pqKey = "男女已完成次数";
+        } else if (pqType == 100) {
+            pqKey = "蜈蚣已完成次数";
+        } else if (pqType == 1000) {
+            pqKey = "妖僧已完成次数";
+        }
+        return pqKey;
+    }
+
+    public int getPQEnteredCount(int PQType) {
+        return getPQEnteredCount(getPQEnteredName(PQType));
+    }
+
     /**
      * 副本已进入的次数
      */
@@ -1502,6 +1529,10 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         }
     }
 
+    public void recordEntryPQ(int PQType) {
+        recordEntryPQ(getPQEnteredName(PQType));
+    }
+
     /**
      * 记录进入一次副本
      */
@@ -1519,4 +1550,65 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     public boolean canEnterPQ(String enteredCountKey, String maxEnterCountKey) {
         return getPQEnteredCount(enteredCountKey) >= getPQEnterMaxCount(maxEnterCountKey);
     }
+
+    private static final String KEY_JIFEN = "副本积分";
+
+    public void addPqPoints() {
+        setPqPoints(getPqPoints() + 1);
+    }
+
+    public void setPqPoints(int num) {
+        saveOrUpdateCharacterExtendValue(KEY_JIFEN, String.valueOf(num));
+    }
+
+    public int getPqPoints() {
+        return parseInt(getCharacterExtendValue(KEY_JIFEN));
+    }
+
+    public int parseInt(String numStr) {
+        if (numStr == null || numStr.isEmpty()) {
+            return 0;
+        }
+        try {
+            return Integer.parseInt(numStr);
+        } catch (NumberFormatException e) {
+            log.error("parseInt:", e);
+            return 0;
+        }
+    }
+
+    /**
+     * 默认最大1000万
+     */
+    public void gainPQExp() {
+        gainPQExp(1000 * 10000);
+    }
+
+    /**
+     * 副本经验奖励
+     * 50-70 获取百分之80经验
+     * 70-100级 一次一半经验
+     * 100-120 一次3分/1经验
+     *
+     * @param maxExp 最大经验 单位是万
+     */
+    public void gainPQExp(int maxExp) {
+        maxExp = maxExp * 10000;
+        int rewardExp = 100 * 10000;//默认最大1000万经验
+        int level = getPlayer().getLevel();
+        int needExp = ExpTable.getExpNeededForLevel(level);
+        if (level > 50 && level <= 70) {
+            rewardExp = (int) (needExp * 0.8);
+        } else if (level > 70 && level <= 100) {
+            rewardExp = (int) (needExp * 0.5);
+        } else if (level > 100 && level <= 124) {
+            rewardExp = (int) (needExp * 0.3);
+        }
+        //超过最大奖励经验取最大奖励经验
+        if (rewardExp > maxExp) {
+            rewardExp = maxExp;
+        }
+        gainExp(rewardExp);
+    }
+
 }

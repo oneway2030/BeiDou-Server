@@ -110,6 +110,7 @@ function action(mode, type, selection) {
                         var 奖励个数 = 奖励[j][1];
                         text += `#v${奖励ID}##t${奖励ID}##k × ${奖励个数}\r\n`;
                     }
+                    cm.getPlayer().sendAllWordNoticeNew("世界任务", `恭喜肝帝${cm.getPlayer().getName()}领取世界任务累计${targetCount}次奖励!`)
                     cm.sendOk(text)
                 }
             } else {

@@ -158,7 +158,7 @@ function levelRebirth() {
 
 function 全服通告() {
     let tip = `恭喜肝帝大佬[${cm.getPlayer().getName()}]完成第${cm.getChar().getReborns()}次涅槃,恐怖如斯!~`;
-    cm.getPlayer().SendFullServerBroadcast(tip);
+    cm.getPlayer().sendFullServerBroadcast(tip);
 }
 
 var 偷学技能点key = "偷学技能点";

@@ -28,6 +28,7 @@ import org.gms.net.PacketHandler;
 import org.gms.net.packet.InPacket;
 import org.gms.net.server.Server;
 import org.gms.net.server.coordinator.session.Hwid;
+import org.gms.net.server.coordinator.session.SessionCoordinator;
 import org.gms.util.BCrypt;
 import org.gms.util.DatabaseConnection;
 import org.gms.util.HexTool;
@@ -153,7 +154,7 @@ public final class LoginPasswordHandler implements PacketHandler {
             return;
         }
         Server.getInstance().resetLoggedInByAccountId(accountId);
-        log.info("用户顶号 accountId="+accountId);
+        log.info("用户顶号 accountId=" + accountId);
     }
 
     /**
@@ -195,6 +196,7 @@ public final class LoginPasswordHandler implements PacketHandler {
 
     private static void login(Client c) {
         c.sendPacket(PacketCreator.getAuthSuccess(c));//why the fk did I do c.getAccountName()?
+        SessionCoordinator.getInstance().cacheMultiOpenId(c, c.getAccID());  //loginok == 4，但是会导致限制多开参数 deterred_multi_client == true 时密码错误一次返回REMOTE_REACHED_LIMIT，需要重开客户端
         Server.getInstance().registerLoginState(c);
     }
 }

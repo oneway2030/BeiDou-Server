@@ -549,7 +549,8 @@ public class Monster extends AbstractLoadedLife {
 
     private void distributePartyExperience(Map<Character, Long> partyParticipation, float expPerDmg, Set<Character> underleveled, Map<Integer, Float> personalRatio, double sdevRatio) {
         IntervalBuilder leechInterval = new IntervalBuilder();
-        leechInterval.addInterval(this.getLevel() - GameConfig.getServerInt("exp_split_level_interval"), this.getLevel() + GameConfig.getServerInt("exp_split_level_interval"));
+        //这里限制低于怪物N级没有经验
+        leechInterval.addInterval(this.getLevel() - GameConfig.getServerInt("exp_split_level_interval"), Integer.MAX_VALUE);
 
         long maxDamage = 0, partyDamage = 0;
         Character participationMvp = null;
@@ -562,15 +563,14 @@ public class Monster extends AbstractLoadedLife {
                 participationMvp = e.getKey();
             }
 
-            // thanks Thora for pointing out leech level limitation
-            int chrLevel = e.getKey().getLevel();
-            leechInterval.addInterval(chrLevel - GameConfig.getServerInt("exp_split_leech_interval"), chrLevel + GameConfig.getServerInt("exp_split_leech_interval"));
+            // 【删除】添加基于角色等级的leech区间（不再使用exp_split_leech_interval）
+            // int chrLevel = e.getKey().getLevel();
+            // levelInterval.addInterval(chrLevel - GameConfig.getServerInt("exp_split_leech_interval"), chrLevel + GameConfig.getServerInt("exp_split_leech_interval"));
         }
 
         List<Character> expMembers = new LinkedList<>();
         int totalPartyLevel = 0;
 
-        // thanks G h o s t, Alfred, Vcoc, BHB for poiting out a bug in detecting party members after membership transactions in a party took place
         if (GameConfig.getServerBoolean("use_enforce_mob_level_range")) {
             for (Character member : partyParticipation.keySet().iterator().next().getPartyMembersOnSameMap()) {
                 if (!leechInterval.inInterval(member.getLevel())) {
@@ -746,7 +746,7 @@ public class Monster extends AbstractLoadedLife {
                 personalExp *= 2;
             }
 
-            if(attacker.isFamilyBuff()){
+            if (attacker.isFamilyBuff()) {
                 personalExp *= attacker.getFamilyExp();
             }
 

@@ -216,6 +216,7 @@ function 完成当前任务() {
     完成奖励文本 += "\r\n" + icon + ` × ${奖励金币[选中任务索引]} W \t`;
     // 提示完成
     cm.sendOk(`恭喜你完成了 Lv.${任务等级} 主线任务！\r\n获得以下奖励：\r\n${完成奖励文本}`);
+    cm.getPlayer().sendAllWordNoticeNew("主线任务",`恭喜玩家${cm.getPlayer().getName()}完成${任务等级}级主线任务!`)
     //蓝色文本
     // cm.getPlayer().dropMessage(6, "完成任务！获得奖励："+完成奖励文本);
     cm.dispose();

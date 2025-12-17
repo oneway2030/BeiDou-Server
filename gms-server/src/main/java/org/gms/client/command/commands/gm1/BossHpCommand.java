@@ -45,7 +45,7 @@ public class BossHpCommand extends Command {
                     bar.append(i < percent ? "|" : ".");
                 }
                 bar.append("]");
-                player.yellowMessage(I18nUtil.getMessage("BossHpCommand.message2", monster.getName(), monster.getId(), percent));
+                player.yellowMessage(I18nUtil.getMessage("BossHpCommand.message2", monster.getName(), monster.getId(), percent,monster.getHp()));
                 player.yellowMessage(I18nUtil.getMessage("BossHpCommand.message3", bar));
             }
         }

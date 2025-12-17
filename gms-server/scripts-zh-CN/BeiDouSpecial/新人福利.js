@@ -7,7 +7,7 @@
 
 var status;
 var textMsg;
-var key = "新人福利礼包"
+var key = "新人福利礼包1·"
 var meso_id = 9999999;
 var cash_id = 9999998;
 
@@ -66,6 +66,7 @@ function action(mode, type, selection) {
                     }
                 });
                 gainEquip(item_id,8,8,10,8,50,50,5,8,1440*5);
+                cm.getPlayer().sendAllWordNoticeNew("新手福利", `恭喜玩家${cm.getPlayer().getName()}来到冒险岛!`)
                 cm.sendOk("恭喜您获得新手奖励，祝您游戏愉快！");
                 cm.dispose();
             }

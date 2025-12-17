@@ -32,14 +32,8 @@ import org.gms.util.DatabaseConnection;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -49,6 +43,8 @@ import java.util.stream.Collectors;
 public class SessionCoordinator {
     private static final Logger log = LoggerFactory.getLogger(SessionCoordinator.class);
     private static final SessionCoordinator instance = new SessionCoordinator();
+    // 新增：记录每个用户（IP+HWID）当前登录的账号ID集合
+    private final Map<String, Set<Integer>> userAccountMap = new ConcurrentHashMap<>();
 
     public static SessionCoordinator getInstance() {
         return instance;
@@ -184,10 +180,11 @@ public class SessionCoordinator {
     }
 
     public AntiMulticlientResult attemptLoginSession(Client client, Hwid hwid, int accountId, boolean routineCheck) {
-        if (!GameConfig.getServerBoolean("deterred_multi_client")) {
-            client.setHwid(hwid);
-            return AntiMulticlientResult.SUCCESS;
-        }
+        //TODO 这里原来的多开校验不太好容易造成集合有缓存，用户无法登陆
+//        if (!GameConfig.getServerBoolean("deterred_multi_client")) {
+//            client.setHwid(hwid);
+//            return AntiMulticlientResult.SUCCESS;
+//        }
 
         String remoteHost = getSessionRemoteHost(client);
         InitializationResult initResult = sessionInit.initialize(remoteHost);
@@ -196,16 +193,20 @@ public class SessionCoordinator {
         }
 
         try {
-            if (!loginStorage.registerLogin(accountId)) {
-                return AntiMulticlientResult.MANY_ACCOUNT_ATTEMPTS;
-            } else if (routineCheck && !attemptAccountAccess(accountId, hwid, routineCheck)) {
-                return AntiMulticlientResult.REMOTE_REACHED_LIMIT;
-            } else if (onlineRemoteHwids.contains(hwid)) {
-                return AntiMulticlientResult.REMOTE_LOGGEDIN;
-            } else if (!attemptAccountAccess(accountId, hwid, routineCheck)) {
-                return AntiMulticlientResult.REMOTE_REACHED_LIMIT;
+            //校验多开
+            if (isMultiOpen(remoteHost)) {
+                return AntiMulticlientResult.REMOTE_REACHED_LIMIT; // 超过限制，拒绝登录
             }
-
+//            else if (!loginStorage.registerLogin(accountId)) {
+//                return AntiMulticlientResult.MANY_ACCOUNT_ATTEMPTS;
+//            } else if (routineCheck && !attemptAccountAccess(accountId, hwid, routineCheck)) {
+//                return AntiMulticlientResult.REMOTE_REACHED_LIMIT;
+//            } else if (onlineRemoteHwids.contains(hwid)) {
+//                return AntiMulticlientResult.REMOTE_LOGGEDIN;
+//            } else if (!attemptAccountAccess(accountId, hwid, routineCheck)) {
+//                return AntiMulticlientResult.REMOTE_REACHED_LIMIT;
+//            }
+            cacheMultiOpenId(client, accountId);
             client.setHwid(hwid);
             onlineRemoteHwids.add(hwid);
 
@@ -213,6 +214,42 @@ public class SessionCoordinator {
         } finally {
             sessionInit.finalize(remoteHost);
         }
+    }
+
+    public void cacheMultiOpenId(Client client, int accountId) {
+        String remoteHost = getSessionRemoteHost(client);
+        // 新增：记录当前账号到用户的登录列表中
+        Set<Integer> accountSet = userAccountMap.computeIfAbsent(remoteHost, k -> ConcurrentHashMap.newKeySet());
+        // 2. 显式判断：若accountId不在集合中，则添加
+        if (!accountSet.contains(accountId)) {
+            accountSet.add(accountId);
+        }
+    }
+
+    /**
+     * 校验多开
+     */
+    public boolean isMultiOpen(String remoteHost) {
+        try {
+            int maxAllowed = GameConfig.getServerInt("max_accounts_per_user");
+            if (maxAllowed <= 0) {
+                return false;
+            }
+            String ip = remoteHost.split("-")[0]; // 分割后第一个元素为IP
+            String whiteIp = GameConfig.getServerString("multi_open_whitelist_ip");
+            // 步骤2：检查IP是否在白名单中，若在则不校验多开
+            if (ip != null && ip.equals(whiteIp)) {
+                return false;
+            }
+            Set<Integer> existingAccounts = userAccountMap.getOrDefault(remoteHost, Collections.emptySet());
+            if (existingAccounts.size() >= maxAllowed) {
+                log.info("用户多开超过最大限制 ip:" + remoteHost);
+                return true;
+            }
+        } catch (Exception e) {
+            log.error("Failed to check whether multi-open is enabled", e);
+        }
+        return false;
     }
 
     public AntiMulticlientResult attemptGameSession(Client client, int accountId, Hwid hwid) {
@@ -297,9 +334,14 @@ public class SessionCoordinator {
     public void closeSession(Client client, Boolean immediately) {
         if (client == null) {
             client = fetchInTransitionSessionClient(client);
+            if (client == null) { // 若获取不到有效客户端，直接返回
+                return;
+            }
         }
 
-        final Hwid hwid = client.getHwid();
+        Hwid hwid = client.getHwid();
+        int accountId = client.getAccID();
+        String remoteHost = getSessionRemoteHost(client); // 用户标识（IP+HWID）
         client.setHwid(null); // making sure to clean up calls to this function on login phase
         if (hwid != null) {
             onlineRemoteHwids.remove(hwid);
@@ -316,7 +358,14 @@ public class SessionCoordinator {
                 onlineClients.remove(client.getAccID());
             }
         }
-
+        // 3. 清理用户-账号关联记录（若之前添加了userAccountMap）
+        Set<Integer> userAccounts = userAccountMap.get(remoteHost);
+        if (userAccounts != null) {
+            userAccounts.remove(accountId);
+            if (userAccounts.isEmpty()) {
+                userAccountMap.remove(remoteHost); // 为空时移除键，节省内存
+            }
+        }
         if (immediately != null && immediately) {
             client.closeSession();
         }

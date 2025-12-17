@@ -214,6 +214,7 @@ function completeTask() {
                 奖励道具集合.forEach(item => {
                     extraRewardText += `  #v${item.id}##t${item.id}# x ${item.qty}\r\n`;
                 });
+                cm.getPlayer().sendAllWordNoticeNew("每日强化",`恭喜玩家${cm.getPlayer().getName()}完成每日任务10次!`)
             } else {
                 extraRewardText = `- 今日总完成次数不足${额外奖励次数}次，未获得额外道具奖励\r\n`;
             }

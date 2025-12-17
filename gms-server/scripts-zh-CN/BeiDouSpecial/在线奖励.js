@@ -275,7 +275,9 @@ function leveldoclaimall() {
 			resultText += itemText + "\r\n";
 		});
 	}
-
+	if (claimedCount > 0) {
+		cm.getPlayer().sendAllWordNoticeNew("在线奖励",`恭喜玩家${cm.getPlayer().getName()}一键领取了${claimedCount}个在线奖励!`);
+	}
 	cm.sendOkLevel("", resultText);
 }
 
@@ -369,6 +371,7 @@ function giveRewardItems(Select,count = 1) {
 	g_ClaimStatus |= (1 << Select);
 	saveOnlineStatus(g_ClaimStatus);//更新领取记录
 	cm.dropMessage(0,`你已成功领取了 ${reward.title.toString().replace(/#[a-zA-Z]/g,"")}！`);
+	cm.getPlayer().sendAllWordNoticeNew("在线奖励",`恭喜玩家${cm.getPlayer().getName()}领取了${reward.title.toString().replace(/#[a-zA-Z]/g,"")}!`);
 	return `#fUI/UIWindow.img/QuestIcon/4/0#\r\n\r\n${successItems.join('\r\n')}`;
 }
 

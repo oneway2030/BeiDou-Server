@@ -97,6 +97,7 @@ function action(mode, type, selection) {
                 // 发放奖励
                 cm.gainItem(selectedReward.item, 1);
                 cm.sendOk("成功领取奖励：#v" + selectedReward.item + "# #b#t" + selectedReward.item + "##k！");
+                cm.getPlayer().sendAllWordNoticeNew("怪物卡姐", `恭喜肝帝${cm.getPlayer().getName()}肝出 #t${selectedReward.item}#!`)
             }
         } else {
             cm.sendOk("你还没有收集足够的怪物卡。");
