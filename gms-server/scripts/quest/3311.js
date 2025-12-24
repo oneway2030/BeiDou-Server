@@ -1,6 +1,6 @@
 /*
-    This file is part of the HeavenMS MapleStory Server
-    Copyleft (L) 2016 - 2019 RonanLana
+    This file is part of the HeavenMS (MapleSolaxiaV2) MapleStory Server
+    Copyleft (L) 2017 RonanLana
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as
@@ -18,37 +18,31 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var status = -1;
+let status = -1;
 
-function start(mode, type, selection) {
+function end(mode, type, selection) {
     if (mode == -1) {
         qm.dispose();
     } else {
-        if (mode == 0 && type > 0) {
+        if(mode == 0 && type > 0) {
             qm.dispose();
             return;
         }
-
-        if (mode == 1) {
+        
+        if (mode == 1)
             status++;
-        } else {
+        else
             status--;
-        }
-
+        
         if (status == 0) {
-            if (qm.getPlayer().getLevel() > 50) {
+            if ((qm.getQuestProgress(3311, 0) == 1 && qm.getQuestProgress(3311, 1) == 1) || qm.getQuestProgress(3311, 0) == 5) {
+                qm.sendNext("Hmm, so the Alcadno doctor wrote something about researching some vanguardist Neo Huroid machine, that could beat by far the existing one, and was about to prepare the last steps of his rehearsal? We don't have a word about him for about three weeks now, something must have gone wrong...");
+                qm.gainExp(60000 * qm.getPlayer().getExpRate());
                 qm.forceCompleteQuest();
-                qm.dispose();
-                return;
+            } else {
+                qm.sendNext("Found nothing yet? Please check out Dr. De Lang's house properly, something there may give out a clue about what is going on.");
             }
             
-            qm.sendNext("好吧...所以这是我们打败史克鲁奇的计划和他卑鄙的计划。我给你的精神力量是一个充满法力的物品。这是你一定会用在地图上的一个道具，我等下会给你。要做到这一点，你还得带上你的队友。你应该把你的队友带到这里来，或者现在就组织一个！");
-        } else if (status == 1) {
-            qm.sendAcceptDecline("你想离开了吗?");
-        } else if (status == 2) {
-            var level = qm.getPlayer().getLevel();
-
-            qm.warp(level <= 30 ? 889100000 : level <= 40 ? 889100010 : 889100020);
             qm.dispose();
         }
     }
