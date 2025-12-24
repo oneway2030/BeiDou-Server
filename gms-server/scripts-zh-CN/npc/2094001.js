@@ -1,25 +1,3 @@
-/*
-	This file is part of the OdinMS Maple Story Server
-    Copyright (C) 2008 Patrick Huy <patrick.huy@frz.cc>
-		       Matthias Butz <matze@odinms.de>
-		       Jan Christian Meyer <vimes@odinms.de>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation version 3 as published by
-    the Free Software Foundation. You may not use, modify or distribute
-    this program under any other version of the GNU Affero General Public
-    License.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 var status = -1;
 
 function start() {
@@ -56,64 +34,87 @@ function action(mode, type, selection) {
             }
         } else {
             if (status == 0) {
-                cm.sendSimple("谢谢你救了我！我能帮你什么忙吗？\r\n#b#L0#带我离开这里。\r\n#L1#给我海盗帽。");
+                let tip = "#k点击确定后领取奖励并离开\r\n";
+                let completedCount = cm.getPQEnteredCount(副本类型);
+                tip += `#b今天已完成${completedCount}次副本\r\n\r\n`;
+                cm.sendYesNo(tip);
             } else if (status == 1) {
-                if (selection == 0) {
-                    if (!cm.canHold(4032266, 1)) {
-                        cm.sendOk("请在杂项栏中腾出空间。");
-                        cm.dispose();
-                        return;
-                    }
-                    cm.gainItem(4032266, 1);
-										cm.gainExp(80000);
-                    cm.warp(251010404, 0);
-                } else {
-                    if (cm.haveItem(1003267, 1)) {
-                        cm.sendOk("你有最好的帽子。");
-                    } else if (cm.haveItem(1002573, 1)) {
-                        if (cm.haveItem(4032266, 20)) {
-                            if (cm.canHold(1003267, 1)) {
-                                cm.gainItem(1002573, -1);
-                                cm.gainItem(4032266, -10);// 耀眼的阳光
-                                cm.gainItem(1003267, 1);
-                                cm.sendOk("恭喜你兑换了海盗帽，海贼王就是你！");
-                            } else {
-                                cm.sendOk("在兑换帽子之前，请在您的装备物品栏中腾出空间。");
-                            }
-                        } else {
-                            cm.sendOk("你需要10个#t4032266#来获得下一个帽子。");
-                        }
-                    } else if (cm.haveItem(1002572, 1)) {
-                        if (cm.haveItem(4032266, 10)) {
-                            if (cm.canHold(1002573, 1)) {
-                                cm.gainItem(1002572, -1);
-                                cm.gainItem(4032266, -10);
-                                cm.gainItem(1002573, 1);
-                                cm.sendOk("我把帽子给了你。");
-                            } else {
-                                cm.sendOk("在收到帽子之前，请在您的装备物品栏中腾出空间。");
-                            }
-                        } else {
-                            cm.sendOk("你需要10个#t4032266#来获得下一个帽子。");
-                        }
-                    } else {
-                        if (cm.haveItem(4032266, 10)) {
-                            if (cm.canHold(1002572, 1)) {
-                                cm.gainItem(4032266, -10);
-                                cm.gainItem(1002572, 1);
-                                cm.sendOk("我把帽子给了你。");
-                            } else {
-                                cm.sendOk("在收到帽子之前，请在您的装备物品栏中腾出空间。");
-                            }
-                        } else {
-                            cm.sendOk("你需要10个#t4032266#来获得下一个帽子。");
-                        }
-                    }
-                }
-
-                cm.dispose();
+                发放奖励();
             }
         }
 
     }
+}
+
+let 副本类型 = 3;
+// 奖励
+var rewards = [
+    {id: 2049100, qty: 1},//混沌卷
+    {id: 2340000, qty: 1},//祝福
+];
+
+function 发放奖励() {
+    var mapId = cm.getPlayer().getMapId();
+    if (mapId != 925100600) {
+        cm.getPlayer().dropMessage("地图不匹配无法获取奖励.");
+        return;
+    }
+    let completedCount = cm.getPQEnteredCount(副本类型);
+    //只有前三次才有特殊奖励
+    if (completedCount < 50) {
+        if (!能获取奖励()) {
+            cm.sendOk("背包空间不足,无法获取奖励!");
+            cm.dispose();
+            return;
+        }
+        //每天第一次完成发放一次阳光
+        if (completedCount < 1) {
+            if (!cm.canHold(4032266, 1)) {
+                cm.sendOk("背包空间不足,无法获取奖励!");
+                cm.dispose();
+                return;
+            }
+            cm.gainItem(4032266, 1); //温暖的阳光，兑换划痕眼镜1022073
+        }
+        for (var i = 0; i < rewards.length; i++) {
+            var reward = rewards[i];
+            if (reward.id === 0) {
+                // 发放金币，10W = 10 * 10000
+                cm.gainMeso(reward.qty * 10000);
+            } else {
+                // 核心修改：添加50%概率判断
+                var randomRate = Math.random(); // 生成0~1之间的随机数
+                if (randomRate < 0.3) { // 50%概率触发
+                    cm.gainItem(reward.id, reward.qty);
+                }
+            }
+        }
+        //获取经验
+        cm.gainPQExp(100);
+        // 发放金币
+        cm.gainMeso(200 * 10000);
+        cm.warp(251010404, 0);
+        cm.dispose();
+    }
+    // 随机40-60个枫叶
+    var randomNum = Math.floor(Math.random() * (60 - 40 + 1)) + 40;
+    cm.gainItem(4001126, randomNum);
+    //记录当天副本完成次数
+    cm.recordEntryPQ(副本类型);
+    //记录一次副本完成积分
+    if (completedCount < 5) {
+        cm.addPqPoints();
+    }
+    //发送副本完成广播
+    cm.getPlayer().sendAllWordPQNotice("海盗副本");
+}
+
+function 能获取奖励() {
+    for (var i = 0; i < rewards.length; i++) {
+        var reward = rewards[i];
+        if (reward.id != 0 && !cm.canHold(reward.id, reward.qty)) {
+            return false;
+        }
+    }
+    return true;
 }

@@ -83,11 +83,11 @@ function action(mode, type, selection) {
 
     status++;
     if (status == 0) { // first interaction with NPC
-        if (cm.getQuestStatus(8225) != 2) {
-            cm.sendNext("嘿，我不是强盗，好吗？");
-            cm.dispose();
-            return;
-        }
+        // if (cm.getQuestStatus(8225) != 2) {
+        //     cm.sendNext("嘿，我不是强盗，好吗？");
+        //     cm.dispose();
+        //     return;
+        // }
 
         cm.sendNext("嘿，有点时间吗？我的工作是在这里收集物品然后在其他地方出售，但最近怪物变得更加敌对，所以很难得到好的物品... 你觉得呢？想和我做点生意吗？");
     } else if (status == 1) {

@@ -28,7 +28,7 @@ function action(mode, type, selection) {
     if (status === 0) {
         let text = OldTitle;
         text += " \r\n";
-        text += "#L0#维护补偿#l\t\r\n\r\n";
+        text += "#L0#平安夜&圣诞节礼物#l\t\r\n\r\n";
         text += "#b#L2#常用指令查询#l\t\r\n\r\n";
         // text += "#b#L1#领取公测测试礼包（正式开服无该礼包）#l\t\r\n\r\n";
         // text += "#b#L3#测试期间道具领取#l\t\r\n\r\n";
@@ -70,26 +70,27 @@ function doSelect(selection) {
 
 var 枫叶奖励 = 4032133;
 var 枫叶数量 = 5;
-var 补偿奖励_KEY = "补偿奖励_v3"
+var 补偿奖励_KEY = "补偿奖励_v4"
 var meso_id = 9999999;
 var cash_id = 9999998;
 
 var rewards = [
     {id: cash_id, qty: 10000},//点卷
-    {id: 4032133, qty: 15},//红色钻石
+    {id: meso_id, qty: 2000},
+    {id: 4032133, qty: 5},//红色钻石
     {id: 2029005, qty: 4},//三倍经验
-    {id: 2029002, qty: 2},//双倍爆率
-    {id: 4032170, qty: 20},//血量 200
-    {id: 4032171, qty: 20},//蓝量 200
+    {id: 2029002, qty: 4},//双倍爆率
+    {id: 2049115, qty: 5},//正向
+    {id: 2340000, qty: 10},//祝福
 ];
 
 function 发放补偿奖励() {
     //检查是否已领取过礼包
-    if (cm.getAccountExtendValue(补偿奖励_KEY) === "1") {
-        cm.sendOk("你已经领取过维护补偿啦！");
-        cm.dispose();
-        return;
-    }
+    // if (cm.getAccountExtendValue(补偿奖励_KEY, false) === "1") {
+    //     cm.sendOk("你已经领取过维护补偿啦！");
+    //     cm.dispose();
+    //     return;
+    // }
     var player = cm.getPlayer();
     if (!cm.isNotCanHold(1) && !cm.isNotCanHold(2) && !cm.isNotCanHold(3, 3)) {
         rewards.forEach(reward => {
@@ -98,14 +99,18 @@ function 发放补偿奖励() {
             } else if (reward.id === cash_id) {
                 cm.getPlayer().getCashShop().gainCash(1, reward.qty);//点券
             } else {
-                cm.gainItem(reward.id, reward.qty);
+                let qty = reward.qty;
+                // 生成 -1 ~ +2 的随机偏移量（关键）
+                const randomOffset = Math.floor(Math.random() * 4) - 1; // 0~3 随机数 -1 → -1/0/1/2
+                qty+=randomOffset;
+                qty = Math.max(qty, 1);
+                cm.gainItem(reward.id, qty);
             }
         });
-        sendEquipment(1102039);
-        cm.saveOrUpdateAccountExtendValue(补偿奖励_KEY, "1");
+        sendEquipment(1702920,3*24*60);
+        cm.saveOrUpdateAccountExtendValue(补偿奖励_KEY, "1", false);
         cm.sendOk("恭喜你领取成功");
-        const PacketCreator = Java.type('org.gms.util.PacketCreator');
-        player.getWorldServer().broadcastPacket(PacketCreator.serverNotice(6, "恭喜玩家 " + player.getName() + " 领取维护补偿!"));
+        cm.getPlayer().sendAllWordNoticeNew("外国节日",`恭喜玩家【${cm.getPlayer().getName()}】领取平安&夜圣诞节礼物! 祝大家节日快来~`);
         cm.dispose();
     }
 }
@@ -150,24 +155,24 @@ function openNpc(scriptName) {
     cm.openNpc(9900001, scriptName);
 }
 
-function sendEquipment(fashionItemId) {
+function sendEquipment(fashionItemId,time) {
     cm.getPlayer().gainEquip(fashionItemId,
-        10,
-        10,
-        10,
-        10,
+        30,
+        30,
         100,
-        100,
-        10,
-        20,
+        30,
+        1000,
+        1000,
+        30,
+        60,
         0,
         0,
         0,
         0,
         0,
+        50,
+        50,
         0,
-        0,
-        0,
-        -1
+        time
     );
 }

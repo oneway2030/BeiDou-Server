@@ -209,7 +209,7 @@ var pets = [
     {id: 5000426, qty: 1, time: 1440 * 90, price: 6000},//
     {id: 5000427, qty: 1, time: 1440 * 90, price: 6000},//
     {id: 5000428, qty: 1, time: 1440 * 90, price: 6000},//
-    {id: 5000429, qty: 1, time: 1440 * 90, price: 6000},//
+    // {id: 5000429, qty: 1, time: 1440 * 90, price: 6000},//
     {id: 5000430, qty: 1, time: 1440 * 90, price: 6000},//
     {id: 5000431, qty: 1, time: 1440 * 90, price: 6000},//
     {id: 5000432, qty: 1, time: 1440 * 90, price: 6000},//

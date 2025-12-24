@@ -38,11 +38,11 @@ var cost;
 var qty;
 
 function start() {
-    if (cm.getQuestStatus(8225) != 2) {
-        cm.sendOk("让开，新手，我们这里在做生意。");
-        cm.dispose();
-        return;
-    }
+    // if (cm.getQuestStatus(8225) != 2) {
+    //     cm.sendOk("让开，新手，我们这里在做生意。");
+    //     cm.dispose();
+    //     return;
+    // }
 
     cm.getPlayer().setCS(true);
     status = -1;

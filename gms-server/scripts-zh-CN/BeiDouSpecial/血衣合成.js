@@ -30,6 +30,7 @@
  **/
 
 
+const ItemInformationProvider = Java.type('org.gms.server.ItemInformationProvider');
 var itemSet = new Array
 (1012187,                                                               //（血衣代码）
     1012188,
@@ -151,7 +152,8 @@ function action(mode, type, selection) {
             cm.gainMeso(-cost);
             cm.gainItem(item);
             cm.sendOk("#b 制作完成，祝贺你");
-            cm.getPlayer().sendAllWordNoticeNew("血衣合成", `恭喜肝帝${cm.getPlayer().getName()}合成 #t${item}# 成功!`)
+            var itemName = ItemInformationProvider.getInstance().getName(item);
+            cm.getPlayer().sendAllWordNoticeNew("血衣合成", `恭喜肝帝${cm.getPlayer().getName()}合成[${itemName}]成功!`)
             cm.dispose();
         }
         cm.dispose();

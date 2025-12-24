@@ -4,7 +4,7 @@ function enter(pi) {
     if (eim.isEventCleared()) {
         if (pi.isEventLeader()) {
             pi.playPortalSound();
-            eim.warpEventTeam(930000800);
+            eim.warpEventTeam(930000700);
             return true;
         } else {
             pi.playerMessage(5, "请等待队长先通过传送门");

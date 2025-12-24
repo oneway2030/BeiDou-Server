@@ -43,63 +43,21 @@ function action(mode, type, selection) {
                 }
 
                 cm.sendNext(ellinStr);
-            } else if (mapid == 930000400) {
-                if (cm.haveItem(4001169, 20)) {
-                    if (cm.isEventLeader()) {
-                        cm.sendNext("哦，你带来了#z4001169#！我们现在可以继续了，我们要继续吗？");
-                    } else {
-                        cm.sendOk("你已经带来了#z4001169#，但你不是队长！请让队长把毒珠给我……");
-                        cm.dispose();
-
-                    }
-                } else {
-                    if (cm.getEventInstance().gridCheck(cm.getPlayer()) != 1) {
-                        cm.sendNext(ellinStr);
-
-                        cm.getEventInstance().gridInsert(cm.getPlayer(), 1);
-                        status = -1;
-                    } else {
-                        var mobs = cm.getMap().countMonsters();
-
-                        if (mobs > 0) {
-                            if (!cm.haveItem(2270004)) {
-                                if (cm.canHold(2270004, 20)) {
-                                    cm.gainItem(2270004, 20);
-                                    cm.sendOk("请给我20个#t2270004#。首先，#r削弱#o9300174#的力量，一旦它的生命值降低，使用我给你的物品来捕捉它们。");
-                                    cm.dispose();
-
-                                } else {
-                                    cm.sendOk("在接收净化器之前，请给消耗栏腾出一些空间！");
-                                    cm.dispose();
-
-                                }
-                            } else {
-                                cm.sendYesNo(ellinStr + "\r\n\r\n你想离开？请再三考虑，也许你的队友还在尝试这个任务.");
-                            }
-                        } else {
-                            cm.sendYesNo("你们已经捕捉到了所有的 #o9300174#。让队长把所有的 #b20 #t4001169##k 给我，然后我们继续。" + "\r\n\r\n还是你想离开？请再三考虑，也许你的队友还在尝试这个任务。");
-                        }
-                    }
-                }
+            } else if (mapid == 930000700) {//领奖npc
+                cm.sendYesNo(ellinStr);
             } else {
                 cm.sendYesNo(ellinStr + "\r\n\r\n你想离开？请再三考虑，也许你的队友还在尝试这个任务.");
             }
         } else if (status == 1) {
             if (mapid == 930000000) {
+                cm.warp(300030100);
+                cm.dispose();
             } else if (mapid == 930000300) {
-                cm.getEventInstance().warpEventTeam(930000400);
-            } else if (mapid == 930000400) {
-                if (cm.haveItem(4001169, 20) && cm.isEventLeader()) {
-                    cm.gainItem(4001169, -20);
-                    cm.getEventInstance().warpEventTeam(930000500);
-                } else {
-                    cm.warp(930000800, 0);
-                }
+                cm.getEventInstance().warpEventTeam(930000500);
+                cm.dispose();
             } else {
-                cm.warp(930000800, 0);
+                发放奖励();
             }
-
-            cm.dispose();
         }
     }
 }
@@ -125,7 +83,147 @@ function ellinMapMessage(mapid) {
             return "这个森林问题的根源就在这里了! 把得到的#z4001163#放到祭坛上,保护好自己!";
 
         case 930000700:
-            return "你们成功了!感谢你们净化了森林!!";
+            let completedCount = cm.getPQEnteredCount(副本类型);
+            let tip = "你们成功了!感谢你们净化了森林!!\r\n\r\n";
+            tip += `#b今天已完成${completedCount}次副本\r\n`;
+            tip += `点击确定后领取奖励并离开`;
+            return tip;
 
     }
+}
+
+// 水晶宝石列表 (type=0)
+var itemlist0 = [
+    4005000, 4005001, 4005002, 4005003, 4005004,
+    4021000, 4021001, 4021002, 4021003, 4021004,
+    4021005, 4021006, 4021007, 4021008,
+    4011006, 4011005, 4011004, 4011003, 4011002, 4011001, 4011000,
+    4011007, 4021009, 4011008
+];
+
+// 母矿列表 (type=1)
+var itemlist1 = [
+    4004000, 4004001, 4004002, 4004003, 4004004,
+    4010000, 4010001, 4010002, 4010003, 4010004,
+    4010005, 4010006,
+    4020000, 4020001, 4020002, 4020003, 4020004,
+    4020005, 4020006, 4020007, 4020008, 4010007
+];
+
+let 副本类型 = 4;
+// 奖励
+var rewards = [
+    {id: 2049100, qty: 1},//混沌卷
+    {id: 2340000, qty: 1},//祝福
+];
+
+function 发放奖励() {
+    var mapId = cm.getPlayer().getMapId();
+    if (mapId != 930000700) {
+        cm.getPlayer().dropMessage("地图不匹配无法获取奖励.1");
+        cm.dispose();
+        return;
+    }
+    let completedCount = cm.getPQEnteredCount(副本类型);
+    if (cm.isNotCanHold(3, 4)) {
+        return;
+    }
+    //只有前三次才有特殊奖励
+    if (completedCount < 20) {
+        if (!能获取奖励()) {
+            cm.sendOk("背包空间不足,无法获取奖励!");
+            cm.dispose();
+            return;
+        }
+        //每天第一次完成发放一次阿尔泰碎片
+        if (completedCount < 1) {
+            if (!cm.canHold(4001198, 1)) {
+                cm.sendOk("背包空间不足,无法获取奖励!");
+                cm.dispose();
+                return;
+            }
+            cm.gainItem(4001198, 1); //阿尔泰碎片
+        }
+        for (var i = 0; i < rewards.length; i++) {
+            var reward = rewards[i];
+            if (reward.id === 0) {
+                // 发放金币，10W = 10 * 10000
+                cm.gainMeso(reward.qty * 10000);
+            } else {
+                // 核心修改：添加50%概率判断
+                var randomRate = Math.random(); // 生成0~1之间的随机数
+                if (randomRate < 0.7) { // 50%概率触发
+                    cm.gainItem(reward.id, reward.qty);
+                }
+            }
+        }
+        //获取经验
+        cm.gainPQExp(500);
+        // 发放金币
+        cm.gainMeso(300 * 10000);
+    }
+    发放随机矿石奖励();
+    //记录当天副本完成次数
+    cm.recordEntryPQ(副本类型);
+    //记录一次副本完成积分
+    if (completedCount < 5) {
+        cm.addPqPoints();
+    }
+    //发送副本完成广播
+    cm.getPlayer().sendAllWordPQNotice("毒物副本");
+    cm.warp(930000800, 0);
+    cm.dispose();
+}
+
+function 能获取奖励() {
+    for (var i = 0; i < rewards.length; i++) {
+        var reward = rewards[i];
+        if (reward.id != 0 && !cm.canHold(reward.id, reward.qty)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function 发放随机矿石奖励() {
+    const 母矿 = getRandomUniqueItems(itemlist1, 3);
+    // 遍历发放3个随机不重复的卷轴
+    for (let scrollId of 母矿) {
+        cm.gainItem(scrollId, 3);
+    }
+    var randomRate = Math.random(); // 生成0~1之间的随机数
+    if (randomRate < 0.3) {
+        const 成品矿 = getRandomUniqueItems(itemlist0, 1);
+        // 遍历发放3个随机不重复的卷轴
+        for (let scrollId of 成品矿) {
+            cm.gainItem(scrollId, 1);
+        }
+    }
+}
+
+/**
+ * 从数组中随机获取指定数量的不重复元素
+ * @param {Array} arr - 源数组
+ * @param {number} count - 要获取的元素数量
+ * @returns {Array} 随机且不重复的元素数组
+ */
+function getRandomUniqueItems(arr, count) {
+    // 1. 复制原数组（避免修改原数据）
+    const copyArr = [...arr];
+    // 2. 存储结果的数组
+    const result = [];
+
+    // 3. 容错处理：如果需要的数量大于数组长度，只返回全部元素
+    const realCount = Math.min(count, copyArr.length);
+
+    // 4. 循环选取随机元素（选一个删一个，确保不重复）
+    for (let i = 0; i < realCount; i++) {
+        // 生成0 ~ 剩余数组长度-1的随机索引
+        const randomIndex = Math.floor(Math.random() * copyArr.length);
+        // 取出该索引的元素并加入结果
+        result.push(copyArr[randomIndex]);
+        // 从复制数组中删除该元素（避免重复选取）
+        copyArr.splice(randomIndex, 1);
+    }
+    return result;
 }

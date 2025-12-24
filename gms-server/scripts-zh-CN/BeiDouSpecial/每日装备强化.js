@@ -70,8 +70,7 @@ function main() {
 }
 
 function 获取废弃副本完成次数() {
-    let dayCount = cm.getCharacterExtendValue(KERNING_COMPLETION_COUNT, true);
-    return Number(dayCount) || 0; // 处理未完成过的情况
+    return cm.getPQEnteredCount(1); // 处理未完成过的情况
 }
 
 function do强化() {
@@ -118,7 +117,7 @@ function do强化() {
     保存强化状态();
     // 8. 发送强化成功提示
     cm.sendOk(`恭喜你！#v${强化目标项链Id}##t${强化目标项链Id}##n每日强化成功`);
-    player.sendAllWordNoticeNew("每日强化",`恭喜玩家${player.getName()}完成每日精灵吊坠强化!`)
+    player.sendAllWordNoticeNew("每日强化", `恭喜玩家${player.getName()}完成每日精灵吊坠强化!`)
     cm.dispose();
 }
 

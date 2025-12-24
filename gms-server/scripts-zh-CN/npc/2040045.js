@@ -54,7 +54,8 @@ function action(mode, type, selection) {
         if (status == 0) {
             cm.sendYesNo("你想离开奖励阶段吗？");
         } else {
-            cm.warp(922011100, "st00");
+            // cm.warp(922011100, "st00");
+            cm.getEventInstance().warpEventTeam(922011100);
             cm.dispose();
         }
     }

@@ -1552,19 +1552,54 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     }
 
     private static final String KEY_JIFEN = "副本积分";
+    private static final String KEY_TOTAL_JIFEN = "副本总积分";
 
+    /**
+     * 新增一点积分
+     */
     public void addPqPoints() {
-        setPqPoints(getPqPoints() + 1);
+        addPqPoints(1);
     }
 
-    public void setPqPoints(int num) {
-        saveOrUpdateCharacterExtendValue(KEY_JIFEN, String.valueOf(num));
+    /**
+     * 新增指定点数积分
+     */
+    public void addPqPoints(int num) {
+        saveOrUpdateCharacterExtendValue(KEY_JIFEN, String.valueOf(getPqPoints() + num));
+        saveOrUpdateCharacterExtendValue(KEY_TOTAL_JIFEN, String.valueOf(getPqTotalPoints() + num));
     }
 
+    /**
+     * 消费当前积分，总积分不变
+     *
+     * @param num
+     */
+    public void consumptionPqPoints(int num) {
+        int pqPoints = getPqPoints();
+        int remaining = pqPoints - num;
+        if (remaining < 0) {
+            remaining = 0;
+        }
+        saveOrUpdateCharacterExtendValue(KEY_JIFEN, String.valueOf(remaining));
+    }
+
+    /**
+     * 获取当前积分
+     */
     public int getPqPoints() {
         return parseInt(getCharacterExtendValue(KEY_JIFEN));
     }
 
+    /**
+     * 获取总积分
+     */
+    public int getPqTotalPoints() {
+        return parseInt(getCharacterExtendValue(KEY_TOTAL_JIFEN));
+    }
+
+    /**
+     * 解析字符串变为数字
+     */
     public int parseInt(String numStr) {
         if (numStr == null || numStr.isEmpty()) {
             return 0;
@@ -1578,35 +1613,28 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     }
 
     /**
-     * 默认最大1000万
-     */
-    public void gainPQExp() {
-        gainPQExp(1000 * 10000);
-    }
-
-    /**
      * 副本经验奖励
      * 50-70 获取百分之80经验
      * 70-100级 一次一半经验
      * 100-120 一次3分/1经验
+     * 小于50级，一次升1级，50级后所需经验小于200万经验获取当前所需经验的80%，所需经验大于200万获得200万经验。
      *
      * @param maxExp 最大经验 单位是万
      */
     public void gainPQExp(int maxExp) {
-        maxExp = maxExp * 10000;
-        int rewardExp = 100 * 10000;//默认最大1000万经验
+        int rewardExp = maxExp * 10000;
         int level = getPlayer().getLevel();
         int needExp = ExpTable.getExpNeededForLevel(level);
-        if (level > 50 && level <= 70) {
-            rewardExp = (int) (needExp * 0.8);
-        } else if (level > 70 && level <= 100) {
-            rewardExp = (int) (needExp * 0.5);
-        } else if (level > 100 && level <= 124) {
-            rewardExp = (int) (needExp * 0.3);
-        }
-        //超过最大奖励经验取最大奖励经验
-        if (rewardExp > maxExp) {
-            rewardExp = maxExp;
+        if (needExp < rewardExp) {
+            if (level > 50 && level <= 70) {
+                rewardExp = (int) (needExp * 0.8);
+            } else if (level > 70 && level <= 100) {
+                rewardExp = (int) (needExp * 0.5);
+            } else if (level > 100 && level <= 124) {
+                rewardExp = (int) (needExp * 0.3);
+            } else {
+                rewardExp = needExp;
+            }
         }
         gainExp(rewardExp);
     }

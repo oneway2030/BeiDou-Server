@@ -23,7 +23,7 @@
 //Fixed grammar, javascript syntax
 
 var status;
-var price = 100000;
+var price = 1000000;
 var cost = 1000000;
 
 function isTransformed(ch) {
@@ -40,7 +40,10 @@ function start() {
      //   return;
     //}
     
-    cm.sendSimple("这是暗黑龙王的洞穴，他是米纳尔森林的至高统治者。只有那些被认为值得见他的人才能通过这里，外来者是不受欢迎的。滚开！\r\n除非...#b你给我点好处...#k\r\n#L1#我想直接进去!#l\r\n\#L2#我要花100000金币购买10个#v2000005#!#l");
+    cm.sendSimple(`这是暗黑龙王的洞穴，他是米纳尔森林的至高统治者。只有那些被认为值得见他的人才能通过这里，外来者是不受欢迎的。滚开！\r
+除非...#b你给我点好处...#k\r
+#L1#我想直接进去!#l\r
+#L2#我要花${price}金币购买10个#v2000005#!#l`);
 }
 
 function action(mode, type, selection) {

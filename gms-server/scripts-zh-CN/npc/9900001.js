@@ -6,7 +6,7 @@ var status = -1;
 var i = 0;
 // var icon="#fMap/MapHelper/minimap/arrowright#";
 var icon = "#fUI/UIWindow.img/Quest/icon8/0#";
-
+const I18nUtil = Java.type('org.gms.util.I18nUtil');
 function start() {
     try {
         action(1, 0, 0)
@@ -30,11 +30,12 @@ function action(mode, type, selection) {
         var OldTitle = "\t\t\t\t\t#e#k欢迎大佬 #r[" + cm.getPlayer().getName() + "] #k您的到来#n\t\t\t\t\r\n";
         let text = OldTitle;
         text += " \r\n";
-        text += "#k当前点券：#r" + cm.getPlayer().getCashShop().getCash(1) + "        #k签到天数:#r" + Number(cm.getCharacterExtendValue(DAILY_CHECK_IN_TOTAL));
+        text += "#k当前点券：#r" + cm.getPlayer().getCashShop().getCash(1) + "   #k签到天数:#r" + Number(cm.getAccountExtendValue(DAILY_CHECK_IN_TOTAL));
         const GameConfig = Java.type('org.gms.config.GameConfig');
         if (GameConfig.getServerBoolean("use_rebirth_system")) {
-            text += "        #k转生次数:#r" + cm.getChar().getReborns() + " \r\n";
+            text += "     #k转生次数:#r" + cm.getChar().getReborns();
         }
+        text += "     #k副本积分:#r" + cm.getPqPoints()+ " \r\n";
         text += "\r\n";
         var jobId = cm.getPlayer().getJob().getId();
         if ((jobId == 0 || jobId == 1000 || jobId == 2000) && !cm.getPlayer().isGM()) {

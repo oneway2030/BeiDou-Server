@@ -1,6 +1,7 @@
 // 冒险岛083怪物卡片戒指脚本
 // 戒指的物品代码范围：1112880-1112889（共10个）
 
+const ItemInformationProvider = Java.type('org.gms.server.ItemInformationProvider');
 var status;
 var cardCount;
 var selectedReward;
@@ -97,7 +98,8 @@ function action(mode, type, selection) {
                 // 发放奖励
                 cm.gainItem(selectedReward.item, 1);
                 cm.sendOk("成功领取奖励：#v" + selectedReward.item + "# #b#t" + selectedReward.item + "##k！");
-                cm.getPlayer().sendAllWordNoticeNew("怪物卡姐", `恭喜肝帝${cm.getPlayer().getName()}肝出 #t${selectedReward.item}#!`)
+                var itemName = ItemInformationProvider.getInstance().getName(selectedReward.item);
+                cm.getPlayer().sendAllWordNoticeNew("怪物卡姐", `恭喜肝帝${cm.getPlayer().getName()}肝出[${itemName}]!`)
             }
         } else {
             cm.sendOk("你还没有收集足够的怪物卡。");

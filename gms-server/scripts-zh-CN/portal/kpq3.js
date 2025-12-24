@@ -30,7 +30,9 @@ function enter(pi) {
     var target = eim.getMapInstance(103000804);
     if (eim.getProperty("4stageclear") != null) {
         pi.playPortalSound();
-        pi.getPlayer().changeMap(target, target.getPortal("st00"));
+        //整个团队都飞过去
+        eim.warpEventTeam(103000804);
+        // pi.getPlayer().changeMap(target, target.getPortal("st00"));
         return true;
     } else {
         pi.getPlayer().dropMessage(5, "传送门尚未开启。");
