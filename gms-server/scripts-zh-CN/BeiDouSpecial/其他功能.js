@@ -85,12 +85,12 @@ var rewards = [
 ];
 
 function 发放补偿奖励() {
-    //检查是否已领取过礼包
-    // if (cm.getAccountExtendValue(补偿奖励_KEY, false) === "1") {
-    //     cm.sendOk("你已经领取过维护补偿啦！");
-    //     cm.dispose();
-    //     return;
-    // }
+    // 检查是否已领取过礼包
+    if (cm.getAccountExtendValue(补偿奖励_KEY, false) === "1") {
+        cm.sendOk("你已经领取过维护补偿啦！");
+        cm.dispose();
+        return;
+    }
     var player = cm.getPlayer();
     if (!cm.isNotCanHold(1) && !cm.isNotCanHold(2) && !cm.isNotCanHold(3, 3)) {
         rewards.forEach(reward => {
