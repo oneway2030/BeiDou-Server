@@ -180,7 +180,7 @@ function 处理任务提交() {
         }
     }
     im.sendOk(完成提示);
-    im.getPlayer().sendAllWordNoticeNew("世界任务", `恭喜肝帝${im.getPlayer().getName()}完成世界任务${当前任务}!`)
+    im.getPlayer().sendAllWordNoticeNew(3,"世界任务", `恭喜肝帝${im.getPlayer().getName()}完成世界任务${当前任务}!`)
     im.dispose();
 }
 

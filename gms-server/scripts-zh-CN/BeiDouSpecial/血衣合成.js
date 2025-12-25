@@ -153,7 +153,7 @@ function action(mode, type, selection) {
             cm.gainItem(item);
             cm.sendOk("#b 制作完成，祝贺你");
             var itemName = ItemInformationProvider.getInstance().getName(item);
-            cm.getPlayer().sendAllWordNoticeNew("血衣合成", `恭喜肝帝${cm.getPlayer().getName()}合成[${itemName}]成功!`)
+            cm.getPlayer().sendAllWordNoticeNew(3,"血衣合成", `恭喜肝帝${cm.getPlayer().getName()}合成[${itemName}]成功!`)
             cm.dispose();
         }
         cm.dispose();

@@ -9991,20 +9991,22 @@ public class Character extends AbstractCharacterObject {
      */
     public void sendAllWordPQNotice(String pbName) {
         String msg = I18nUtil.getMessage("Character.PQCompleted.globalNotice", getName(), pbName);
-        Server.getInstance().broadcastMessage(getWorld(), PacketCreator.serverNotice(3, getClient().getChannel(), msg));
+        Server.getInstance().broadcastMessage(getWorld(), PacketCreator.serverNotice(2, getClient().getChannel(), msg));
     }
 
     public void sendAllWordNoticeNew(String title, String content) {
-        sendAllWordNoticeNew(3, title, content);
+        sendAllWordNoticeNew(2, title, content);
     }
 
     /**
-     * @param msgType 1弹窗 2灰底 3红底 5灰色文字无背景色 6蓝色文字无背景色
+     * @param msgType 1弹窗 2蓝底 3红底 5灰色文字无背景色 6蓝色文字无背景色
      */
     public void sendAllWordNoticeNew(int msgType, String title, String content) {
         String msg = I18nUtil.getMessage("Character.WordNotice.Common", title, content);
         Server.getInstance().broadcastMessage(getWorld(), PacketCreator.serverNotice(msgType, getClient().getChannel(), msg));
     }
 
-
+    public String getItemName(int itemId) {
+        return ItemInformationProvider.getInstance().getName(itemId);
+    }
 }

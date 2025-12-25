@@ -63,8 +63,7 @@ function doSelect(selection) {
             openNpc("装备洗练");
             break;
         case 2:
-            cm.sendOk("开发中，敬请期待！");
-            cm.dispose();
+            openNpc("装备制作/装备制作");
             break;
         case 3:
             openNpc("每日装备强化");

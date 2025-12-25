@@ -231,3 +231,21 @@ function maxMastery9() {
     cm.dispose();
 
 }
+
+
+// 导入所需的Java类
+const ItemInformationProvider = Java.type('org.gms.server.ItemInformationProvider');
+const Server = Java.type('org.gms.net.server.Server');
+const PacketCreator = Java.type('org.gms.util.PacketCreator');
+
+function makeItemWordNotice(player, itemId) {
+    // 获取物品名称
+    const itemName = ItemInformationProvider.getInstance().getName(itemId);
+    // 获取国际化消息（参数依次为玩家名称、物品名称、物品ID）
+    const msg = I18nUtil.getMessage("Player.make.things.tip", player.getName(), itemName, itemId);
+    // 广播服务器通知（世界、频道、消息）
+    Server.getInstance().broadcastMessage(
+        player.getWorld(),
+        PacketCreator.serverNotice(2, player.getClient().getChannel(), msg)
+    );
+}

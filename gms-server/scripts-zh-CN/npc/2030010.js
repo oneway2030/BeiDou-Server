@@ -30,7 +30,7 @@
  * Helps players leave the map
  */
 
-var cost = 5000000;
+var cost = 2000;
 var status = 0;
 
 
@@ -45,41 +45,51 @@ function action(mode, type, selection) {
         cm.dispose();
         return;
     }
-        if (mode == 1) {
-            status++;
+    if (mode == 1) {
+        status++;
+    } else {
+        status--;
+    }
+    if (status == 0) {
+        if (cm.getMapId() == 280030000) {
+            if (!cm.getEventInstance().isEventCleared()) {
+                cm.sendYesNo("如果你现在离开，你将不得不重新开始。你确定要离开吗？");
+            } else {
+                cm.sendYesNo("你们终于打败了扎昆，真是了不起的壮举！恭喜！你确定现在要离开吗？");
+            }
+        } else if (cm.getMapId() == 280020000 || cm.getMapId() == 280020001) {
+            cm.sendSimple("你是想要付费跳过此关，还是选择离开？\r\n#b#L0#付费" + 获取金币显示(cost) + "金币跳过此关\r\n\r\n#L1#离开此地#l");
         } else {
-            status--;
-        }    
-        if (status == 0) {
-		if (cm.getMapId() == 280030000) {
-	        if (!cm.getEventInstance().isEventCleared()) {
-	            cm.sendYesNo("如果你现在离开，你将不得不重新开始。你确定要离开吗？");
-	        } else {
-	            cm.sendYesNo("你们终于打败了扎昆，真是了不起的壮举！恭喜！你确定现在要离开吗？");
-	        }
-		} else if (cm.getMapId() == 280020000 || cm.getMapId() == 280020001) {	
-	            cm.sendSimple("你是想要付费跳过此关，还是选择离开？\r\n#b#L0#付费500W金币跳过此关\r\n\r\n#L1#离开此地#l");
-	        } else {
-		cm.sendSimple("...");
-        	cm.dispose();
-		}
-	} else if (status == 1) {
-	
-               if (selection == 0 && cm.getMeso() >= cost) {		
-                	cm.gainMeso(-cost);		
-	    	cm.warp(280020001,5);
-		cm.dispose();
-                } else if (selection == 0) {
-                    cm.sendOk("你没有足够的金币！");
-                    cm.dispose();
-		} else {
-	    	cm.warp(211042300);
-		cm.dispose();
-		}
-	} else {
+            cm.sendSimple("...");
+            cm.dispose();
+        }
+    } else if (status == 1) {
 
-		cm.dispose();
-            } 
+        if (selection == 0 && cm.getMeso() >= 获取金币(cost)) {
+            cm.gainMeso(-获取金币(cost));
+            cm.warp(280020001, 5);
+            cm.dispose();
+        } else if (selection == 0) {
+            cm.sendOk("你没有足够的金币！");
+            cm.dispose();
+        } else {
+            cm.warp(211042300);
+            cm.dispose();
+        }
+    } else {
 
+        cm.dispose();
+    }
+}
 
+function 获取金币(meso) {
+    return meso * 10000;
+}
+
+function 获取金币显示(meso) {
+    if (meso >= 10000) {
+        return `${meso / 10000}E`;
+    } else {
+        return `${meso}W`;
+    }
 }
