@@ -45,7 +45,7 @@ function levelStart() {
             // 按格式拼接显示文本：[频道]-[地图]-[名字]-[等级]-[职业]
             // 【几线-地图】使用#b#e（蓝色加粗），后续使用#b（常规蓝色）
             text2 += `#L${index}#` +
-                `#b#e[ ${channel}线- ${mapName} ]  #n#r${name} - Lv ${level} - ${job.getName()}#l\r\n`;
+                `#b#e[ ${channel}线- ${mapName} ]  #n#r${name} - ${level}级 - ${job.getName()}#l\r\n`;
 
             index++;
             allCharacters.add(character);

@@ -65,7 +65,7 @@ function action(mode, type, selection) {
             cm.sendYesNo("好的！现在，通过我，你将变成一个更强大的海盗。在这之前，请确保你的SP已经被充分使用了，你需要至少使用到70级之前获得的所有SP来进行第三次职业转职。哦，还有，由于你已经在第二次职业转职时选择了你的职业方向，所以在第三次职业转职时就不需要再次选择了。你现在要进行转职吗？");
         } else if (status == 2) {
             if (cm.getPlayer().getRemainingSp() > 0) {
-                if (cm.getPlayer().getRemainingSp() > (cm.getLevel() - 70) * 3) {
+                if (cm.getPlayer().getRemainingSp() > ((cm.getLevel() - 70) * 3 + 10)) {
                     cm.sendNext("请在继续之前使用你所有的技能点SP。");
                     cm.dispose();
                     return;

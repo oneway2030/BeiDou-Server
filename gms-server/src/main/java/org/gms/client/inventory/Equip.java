@@ -353,8 +353,9 @@ public class Equip extends Item {
      * @param name 要升级的属性名称。
      * @return 一个在 [0, limit] 范围内的随机整数。
      */
+// 假设StatUpgrade、Randomizer是已有类，此处保留方法核心逻辑
     private int randomizeStatUpgradeNew(StatUpgrade name) {
-        // 1. 计算基础上限 limit
+        // 1. 计算基础上限 limit（动态值：5~15）
         int limit = getMaxAllowed(name);
         if (limit <= 0) {
             return 0; // 无增长可能
@@ -362,20 +363,40 @@ public class Equip extends Item {
         // 2. 获取当前激活的属性数量
         int valueQuantity = getValueQuantity();
 
-        // 3. 计算非零值的总权重 (1~limit的权重和，值越小权重越高)
-        long nonZeroTotalWeight = (long) limit * (limit + 1) / 2;
+        // ========== 核心修改1：自定义权重规则（高位减半） ==========
+        // 存储1~limit每个值的新权重（double类型适配小数权重）
+        double[] newWeights = new double[limit];
+        double nonZeroTotalWeight = 0.0; // 新的非零总权重（替换原公式求和）
 
-        // --- 特殊情况处理：当只有一个属性时，必定升级 ---
-        if (valueQuantity == 1) {
-            // 使用数学公式直接计算非零值结果
-            int rnd = Randomizer.rand(1, (int) nonZeroTotalWeight);
-            double kReal = ((2.0 * limit + 1) - Math.sqrt(Math.pow(2.0 * limit + 1, 2) - 8.0 * (rnd - 1))) / 2.0;
-            int k = (int) Math.ceil(kReal);
-            // 边界保护
-            return Math.min(Math.max(k, 1), limit);
+        for (int x = 1; x <= limit; x++) {
+            // 原权重规则：值越小权重越高 → weight = limit - x + 1
+            double originalWeight = limit - x + 1;
+            // 高位判定：x > limit/2 时权重减半（适配任意limit）
+            boolean isHighValue = x > limit / 2.0;
+            double currentWeight = isHighValue ? originalWeight / 2.0 : originalWeight;
+
+            newWeights[x - 1] = currentWeight; // x=1对应索引0，x=limit对应索引limit-1
+            nonZeroTotalWeight += currentWeight; // 累加新的非零总权重
         }
 
-        // 4. 根据 valueQuantity 精确设定 0 值的目标概率
+        // --- 特殊情况处理：当只有一个属性时，必定升级（逻辑微调适配新权重）---
+        if (valueQuantity == 1) {
+            // 生成1~非零总权重的随机数（适配小数权重，转为int不影响核心逻辑）
+            double rnd = Randomizer.nextFloat() * nonZeroTotalWeight;
+            // 权重区间匹配（替代原数学公式）
+            double cumulative = 0.0;
+            int result = limit;
+            for (int x = 1; x <= limit; x++) {
+                cumulative += newWeights[x - 1];
+                if (rnd <= cumulative) {
+                    result = x;
+                    break;
+                }
+            }
+            return Math.min(Math.max(result, 1), limit);
+        }
+
+        // 3. 0值目标概率（逻辑完全不变）
         float targetZeroProbability;
         if (valueQuantity == 2) {
             targetZeroProbability = 0.05f; // 5%
@@ -389,44 +410,41 @@ public class Equip extends Item {
             targetZeroProbability = 0.25f; // 25%
         }
 
-        // 5. 根据目标概率反向计算出 0 值需要的权重
-        // P(0) = zeroWeight / (zeroWeight + nonZeroTotalWeight)
-        // zeroWeight = (P(0) * nonZeroTotalWeight) / (1 - P(0))
-        float zeroWeight = (targetZeroProbability * nonZeroTotalWeight) / (1.0f - targetZeroProbability);
+        // 4. 计算0值权重（逻辑不变，仅基于新的nonZeroTotalWeight）
+        double zeroWeight = (targetZeroProbability * nonZeroTotalWeight) / (1.0f - targetZeroProbability);
 
-        // 6. 计算总权重
-        float totalWeight = zeroWeight + nonZeroTotalWeight;
+        // 5. 总权重（改为double类型，避免浮点数精度丢失）
+        double totalWeight = zeroWeight + nonZeroTotalWeight;
 
-        // 7. 生成随机数并决定结果
-        float randomFloat = Randomizer.nextFloat() * totalWeight;
+        // 6. 生成随机数并决定结果
+        float randomFloat = Randomizer.nextFloat() * (float) totalWeight;
 
-        // 判断是否为0值
+        // 判断是否为0值（逻辑不变）
         if (randomFloat < zeroWeight) {
             return 0;
         }
 
-        // --- 使用 O(1) 数学公式查找非零值结果 ---
-        // 这部分逻辑与原版完全相同，确保了非0值的概率分布不变
+        // ========== 核心修改2：权重区间匹配非零值（替代原O(1)公式） ==========
         double adjustedRandom = randomFloat - zeroWeight;
-
-        // 理论上adjustedRandom应大于等于0，此处为防止浮点数精度问题导致的异常
+        // 防止浮点数精度问题导致adjustedRandom≤0
         if (adjustedRandom <= 0) {
             return 1;
         }
 
-        double L = limit;
-        double discriminant = Math.pow(2 * L + 1, 2) - 8 * adjustedRandom;
-
-        // 理论上discriminant应大于等于0，此处为防止浮点数精度问题导致的异常
-        if (discriminant < 0) {
-            return limit;
+        // 累加权重匹配结果
+        double cumulativeWeight = 0.0;
+        int result = limit; // 默认返回最大值（兜底）
+        for (int x = 1; x <= limit; x++) {
+            cumulativeWeight += newWeights[x - 1];
+            // 随机数落入当前值的权重区间，匹配结果
+            if (adjustedRandom <= cumulativeWeight) {
+                result = x;
+                break;
+            }
         }
 
-        double kReal = ((2 * L + 1) - Math.sqrt(discriminant)) / 2;
-        int k = (int) Math.ceil(kReal);
-
-        // 最终的边界保护，确保结果在[1, limit]范围内
-        return Math.min(Math.max(k, 1), limit);
+        // 边界保护（逻辑不变）
+        return Math.min(Math.max(result, 1), limit);
     }
 
     private int getMaxAllowed(StatUpgrade name) {

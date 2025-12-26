@@ -49,13 +49,15 @@ public final class EnterMTSHandler extends AbstractPacketHandler {
 
     @Override
     public void handlePacket(InPacket p, Client c) {
-        Character chr = c.getPlayer();
-
         if (!GameConfig.getServerBoolean("use_mts")) {
             openCenterScript(c);
             return;
         }
+        enterMTS(c);
+    }
 
+    public static void enterMTS(Client c) {
+        Character chr = c.getPlayer();
         if (chr.getEventInstance() != null) {
             c.sendPacket(PacketCreator.serverNotice(5, "Entering Cash Shop or MTS are disabled when registered on an event."));
             c.sendPacket(PacketCreator.enableActions());
@@ -174,7 +176,7 @@ public final class EnterMTSHandler extends AbstractPacketHandler {
         c.sendPacket(PacketCreator.notYetSoldInv(getNotYetSold(chr.getId())));
     }
 
-    private List<MTSItemInfo> getNotYetSold(int cid) {
+    private static List<MTSItemInfo> getNotYetSold(int cid) {
         List<MTSItemInfo> items = new ArrayList<>();
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con.prepareStatement("SELECT * FROM mts_items WHERE seller = ? AND transfer = 0 ORDER BY id DESC")) {
@@ -224,7 +226,7 @@ public final class EnterMTSHandler extends AbstractPacketHandler {
         return items;
     }
 
-    private List<MTSItemInfo> getTransfer(int cid) {
+    private static List<MTSItemInfo> getTransfer(int cid) {
         List<MTSItemInfo> items = new ArrayList<>();
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con.prepareStatement("SELECT * FROM mts_items WHERE transfer = 1 AND seller = ? ORDER BY id DESC")) {

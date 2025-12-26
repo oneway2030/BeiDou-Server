@@ -125,7 +125,7 @@ function action(mode, type, selection) {
                         }
                     }
 
-                    if (playersOnCombo == 5 || cm.getPlayer().gmLevel() > 1  || eim.getPlayers().size() < 5) { // 检测到队伍人数不足时，直接通过本关，方便单机玩家
+                    if (playersOnCombo == 5 || cm.getPlayer().gmLevel() > 1 || eim.getPlayers().size() < 7) { // 检测到队伍人数不足时，直接通过本关，方便单机玩家
                         var comboStr = eim.getProperty("stage" + stage + "combo");
                         if (comboStr == null) {
                             comboStr = generateCombo();
@@ -140,7 +140,7 @@ function action(mode, type, selection) {
                                 correctCombo = false;
                             }
                         }
-                        if (correctCombo || cm.getPlayer().gmLevel() > 1 || eim.getPlayers().size() < 5) {  // 检测到队伍人数不足时，直接通过本关，方便单机玩家
+                        if (correctCombo || cm.getPlayer().gmLevel() > 1 || eim.getPlayers().size() < 7) {  // 检测到队伍人数不足时，直接通过本关，方便单机玩家
                             eim.setProperty("statusStg" + stage, 1);
                             clearStage(stage, eim, curMap);
                             cm.dispose();

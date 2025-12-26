@@ -7,6 +7,7 @@ var i = 0;
 // var icon="#fMap/MapHelper/minimap/arrowright#";
 var icon = "#fUI/UIWindow.img/Quest/icon8/0#";
 const I18nUtil = Java.type('org.gms.util.I18nUtil');
+
 function start() {
     try {
         action(1, 0, 0)
@@ -35,7 +36,7 @@ function action(mode, type, selection) {
         if (GameConfig.getServerBoolean("use_rebirth_system")) {
             text += "     #k转生次数:#r" + cm.getChar().getReborns();
         }
-        text += "     #k副本积分:#r" + cm.getPqPoints()+ " \r\n";
+        text += "     #k副本积分:#r" + cm.getPqPoints() + " \r\n";
         text += "\r\n";
         var jobId = cm.getPlayer().getJob().getId();
         if ((jobId == 0 || jobId == 1000 || jobId == 2000) && !cm.getPlayer().isGM()) {
@@ -55,6 +56,8 @@ function action(mode, type, selection) {
         text += "#L9#" + icon + "职业中心#l\t#L10#技能中心#l\t#L11#装备中心#l\t#L12#时装暖暖#l\r\n";
         text += " \r\n";
         text += "#L13#" + icon + "额外仓库#l\t#L14#删除道具#l\t#L15#查询掉落#l\t#L16#其他功能#l\r\n";
+        text += " \r\n";
+        text += "#L19#" + icon + "卷轴分解#l\t#L20#拍卖行#l\r\n";
         text += " \r\n";
         if (cm.getPlayer().isGM()) {
             text += "\r\n";
@@ -131,8 +134,6 @@ function doSelect(selection) {
         case 16://其他功能
             openNpc("其他功能");
             break;
-        case 999://新人福利
-            openNpc("新人福利");
             break;
         case 17://各种商店
             openNpc("各种商店");
@@ -140,6 +141,13 @@ function doSelect(selection) {
         case 18://新人福利
             openNpc("卷轴商店");
             break;
+        case 19://卷轴分解
+            openNpc("卷轴碎片");
+            break;
+        case 20://拍卖行
+            拍卖系统();
+        case 999://新人福利
+            openNpc("新人福利");
         // GM功能
         case 100://巡逻
             openNpc("巡逻");
@@ -181,6 +189,14 @@ function openNpc(scriptName) {
     cm.openNpc(9900001, scriptName);
 }
 
+function 拍卖系统() {
+    const EnterMTSHandler = Java.type(
+        "org.gms.net.server.channel.handlers.EnterMTSHandler"
+    );
+    const client = cm.getPlayer().getClient();
+    EnterMTSHandler.enterMTS(client);
+}
+
 
 // 核心：通过Java.type导入所需的Java类（需替换为实际包路径）
 // 注意：请将包名替换为你项目中这些类的真实全限定名
@@ -201,7 +217,7 @@ function maxMastery() {
         // 获取Java的Skill对象
         const skill = SkillFactory.getSkill(skillId);
         if (skill != null) {
-            if(skillId===14100005){
+            if (skillId === 14100005) {
                 console.error("主菜单脚本错误===》:" + skillId);
                 cm.getPlayer().changeSkillLevel(skill, 1, 1, -1);
             }

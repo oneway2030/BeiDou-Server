@@ -92,7 +92,7 @@ function action(mode, type, selection) {
             cm.sendYesNo("好的！现在，通过我，你将变身为一个更加强大的战士。在这之前，请确保你的SP已经被充分使用了，你需要至少使用到70级之前获得的所有SP来进行第三次转职。哦，还有，由于你已经在第二次转职时选择了职业方向，所以在第三次转职时就不需要再次选择了。你现在要进行转职吗？");
         } else if (status == 2) {
             if (cm.getPlayer().getRemainingSp() > 0) {
-                if (cm.getPlayer().getRemainingSp() > (cm.getLevel() - 70) * 3) {
+                if (cm.getPlayer().getRemainingSp() > ((cm.getLevel() - 70) * 3 + 10)) {
                     cm.sendNext("请在继续之前使用你所有的SP技能点。");
                     cm.dispose();
                     return;
