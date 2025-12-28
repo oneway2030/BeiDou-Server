@@ -116,8 +116,8 @@ public final class MTSHandler extends AbstractPacketHandler {
                         ps.setInt(1, c.getPlayer().getId());
                         ResultSet rs = ps.executeQuery();
                         if (rs.next()) {
-                            if (rs.getInt(1) > 10) { // They have more than 10 items up for sale already!
-                                c.getPlayer().dropMessage(1, "You already have 10 items up for auction!");
+                            if (rs.getInt(1) > 100) { // They have more than 10 items up for sale already!
+                                c.getPlayer().dropMessage(1, "最多只能上架100件商品!");
                                 c.sendPacket(getMTS(1, 0, 0));
                                 c.sendPacket(PacketCreator.transferInventory(getTransfer(c.getPlayer().getId())));
                                 c.sendPacket(PacketCreator.notYetSoldInv(getNotYetSold(c.getPlayer().getId())));
@@ -148,7 +148,7 @@ public final class MTSHandler extends AbstractPacketHandler {
                             }
                         } else {
                             Equip equip = (Equip) i;
-                            try (PreparedStatement pse = con.prepareStatement("INSERT INTO mts_items (tab, type, itemid, quantity, expiration, giftFrom, seller, price, upgradeslots, level, str, dex, `int`, luk, hp, mp, watk, matk, wdef, mdef, acc, avoid, hands, speed, jump, locked, owner, sellername, sell_ends, vicious, flag, itemexp, itemlevel, ringid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                            try (PreparedStatement pse = con.prepareStatement("INSERT INTO mts_items (tab, type, itemid, quantity, expiration, giftFrom, seller, price, upgradeslots, level, str, dex, `int`, luk, hp, mp, watk, matk, wdef, mdef, acc, avoid, hands, speed, jump, locked, owner, sellername, sell_ends, vicious, flag, itemexp, itemlevel, ringid,upgradeHistory) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
                                 pse.setInt(1, 1);
                                 pse.setInt(2, invType.getType());
                                 pse.setInt(3, equip.getItemId());
@@ -183,6 +183,7 @@ public final class MTSHandler extends AbstractPacketHandler {
                                 pse.setInt(32, equip.getItemExp());
                                 pse.setByte(33, equip.getItemLevel()); // thanks Jefe for noticing missing itemlevel labels
                                 pse.setInt(34, equip.getRingId());
+                                pse.setString(35, equip.getUpgradeHistory());
                                 pse.executeUpdate();
                             }
                         }
@@ -314,6 +315,7 @@ public final class MTSHandler extends AbstractPacketHandler {
                                 equip.setFlag((short) rs.getInt("flag"));
                                 equip.setExpiration(rs.getLong("expiration"));
                                 equip.setGiftFrom(rs.getString("giftFrom"));
+                                equip.setUpgradeHistory(rs.getString("upgradeHistory"));
                                 equip.setPosition(
                                         c.getPlayer().getInventory(ItemConstants.getInventoryType(rs.getInt("itemid")))
                                                 .getNextFreeSlot());
@@ -325,6 +327,7 @@ public final class MTSHandler extends AbstractPacketHandler {
                                 pse.setInt(2, c.getPlayer().getId());
                                 pse.executeUpdate();
                             }
+                            //TODO wanwei 拍卖就是这里添加装备物品
                             InventoryManipulator.addFromDrop(c, i, false);
                             c.enableCSActions();
                             c.sendPacket(getCart(c.getPlayer().getId()));
@@ -403,12 +406,12 @@ public final class MTSHandler extends AbstractPacketHandler {
                     ResultSet rs = ps.executeQuery();
                     if (rs.next()) {
                         int price = rs.getInt("price") + 100 + (int) (rs.getInt("price") * 0.1); // taxes
-                        if (c.getPlayer().getCashShop().getCash(CashShop.NX_PREPAID) >= price) { // FIX
+                        if (c.getPlayer().getCashShop().getCash(CashShop.NX_CREDIT) >= price) { // FIX
                             boolean alwaysnull = true;
                             for (Channel cserv : Server.getInstance().getAllChannels()) {
                                 Character victim = cserv.getPlayerStorage().getCharacterById(rs.getInt("seller"));
                                 if (victim != null) {
-                                    victim.getCashShop().gainCash(4, rs.getInt("price"));
+                                    victim.getCashShop().gainCash(CashShop.NX_CREDIT, rs.getInt("price"));
                                     alwaysnull = false;
                                 }
                             }
@@ -417,7 +420,7 @@ public final class MTSHandler extends AbstractPacketHandler {
                                     pse.setInt(1, rs.getInt("seller"));
                                     ResultSet rse = pse.executeQuery();
                                     if (rse.next()) {
-                                        try (PreparedStatement psee = con.prepareStatement("UPDATE accounts SET nxPrepaid = nxPrepaid + ? WHERE id = ?")) {
+                                        try (PreparedStatement psee = con.prepareStatement("UPDATE accounts SET nxCredit = nxCredit + ? WHERE id = ?")) {
                                             psee.setInt(1, rs.getInt("price"));
                                             psee.setInt(2, rse.getInt("accountid"));
                                             psee.executeUpdate();
@@ -434,7 +437,7 @@ public final class MTSHandler extends AbstractPacketHandler {
                                 pse.setInt(1, id);
                                 pse.executeUpdate();
                             }
-                            c.getPlayer().getCashShop().gainCash(4, -price);
+                            c.getPlayer().getCashShop().gainCash(CashShop.NX_CREDIT, -price);
                             c.enableCSActions();
                             c.sendPacket(getMTS(c.getPlayer().getCurrentTab(), c.getPlayer().getCurrentType(),c.getPlayer().getCurrentPage()));
                             c.sendPacket(PacketCreator.MTSConfirmBuy());
@@ -460,17 +463,17 @@ public final class MTSHandler extends AbstractPacketHandler {
                     ResultSet rs = ps.executeQuery();
                     if (rs.next()) {
                         int price = rs.getInt("price") + 100 + (int) (rs.getInt("price") * 0.1);
-                        if (c.getPlayer().getCashShop().getCash(CashShop.NX_PREPAID) >= price) {
+                        if (c.getPlayer().getCashShop().getCash(CashShop.NX_CREDIT) >= price) {
                             for (Channel cserv : Server.getInstance().getAllChannels()) {
                                 Character victim = cserv.getPlayerStorage().getCharacterById(rs.getInt("seller"));
                                 if (victim != null) {
-                                    victim.getCashShop().gainCash(CashShop.NX_PREPAID, rs.getInt("price"));
+                                    victim.getCashShop().gainCash(CashShop.NX_CREDIT, rs.getInt("price"));
                                 } else {
                                     try (PreparedStatement pse = con.prepareStatement("SELECT accountid FROM characters WHERE id = ?")) {
                                         pse.setInt(1, rs.getInt("seller"));
                                         ResultSet rse = pse.executeQuery();
                                         if (rse.next()) {
-                                            try (PreparedStatement psee = con.prepareStatement("UPDATE accounts SET nxPrepaid = nxPrepaid + ? WHERE id = ?")) {
+                                            try (PreparedStatement psee = con.prepareStatement("UPDATE accounts SET nxCredit = nxCredit + ? WHERE id = ?")) {
                                                 psee.setInt(1, rs.getInt("price"));
                                                 psee.setInt(2, rse.getInt("accountid"));
                                                 psee.executeUpdate();
@@ -488,7 +491,7 @@ public final class MTSHandler extends AbstractPacketHandler {
                                 pse.setInt(1, id);
                                 pse.executeUpdate();
                             }
-                            c.getPlayer().getCashShop().gainCash(4, -price);
+                            c.getPlayer().getCashShop().gainCash(CashShop.NX_CREDIT, -price);
                             c.sendPacket(getCart(c.getPlayer().getId()));
                             c.enableCSActions();
                             c.sendPacket(PacketCreator.MTSConfirmBuy());
@@ -553,6 +556,7 @@ public final class MTSHandler extends AbstractPacketHandler {
                     equip.setRingId(rs.getInt("ringid"));
                     equip.setExpiration(rs.getLong("expiration"));
                     equip.setGiftFrom(rs.getString("giftFrom"));
+                    equip.setUpgradeHistory(rs.getString("upgradeHistory"));
                     items.add(new MTSItemInfo(equip, rs.getInt("price"), rs.getInt("id"), rs.getInt("seller"), rs.getString("sellername"), rs.getString("sell_ends")));
                 }
             }
@@ -607,6 +611,7 @@ public final class MTSHandler extends AbstractPacketHandler {
                                 equip.setFlag((short) rs.getInt("flag"));
                                 equip.setExpiration(rs.getLong("expiration"));
                                 equip.setGiftFrom(rs.getString("giftFrom"));
+                                equip.setUpgradeHistory(rs.getString("upgradeHistory"));
                                 items.add(new MTSItemInfo(equip, rse.getInt("price"), rse.getInt("id"),
                                         rse.getInt("seller"), rse.getString("sellername"), rse.getString("sell_ends")));
                             }
@@ -669,6 +674,7 @@ public final class MTSHandler extends AbstractPacketHandler {
                     equip.setFlag((short) rs.getInt("flag"));
                     equip.setExpiration(rs.getLong("expiration"));
                     equip.setGiftFrom(rs.getString("giftFrom"));
+                    equip.setUpgradeHistory(rs.getString("upgradeHistory"));
                     items.add(new MTSItemInfo(equip, rs.getInt("price"), rs.getInt("id"), rs.getInt("seller"), rs.getString("sellername"), rs.getString("sell_ends")));
                 }
             }
@@ -731,6 +737,7 @@ public final class MTSHandler extends AbstractPacketHandler {
                         equip.setFlag((short) rs.getInt("flag"));
                         equip.setExpiration(rs.getLong("expiration"));
                         equip.setGiftFrom(rs.getString("giftFrom"));
+                        equip.setUpgradeHistory(rs.getString("upgradeHistory"));
                         items.add(new MTSItemInfo(equip, rs.getInt("price"), rs.getInt("id"), rs.getInt("seller"), rs.getString("sellername"), rs.getString("sell_ends")));
                     }
                 }
@@ -825,6 +832,7 @@ public final class MTSHandler extends AbstractPacketHandler {
                         equip.setFlag((short) rs.getInt("flag"));
                         equip.setExpiration(rs.getLong("expiration"));
                         equip.setGiftFrom(rs.getString("giftFrom"));
+                        equip.setUpgradeHistory(rs.getString("upgradeHistory"));
                         items.add(new MTSItemInfo(equip, rs.getInt("price"), rs.getInt("id"), rs.getInt("seller"), rs.getString("sellername"), rs.getString("sell_ends")));
                     }
                 }

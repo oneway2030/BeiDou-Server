@@ -32,7 +32,7 @@ var MapID = 100040105;
 var BossID = 5220002;
 var BossName = "浮士德";
 /**刷新时间，分钟;  Generation time in minutes*/
-var BossTime = 180;
+var BossTime = 60;
 /**指定Boss刷新的XY坐标位置; Specify the XY coordinate position for Boss refresh*/
 var point = new Point(456, 278);
 var BossNotice= "自靛蓝雾霭中显形时，整片天空呈现出光谱折射的奇异蓝调，仿佛歌德手稿里未完成的魔法阵正在现世具象化‌";

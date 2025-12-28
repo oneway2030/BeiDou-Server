@@ -32,7 +32,7 @@ var MapID = 677000007;
 var BossID = 9400611;
 var BossName = "雪之猫女";
 /**刷新时间，分钟;  Generation time in minutes*/
-var BossTime = 180;
+var BossTime = 120;
 /**指定Boss刷新的XY坐标位置; Specify the XY coordinate position for Boss refresh*/
 var point = new Point(Math.floor((Math.random() * 100) + 100), 50);
 var BossNotice= "克罗塞尔降临之际，硫磺火雨在它蝠翼的阴影中凝成悬浮的赤红结晶，方圆十里的电子设备同时爆出幽蓝电弧‌";

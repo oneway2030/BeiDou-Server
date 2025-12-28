@@ -32,7 +32,7 @@ var MapID = 260010201;
 var BossID = 3220001;
 var BossName = "大宇";
 /**刷新时间，分钟;  Generation time in minutes*/
-var BossTime = 180;
+var BossTime = 60;
 /**指定Boss刷新的XY坐标位置; Specify the XY coordinate position for Boss refresh*/
 var point = new Point(645, 275);
 var BossNotice= "自沙暴中缓缓显形，黄沙如时光之纱寸寸剥落‌";

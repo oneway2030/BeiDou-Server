@@ -10,6 +10,8 @@ import org.gms.net.server.world.World;
 import org.gms.server.life.MonsterInformationProvider;
 import org.gms.service.ConfigService;
 import org.gms.util.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.function.Function;
@@ -21,6 +23,7 @@ import java.util.function.Function;
 public class GameConfig {
     private static final GameConfig config = new GameConfig();
     private final JSONObject properties = new JSONObject();
+    private static final Logger log = LoggerFactory.getLogger(GameConfig.class);
 
     private GameConfig() {
         ConfigService configService = ServerManager.getApplicationContext().getBean(ConfigService.class);
@@ -119,7 +122,7 @@ public class GameConfig {
             }
         }
         // 重载其余部分
-        switch (gameConfigDO.getConfigCode()){
+        switch (gameConfigDO.getConfigCode()) {
             case "allow_steal_quest_item":
                 MonsterInformationProvider.getInstance().clearDrops();
                 break;
@@ -501,5 +504,56 @@ public class GameConfig {
 
     public static JSONObject getConfig() {
         return config.properties;
+    }
+
+    /**
+     * 从游戏配置中获取指定键对应的字符串，并按逗号分割为字符串数组
+     *
+     * @param key 配置键
+     * @return 分割后的字符串数组（空配置返回空数组）
+     */
+    public static String[] getGameConfigAsArray(String key) {
+        String whiteList = getServerString(key);
+        if (whiteList == null || whiteList.trim().isEmpty()) {
+            return new String[]{};
+        }
+        return whiteList.split(",");
+    }
+
+    /**
+     * 检查指定ID是否存在于白名单数组中
+     *
+     * @param id        待检查的ID
+     * @param whitelist 白名单数组（元素为字符串形式的ID）
+     * @return 若ID在白名单中则返回true，否则返回false
+     */
+    public static boolean isIdInWhitelist(int id, String[] whitelist) {
+        for (String idStr : whitelist) {
+            String trimmedIdStr = idStr.trim();
+            if (trimmedIdStr.isEmpty()) {
+                continue;
+            }
+            try {
+                int whiteId = Integer.parseInt(trimmedIdStr);
+                if (whiteId == id) {
+                    return true;
+                }
+            } catch (NumberFormatException e) {
+                log.error("isIdInWhitelist NumberFormatException=", e);
+                continue;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 根据配置键获取白名单数组，并检查指定ID是否在该白名单中
+     *
+     * @param id  待检查的ID
+     * @param key 配置键
+     * @return 若ID在配置对应的白名单中则返回true，否则返回false
+     */
+    public static boolean isIdInConfigWhitelist(int id, String key) {
+        return isIdInWhitelist(id, getGameConfigAsArray(key));
     }
 }

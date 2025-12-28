@@ -32,7 +32,7 @@ var MapID = 250010304;
 var BossID = 7220000;
 var BossName = "肯德熊";
 /**刷新时间，分钟;  Generation time in minutes*/
-var BossTime = 180;
+var BossTime = 60;
 /**指定Boss刷新的XY坐标位置; Specify the XY coordinate position for Boss refresh*/
 var point = new Point(Math.floor((Math.random() * 700) - 800), 390);
 var BossNotice= "伴着一声柔和的哨音翩然而至‌";

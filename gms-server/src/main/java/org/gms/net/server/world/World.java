@@ -1520,7 +1520,7 @@ public class World {
     }
 
     public void registerMountHunger(Character chr) {
-        if (chr.isGM() && GameConfig.getServerBoolean("gm_pets_never_hungry") || GameConfig.getServerBoolean("pets_never_hungry")) {
+        if (chr.isGM() && GameConfig.getServerBoolean("gm_riding_pets_never_hungry") || GameConfig.getServerBoolean("pets_never_hungry")) {
             return;
         }
 

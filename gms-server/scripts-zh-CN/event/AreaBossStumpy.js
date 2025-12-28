@@ -32,7 +32,7 @@ var MapID = 101030404;
 var BossID = 3220000;
 var BossName = "树妖王";
 /**刷新时间，分钟;  Generation time in minutes*/
-var BossTime = 180;
+var BossTime = 60;
 /**指定Boss刷新的XY坐标位置; Specify the XY coordinate position for Boss refresh*/
 var point = new Point(Math.floor((Math.random() * 800) + 400), 1280);
 var BossNotice= "伴着沉闷的撞击声现身于石山之间，余音在山谷中回荡‌";

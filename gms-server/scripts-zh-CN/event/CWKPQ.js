@@ -96,7 +96,8 @@ function setEventRewards(eim) {
     eim.setEventClearStageMeso(mesoStages);
 }
 
-function afterSetup(eim) {}
+function afterSetup(eim) {
+}
 
 function getNameFromList(index, array) {
     return array[index];
@@ -377,7 +378,9 @@ function partyPlayersCheck(eim, player) {
         end(eim);
         return false;
     } else {
-        eim.dropMessage(5, "[远征队] " + player.getName() + " 已离开副本。");
+        if (!player.isGM()) {
+            eim.dropMessage(5, "[远征队] " + player.getName() + " 已离开副本。");
+        }
         eim.unregisterPlayer(player);
         return true;
     }

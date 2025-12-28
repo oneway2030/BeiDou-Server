@@ -32,7 +32,7 @@ var MapID = 677000012;
 var BossID = 9400633;
 var BossName = "牛魔王";
 /**刷新时间，分钟;  Generation time in minutes*/
-var BossTime = 180;
+var BossTime = 120;
 /**指定Boss刷新的XY坐标位置; Specify the XY coordinate position for Boss refresh*/
 var point = new Point(842, 0);
 var BossNotice= "玛巴斯现世之时，黄金狮鬃在硫磺风暴中燃烧成几何光轮，其足印所踏之处自动浮现精密齿轮构成的所罗门封印‌";

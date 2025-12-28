@@ -5593,7 +5593,7 @@ public class PacketCreator {
 
     public static Packet showMTSCash(Character chr) {
         final OutPacket p = OutPacket.create(SendOpcode.MTS_OPERATION2);
-        p.writeInt(chr.getCashShop().getCash(CashShop.NX_PREPAID));
+        p.writeInt(chr.getCashShop().getCash(CashShop.NX_CREDIT));
         p.writeInt(chr.getCashShop().getCash(CashShop.MAPLE_POINT));
         return p;
     }

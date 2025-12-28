@@ -146,8 +146,10 @@ function doSelect(selection) {
             break;
         case 20://拍卖行
             拍卖系统();
+            break;
         case 999://新人福利
             openNpc("新人福利");
+            break;
         // GM功能
         case 100://巡逻
             openNpc("巡逻");

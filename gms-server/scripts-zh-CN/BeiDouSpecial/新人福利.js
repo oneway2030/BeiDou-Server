@@ -7,18 +7,18 @@
 
 var status;
 var textMsg;
-var key = "新人福利礼包1·"
+var key = "新人福利礼包"
 var meso_id = 9999999;
 var cash_id = 9999998;
 
 var dailyRewards = [
-    {id: meso_id, qty: 100},//金币单位W
-    {id: cash_id, qty: 25000},//点卷
-    {id: 2029001, qty: 1},//快捷菜单
-    {id: 4000325, qty: 1},//胡罗卜
-    {id: 2430033, qty: 10},//北斗书
+    { id: meso_id, qty: 100 },//金币单位W
+    { id: cash_id, qty: 25000 },//点卷
+    { id: 2029001, qty: 1 },//快捷菜单
+    { id: 4000325, qty: 1 },//胡罗卜
+    { id: 2430033, qty: 10 },//北斗书
 ];
-var item_id=1122017;
+var item_id = 1122017;
 
 
 var icon = "#fUI/UIWindow.img/QuestIcon/7/0#";
@@ -44,7 +44,7 @@ function action(mode, type, selection) {
                     if (reward.id === meso_id) {
                         text += icon + ` × ${reward.qty} W \t \r\n`;
                     } else if (reward.id === cash_id) {
-                        text +=`点卷 × ${reward.qty} \t \r\n`;
+                        text += `点卷 × ${reward.qty} \t \r\n`;
                     } else {
                         text += `#v${reward.id}##t${reward.id}# x ${reward.qty}\r\n`;
                     }
@@ -65,7 +65,7 @@ function action(mode, type, selection) {
                         cm.gainItem(reward.id, reward.qty);
                     }
                 });
-                gainEquip(item_id,8,8,10,8,50,50,5,8,1440*5);
+                gainEquip(item_id, 8, 8, 10, 8, 50, 50, 5, 8, 1440 * 5);
                 cm.getPlayer().sendAllWordNoticeNew("新手福利", `恭喜玩家${cm.getPlayer().getName()}来到冒险岛!`)
                 cm.sendOk("恭喜您获得新手奖励，祝您游戏愉快！");
                 cm.dispose();
@@ -120,7 +120,7 @@ function CheckStatus(mode) {
  * @param upgradeSlot 可升级次数
  * @param expireTime  失效时间，-1为不失效 来自 @leevccc 的建议，传值则为分钟
  */
-function gainEquip(itemId,str,dex,int,luk,hp,mp,watk,matk,time){
+function gainEquip(itemId, str, dex, int, luk, hp, mp, watk, matk, time) {
     var chr = cm.getPlayer();
     chr.gainEquip(
         itemId,

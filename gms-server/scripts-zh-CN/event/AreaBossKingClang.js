@@ -32,7 +32,7 @@ var MapID = 110040000;
 var BossID = 5220001;
 var BossName = "巨居蟹";
 /**刷新时间，分钟;  Generation time in minutes*/
-var BossTime = 180;
+var BossTime = 60;
 /**指定Boss刷新的XY坐标位置; Specify the XY coordinate position for Boss refresh*/
 var point = new Point(Math.floor((Math.random() * 2400) - 1600), 140);
 var BossNotice= "出现在海岸线上，一顶形似螺壳的奇异头巾随潮水起伏，其螺旋纹路在夕照下泛着妖异的磷光‌";

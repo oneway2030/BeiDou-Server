@@ -152,19 +152,15 @@ public class StatEffect {
     private byte mapProtection;
     private CardItemupStats cardStats;
 
-    private static final Set<Integer> BUFF_BLACKLIST = Set.of(
-            2121004,   //终极无限
-            2221004,   //终极无限
-            2321004);
-
     //疾风步
     private static final Set<Integer> BUFF_WHITELIST = Set.of(1001,   //团队治疗
             1002);
 
     private static final Map<Integer, Integer> CUSTOM_BUFF_TIME_LIST = Map.of(
-            2121004, 60000,
-            2221004, 60000,
-            2321004, 60000);
+            4121006, 30 * 60 * 1000,
+            2121004, 60 * 1000,
+            2221004, 60 * 1000,
+            2321004, 60 * 1000);
 
 
     private static class CardItemupStats {
@@ -1249,7 +1245,7 @@ public class StatEffect {
         // 通过技能ID获取技能对象（假设sourceid为技能ID）
         int skillId = this.sourceid;
         // 技能在黑名单中 → 强制视为非自身技能
-        if (BUFF_BLACKLIST.contains(skillId)) {
+        if (GameConfig.isIdInConfigWhitelist(skillId, "job_buff_original_time_list")) {
             return false;
         } else if (BUFF_WHITELIST.contains(skillId)) {
             //白名单的技能直接无限时间
@@ -1279,7 +1275,7 @@ public class StatEffect {
         if (isOwnSkill(chr)) {
             return Integer.MAX_VALUE;
         }
-        return 30*60*1000;//30分钟
+        return 30 * 60 * 1000;//30分钟
     }
 
     public void silentApplyBuff(Character chr, long localStartTime) {
@@ -1864,9 +1860,11 @@ public class StatEffect {
     public int getSourceId() {
         return sourceid;
     }
+
     public void setSourceId(int id) {
         sourceid = id;
     }
+
     public int getBuffSourceId() {
         return skill ? sourceid : -sourceid;
     }

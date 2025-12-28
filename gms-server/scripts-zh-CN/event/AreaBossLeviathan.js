@@ -32,7 +32,7 @@ var MapID = 240040401;
 var BossID = 8220003;
 var BossName = "大海兽";
 /**刷新时间，分钟;  Generation time in minutes*/
-var BossTime = 180;
+var BossTime = 60;
 /**指定Boss刷新的XY坐标位置; Specify the XY coordinate position for Boss refresh*/
 var point = new Point(Math.floor((Math.random() * 600) - 300), 1125);
 var BossNotice= "昂首而起的刹那，裹挟着冰晶的寒风如远古战吼般撕裂云层‌";

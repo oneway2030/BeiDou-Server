@@ -32,7 +32,7 @@ var MapID = 250010504;
 var BossID = 7220002;
 var BossName = "妖怪禅师";
 /**刷新时间，分钟;  Generation time in minutes*/
-var BossTime = 180;
+var BossTime = 60;
 /**指定Boss刷新的XY坐标位置; Specify the XY coordinate position for Boss refresh*/
 var point = new Point(Math.floor((Math.random() * 1300) - 500), 540);
 var BossNotice= "的出现使幽魅之气愈发浓稠，野猫的泣鸣如锈蚀的刀片划破凝滞的夜雾‌";

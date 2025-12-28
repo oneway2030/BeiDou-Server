@@ -32,7 +32,7 @@ var MapID = 105090310;
 var BossID = 8220009;
 var BossName = "小吃店";
 /**刷新时间，分钟;  Generation time in minutes*/
-var BossTime = 180;
+var BossTime = 60;
 var setPos = [[-626, -604], [735, -600]];
 var rndPos = setPos[Math.floor(Math.random() * setPos.length)];
 /**指定Boss刷新的XY坐标位置; Specify the XY coordinate position for Boss refresh*/

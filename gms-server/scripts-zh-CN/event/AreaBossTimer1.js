@@ -32,7 +32,7 @@ var MapID = 220050000;
 var BossID = 5220003;
 var BossName = "提莫";
 /**刷新时间，分钟;  Generation time in minutes*/
-var BossTime = 180;
+var BossTime = 60;
 /**指定Boss刷新的XY坐标位置; Specify the XY coordinate position for Boss refresh*/
 var point = new Point(Math.floor((Math.random() * 1400) - 1000), 1030);
 var BossNotice= "嘀嗒...嘀嗒...！时间精灵提莫在轻声提醒。";

@@ -32,7 +32,7 @@ var MapID = 677000009;
 var BossID = 9400613;
 var BossName = "沃勒福";
 /**刷新时间，分钟;  Generation time in minutes*/
-var BossTime = 180;
+var BossTime = 120;
 /**指定Boss刷新的XY坐标位置; Specify the XY coordinate position for Boss refresh*/
 var point = new Point(Math.floor((Math.random() * 100) + 300), -841);
 var BossNotice= "出现的瞬间，月光在它蛇鳞状的皮毛上折射出千重幻影，所有目睹者的视网膜上同时烙下旋转的倒五芒星‌";

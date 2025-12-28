@@ -32,7 +32,7 @@ var MapID = 104000400;
 var BossID = 2220000;
 var BossName = "红蜗牛王";
 /**刷新时间，分钟;  Generation time in minutes*/
-var BossTime = 180;
+var BossTime = 60;
 /**指定Boss刷新的XY坐标位置; Specify the XY coordinate position for Boss refresh*/
 var point = new Point(279, -496);
 var BossNotice= "玛诺的身影伴随着凉风乍起时悄然显现，落叶在她脚边打着旋儿静止";

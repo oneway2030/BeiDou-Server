@@ -32,7 +32,7 @@ var MapID = 221040301;
 var BossID = 6220001;
 var BossName = "朱诺";
 /**刷新时间，分钟;  Generation time in minutes*/
-var BossTime = 180;
+var BossTime = 60;
 /**指定Boss刷新的XY坐标位置; Specify the XY coordinate position for Boss refresh*/
 var point = new Point(-4224, 776);
 var BossNotice= "伴随重型机械轰鸣声现世！";

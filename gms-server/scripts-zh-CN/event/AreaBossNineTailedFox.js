@@ -32,7 +32,7 @@ var MapID = 222010310;
 var BossID = 7220001;
 var BossName = "九尾狐";
 /**刷新时间，分钟;  Generation time in minutes*/
-var BossTime = 180;
+var BossTime = 60;
 /**指定Boss刷新的XY坐标位置; Specify the XY coordinate position for Boss refresh*/
 var point = new Point(Math.floor((Math.random() * 1300) - 800), 33);
 var BossNotice= "伴随着一声悠长的狐啸划破夜色，那老狐的气息如雾霭般在林间弥散‌";

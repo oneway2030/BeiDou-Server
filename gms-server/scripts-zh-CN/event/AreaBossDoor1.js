@@ -32,7 +32,7 @@ var MapID = 677000003;
 var BossID = 9400610;
 var BossName = "黑暗独角兽";
 /**刷新时间，分钟;  Generation time in minutes*/
-var BossTime = 180;
+var BossTime = 120;
 /**指定Boss刷新的XY坐标位置; Specify the XY coordinate position for Boss refresh*/
 var point = new Point(Math.floor((Math.random() * 100) + 400), 0);
 var BossNotice= "安度西亚斯‌撕裂天幕降临，其独角兽形躯体由失传的《格里高利圣咏》手稿羊皮纸折叠而成，每根毛发都是凝固的管风琴音管‌";

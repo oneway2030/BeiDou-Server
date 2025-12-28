@@ -32,7 +32,7 @@ var MapID = 800020120;
 var BossID = 6090002;
 var BossName = "青竹武士";
 /**刷新时间，分钟;  Generation time in minutes*/
-var BossTime = 180;
+var BossTime = 120;
 /**指定Boss刷新的XY坐标位置; Specify the XY coordinate position for Boss refresh*/
 var point = new Point(Math.floor((Math.random() * 100) + 600), 50);
 var BossNotice= "青岚自氤氲雾气笼罩的断垣残壁间，骤然现形！";

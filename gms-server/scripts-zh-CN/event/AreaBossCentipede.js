@@ -32,7 +32,7 @@ var MapID = 251010102;
 var BossID = 5220004;
 var BossName = "巨型蜈蚣";
 /**刷新时间，分钟;  Generation time in minutes*/
-var BossTime = 180;
+var BossTime = 60;
 /**指定Boss刷新的XY坐标位置; Specify the XY coordinate position for Boss refresh*/
 var point = new Point(Math.floor((Math.random() * 100) + 600), 50);
 var BossNotice= "从药圃生瘴处破雾而出，千足划空如戈戟森然‌";

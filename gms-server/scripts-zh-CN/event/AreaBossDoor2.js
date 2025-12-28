@@ -32,7 +32,7 @@ var MapID = 677000005;
 var BossID = 9400609;
 var BossName = "印第安老斑鸠";
 /**刷新时间，分钟;  Generation time in minutes*/
-var BossTime = 180;
+var BossTime = 120;
 /**指定Boss刷新的XY坐标位置; Specify the XY coordinate position for Boss refresh*/
 var point = new Point(Math.floor((Math.random() * 100) + 300), 80);
 var BossNotice= "安杜拉斯刺穿次元壁的刹那，所有乌鸦的瞳孔骤缩为刀锋状，战场遗迹的锈铁自动熔铸成其黄铜巨剑‌";

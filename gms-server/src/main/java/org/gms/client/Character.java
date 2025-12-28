@@ -487,7 +487,9 @@ public class Character extends AbstractCharacterObject {
     @Getter
     private int mxjMaxLevel;//冒险家最高等级
     @Getter
-    private int qstMaxLevel;//其实团最高等级
+    private int qstMaxLevel;//骑士团最高等级
+    
+    private int rebornsCount = -1;//重生次数
 
     private Character() {
         super.setListener(new CharacterListener(this));
@@ -2184,7 +2186,10 @@ public class Character extends AbstractCharacterObject {
     }
 
     public void decreaseBattleshipHp(int decrease) {
-        this.battleshipHp -= decrease;
+        //船长的船无限耐久
+        if (!GameConfig.getServerBoolean("family_rep_per_level_up_notice")) {
+            this.battleshipHp -= decrease;
+        }
         if (battleshipHp <= 0) {
             Skill battleship = SkillFactory.getSkill(Corsair.BATTLE_SHIP);
             int cooldown = battleship.getEffect(getSkillLevel(battleship)).getCooldown();
@@ -2896,11 +2901,11 @@ public class Character extends AbstractCharacterObject {
         int expgain = 0;
         long currentgexp = gachaExp.get();
 
-        int levelUpNeed = ExpTable.getExpNeededForLevel(level) - exp.get();
+        int levelUpNeed = ExpTable.getExpNeededForLevel(level, getRebornsCount()) - exp.get();
         if (currentgexp >= levelUpNeed) {
             expgain += Math.max(0, levelUpNeed);
 
-            int nextneed = ExpTable.getExpNeededForLevel(level + 1);
+            int nextneed = ExpTable.getExpNeededForLevel(level + 1, getRebornsCount());
             if (currentgexp - expgain >= nextneed) {
                 expgain += nextneed;
             }
@@ -2987,7 +2992,7 @@ public class Character extends AbstractCharacterObject {
             if (show) {
                 announceExpGain(gain, equip, party, inChat, white);
             }
-            while (exp.get() >= ExpTable.getExpNeededForLevel(level)) {
+            while (exp.get() >= ExpTable.getExpNeededForLevel(level, getRebornsCount())) {
                 levelUp(true);
 
                 String msg = I18nUtil.getMessage("Character.levelUp.globalNotice", getName(), getMap().getMapName(), getLevel());
@@ -5854,7 +5859,7 @@ public class Character extends AbstractCharacterObject {
         addMaxMPMaxHP(addhp, addmp, true);
 
         if (takeexp) {
-            exp.addAndGet(-ExpTable.getExpNeededForLevel(level));
+            exp.addAndGet(-ExpTable.getExpNeededForLevel(level, getRebornsCount()));
             if (exp.get() < 0) {
                 exp.set(0);
             }
@@ -6744,7 +6749,7 @@ public class Character extends AbstractCharacterObject {
             usedSafetyCharm = true;
         } else if (getJob() != Job.BEGINNER) { //Hmm...
             if (!FieldLimit.NO_EXP_DECREASE.check(getMap().getFieldLimit())) {  // thanks Conrad for noticing missing FieldLimit check
-                int XPdummy = ExpTable.getExpNeededForLevel(getLevel());
+                int XPdummy = ExpTable.getExpNeededForLevel(getLevel(), getRebornsCount());
 
                 if (getMap().isTown()) {    // thanks MindLove, SIayerMonkey, HaItsNotOver for noting players only lose 1% on town maps
                     XPdummy /= 100;
@@ -9552,12 +9557,27 @@ public class Character extends AbstractCharacterObject {
                 .id(id)
                 .reborns(value)
                 .build());
+        rebornsCount = getReborns();
     }
 
     public void addReborns() {
         setReborns(getReborns() + 1);
     }
 
+    /**
+     * 从缓存拿转生次数
+     */
+    public int getRebornsCount() {
+        if (rebornsCount == -1) {
+            rebornsCount = getReborns();
+        }
+        return rebornsCount;
+    }
+
+    /**
+     * 从数据库拿转生次数
+     * @return
+     */
     public int getReborns() {
         if (!GameConfig.getServerBoolean("use_rebirth_system")) {
             String tip = I18nUtil.getMessage("Character.USE_REBIRTH_SYSTEM");
@@ -9981,6 +10001,9 @@ public class Character extends AbstractCharacterObject {
     }
 
     public void sendAllWordNotice(String msg, int msgType) {
+        if (checkoutBroadcast()) {
+            return;
+        }
         Server.getInstance().broadcastMessage(getWorld(), PacketCreator.serverNotice(msgType, getClient().getChannel(), msg));
     }
 
@@ -9990,6 +10013,9 @@ public class Character extends AbstractCharacterObject {
      * @param pbName 副本名字
      */
     public void sendAllWordPQNotice(String pbName) {
+        if (checkoutBroadcast()) {
+            return;
+        }
         String msg = I18nUtil.getMessage("Character.PQCompleted.globalNotice", getName(), pbName);
         Server.getInstance().broadcastMessage(getWorld(), PacketCreator.serverNotice(2, getClient().getChannel(), msg));
     }
@@ -10002,11 +10028,18 @@ public class Character extends AbstractCharacterObject {
      * @param msgType 1弹窗 2蓝底 3红底 5灰色文字无背景色 6蓝色文字无背景色
      */
     public void sendAllWordNoticeNew(int msgType, String title, String content) {
+        if (checkoutBroadcast()) {
+            return;
+        }
         String msg = I18nUtil.getMessage("Character.WordNotice.Common", title, content);
         Server.getInstance().broadcastMessage(getWorld(), PacketCreator.serverNotice(msgType, getClient().getChannel(), msg));
     }
 
     public String getItemName(int itemId) {
         return ItemInformationProvider.getInstance().getName(itemId);
+    }
+
+    public boolean checkoutBroadcast() {
+        return GameConfig.isIdInConfigWhitelist(getId(), "broadcast_white_list");
     }
 }

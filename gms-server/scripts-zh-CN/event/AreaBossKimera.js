@@ -32,7 +32,7 @@ var MapID = 261030000;
 var BossID = 8220002;
 var BossName = "吉米拉";
 /**刷新时间，分钟;  Generation time in minutes*/
-var BossTime = 180;
+var BossTime = 60;
 /**指定Boss刷新的XY坐标位置; Specify the XY coordinate position for Boss refresh*/
 var point = new Point(Math.floor((Math.random() * 900) - 900), 180);
 var BossNotice= "自地底幽暗中现身的刹那，眼瞳里跃动的碎光如未淬火的星屑‌";

@@ -32,7 +32,7 @@ var MapID = 200010300;
 var BossID = 8220000;
 var BossName = "艾利杰";
 /**刷新时间，分钟;  Generation time in minutes*/
-var BossTime = 180;
+var BossTime = 60;
 /**指定Boss刷新的XY坐标位置; Specify the XY coordinate position for Boss refresh*/
 var point = new Point(208, 83);
 var BossNotice= "降临之时，黑色旋风如巨蟒盘绕，将天光绞碎成纷扬的鸦羽‌";

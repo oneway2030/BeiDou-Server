@@ -19,6 +19,7 @@
 */
 package org.gms.client;
 
+import org.gms.config.GameConfig;
 import org.gms.net.packet.Packet;
 import org.gms.net.server.Server;
 import org.slf4j.Logger;
@@ -303,7 +304,7 @@ public class FamilyEntry {
             this.totalReputation += gain;
         }
         Character chr = getChr();
-        if (chr != null) {
+        if (chr != null && GameConfig.getServerBoolean("family_rep_per_level_up_notice")) {
             chr.sendPacket(PacketCreator.sendGainRep(gain, from != null ? from.getName() : ""));
         }
     }
@@ -322,7 +323,7 @@ public class FamilyEntry {
             }
             if (includeSuperSenior) {
                 senior = senior.getSenior();
-                if (senior != null) {
+                if (senior != null && GameConfig.getServerBoolean("family_rep_per_level_up_notice")) {
                     senior.gainReputation(actualGain, true, this);
                 }
             }
