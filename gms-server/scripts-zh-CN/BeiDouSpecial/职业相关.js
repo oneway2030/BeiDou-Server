@@ -43,7 +43,7 @@ function action(mode, type, selection) {
     if (status === 0) {
         let text = OldTitle;
         text += " \r\n";
-        if (cm.getPlayer().isGM()) {
+        if (cm.getPlayer().isGM() || 获取更换职业次数() > 0) {
             text += "#L1##b快速转职#l\t\r\n\r\n";
         }
         text += "#L2#更换职业#l\t\r\n\r\n";
@@ -61,6 +61,7 @@ function doSelect(selection) {
     switch (selection) {
         case 1:
             openNpc("快速转职");
+
             break;
         case 2:
             openNpc("更换职业");
@@ -82,4 +83,12 @@ function openNpc(scriptName) {
     cm.openNpc(9900001, scriptName);
 }
 
+function 获取更换职业次数() {
+    let count = cm.getAccountExtendValue("更换职业次数");
+    return Number(count) || 0; // 处理未签到过的情况
+}
+
+function 保存更换职业次数() {
+    cm.saveOrUpdateAccountExtendValue("更换职业次数", String(获取更换职业次数() + 1));
+}
 

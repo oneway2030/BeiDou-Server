@@ -1,5 +1,7 @@
 var status = -1;
-var maxSkills = true;//转职后全满技能
+var maxSkills = false;//转职后全满技能
+var needItemId = 4039020;
+var needItemCount = 1;
 var Job_list_Map = {
     //职业列表
     0: [//新手 - 一转
@@ -837,11 +839,9 @@ function start() {
 
 function action(mode, type, selection) {
     if (mode == -1) {
-        cm.sendOk("#b好的,下次再见.");
         cm.dispose();
     } else {
         if (status == 0 && mode == 0) {
-            cm.sendOk("#b好的,下次再见.");
             cm.dispose();
             return;
         }
@@ -853,8 +853,10 @@ function action(mode, type, selection) {
     }
     if (status == 0) {
         Job_list = Job_list_Map[cm.getJobId()];
+        let qty = needItemCount * 获取更换职业次数();
         if (Job_list != null) {
-            var text = "嗨，我是 #b管理员#k 我可以帮助你快速转职哦~~！\r\n\r\n#b";
+            var text = "嗨，我是 #b管理员#k 我可以帮助你快速转职哦~~！\r\n#b";
+            text+=`#r每次需要消耗#v${needItemId}# x${qty}个（更换职业次数越多需要的越多）#b\r\n\r\n`;
             for (var i = 0; i < Job_list.length; i++) {
                 var s_text = "";
                 for (var j = 1; j < Job_list[i].length; j++) {
@@ -898,6 +900,13 @@ function is4Zhuan(id) {
 }
 
 function jobChange(jobId) {
+    let qty = needItemCount * 获取更换职业次数();
+    if (!cm.haveItem(needItemId, qty)) {
+        cm.sendOk(`快速转职需要：#v${needItemId}# x${qty}个，您的数量不足，无法转职！\r\n`);
+        cm.dispose();
+        return;
+    }
+    cm.gainItem(needItemId, -qty); // 扣减材料
     //一转需要给东西,并重置状态,不然不给技能点
     if (jobId === 100) {
         if (cm.isNotCanHold(2)) {
@@ -955,7 +964,7 @@ function jobChange(jobId) {
     for (var i = 1; i < Job_list[job_list_sel].length; i++) {
         cm.teachSkill(Job_list[job_list_sel][i].id, maxSkills ? Job_list[job_list_sel][i].max_Level : 0, Job_list[job_list_sel][i].max_Level, -1);
     }
-    // cm.worldMessage(6, "[转职系统]: 恭喜 [" + cm.getPlayer().getName() + "] 成为 [" + Job_list[job_list_sel][0].name + "] 快速转职成功！");
+    cm.getPlayer().sendAllWordNoticeNew(3, "转职系统", `恭喜玩家【${cm.getPlayer().getName()}】转职成为【${Job_list[job_list_sel][0].name}】!`);
     cm.sendOk("转职成功！加油锻炼，当你变的强大的时候记的来找我哦！");
     cm.dispose();
 }
@@ -972,5 +981,14 @@ function isCanHold(type) {
         return false
     }
     return true
+}
+
+function 获取更换职业次数() {
+    let count = cm.getAccountExtendValue("更换职业次数");
+    return Number(count) || 0; // 处理未签到过的情况
+}
+
+function 保存更换职业次数() {
+    cm.saveOrUpdateAccountExtendValue("更换职业次数", String(获取更换职业次数() + 1));
 }
 

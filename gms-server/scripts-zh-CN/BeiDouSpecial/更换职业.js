@@ -27,8 +27,8 @@ var ptcost = 1;  //普通职业消耗枫叶
 var qscost = 1; //骑士团消耗枫叶
 
 var relevel;
-var relevela = 10;  //普通职业更换职业所需等级
-var relevelb = 10; //骑士团更换职业所需等级
+var relevela = 120;  //普通职业更换职业所需等级
+var relevelb = 120; //骑士团更换职业所需等级
 var status;
 var selecta;
 var returnLevel = 1;
@@ -153,6 +153,7 @@ function action(mode, type, selection) {
             text += "#k2.回到1级菜单将不可用.需要一转后才可以使用全部功能\r\n"
             text += "#k3.骑士团和战童最好自己先去一转地图后在变更职业\r\n"
             text += "#k4.温馨提示最好再准备一把0级武器#k\r\n";
+            text += "#b5.更换职业后可以使用快速转职功能转职,更换次数越多转职消耗越大#k\r\n";
             text += "#r(请谨慎变更职业)\r\n\r\n";
             text += "#r请选择您要变更的职业：\r\n";
             for (var i = 0; i < 职业.length; i++) {
@@ -221,6 +222,7 @@ function 换职业(jobId) {
         for (var i = 0; i < 10; ++i) {
             player.gainSp(-99999999, i, false);
         }
+        保存更换职业次数();
     } catch (e) {
         cm.sendOk("重置技能失败: " + e.message);
         cm.dispose();
@@ -288,4 +290,13 @@ function getWashValue(type) {
 function setWashValue(curCount, type) {
     const key = type === 0 ? KEY_WASH_HP : KEY_WASH_MP;
     cm.saveOrUpdateCharacterExtendValue(key, curCount + "");
+}
+
+function 获取更换职业次数() {
+    let count = cm.getAccountExtendValue("更换职业次数");
+    return Number(count) || 0; // 处理未签到过的情况
+}
+
+function 保存更换职业次数() {
+    cm.saveOrUpdateAccountExtendValue("更换职业次数", String(获取更换职业次数() + 1));
 }

@@ -42,7 +42,7 @@ function action(mode, type, selection) {
         text += "#k剩余副本积分:#r" + cm.getPqPoints() + " \r\n";
         text += "\r\n";
         var jobId = cm.getPlayer().getJob().getId();
-        if ((jobId == 0 || jobId == 1000 || jobId == 2000) && !cm.getPlayer().isGM()) {
+        if ((jobId == 0 || jobId == 1000 || jobId == 2000) && !cm.getPlayer().isGM() && 获取更换职业次数() == 1) {
             text += "#L999#新人福利#n#l\r\n\r\n\r\n";
             text += "\t#b(一转后开启传送功能)\r\n";
             text += "#L2#" + icon + "#随身仓库#l\t#L3#便利商店#l\t#L4#一键出售#l\r\n";
@@ -205,6 +205,10 @@ function 拍卖系统() {
     EnterMTSHandler.enterMTS(client);
 }
 
+function 获取更换职业次数() {
+    let count = cm.getAccountExtendValue("更换职业次数");
+    return Number(count) || 0; // 处理未签到过的情况
+}
 
 // 核心：通过Java.type导入所需的Java类（需替换为实际包路径）
 // 注意：请将包名替换为你项目中这些类的真实全限定名
