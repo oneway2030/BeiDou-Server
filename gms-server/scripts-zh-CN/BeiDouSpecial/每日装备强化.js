@@ -10,7 +10,6 @@ var 精灵项链强化key = "精灵项链强化已强化"; // 记录今日是否
 var 已强化值 = "1";
 var need_kerning_completion_count = 1; // 需要完成的废弃副本次数
 
-
 function start() {
     status = -1;
     try {
@@ -37,22 +36,28 @@ function action(mode, type, selection) {
     } else if (status === 1) {
         if (selection === 0) {
             do强化(); // 执行强化操作
+        } else {
+            cm.dispose(); // 无效选择直接关闭
         }
     } else {
         cm.dispose();
     }
 }
 
+/**
+ * 主界面：展示强化信息和条件
+ */
 function main() {
     let text = OldTitle;
     text += " \r\n";
-    text += `#b这里每天可以帮你强化#v${强化目标项链Id}##t${强化目标项链Id}#道具1次#k\r\n`;
+    text += `#b这里每天可以帮你强化#v${强化目标项链Id}##z${强化目标项链Id}#道具1次#k\r\n`;
     text += "强化条件:\r\n";
-    text += "1. 完成废弃副本一次\r\n";
-    text += "2. 请把精灵吊坠放在装备栏第一格\r\n";
-    text += "3. 强化后魔攻、智力、血蓝+2,其余全属性+1\r\n";
-    text += "4. 一个账号只能强化1次\r\n\r\n";
-    // 检查今日是否已强化
+    text += "1. 完成废弃副本至少1次\r\n";
+    text += `2. 请将#v${强化目标项链Id}##t${强化目标项链Id}# 放在装备栏第一格\r\n`;
+    text += "3. 强化后魔攻、智力、血蓝+2，其余全属性+1\r\n";
+    text += "4. 一个账号每日只能强化1次\r\n\r\n";
+
+    // 检查今日是否已强化（带日期后缀，支持每日重置）
     if (是否已强化过()) {
         text += "\r\n#r你今天已经强化过了，请明天再来！#k";
         cm.sendOk(text);
@@ -64,13 +69,15 @@ function main() {
     var str = 废弃副本是否满足条件 ? "#b满足条件#k" : "#r不满足条件#k";
     text += `#b您已完成废弃副本${kerningCompletionCount}次, ${str}\r\n`;
     if (废弃副本是否满足条件) {
-        text += "#L0#开始强化#l\t\r\n\r\n";
+        text += "#L0#开始强化#l\r\n\r\n";
+        cm.sendSimple(text);
+    } else {
+        cm.sendOk(text);
     }
-    cm.sendSimple(text);
 }
 
 function 获取废弃副本完成次数() {
-    return cm.getPQEnteredCount(1); // 处理未完成过的情况
+    return cm.getPQEnteredCount(1) || 0;
 }
 
 function do强化() {

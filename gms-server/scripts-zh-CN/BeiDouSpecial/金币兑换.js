@@ -1,4 +1,5 @@
 var itemSet = Array(
+    Array(4001163, 20000000),
     Array(4000313, 500000),                     //（物品代码，金币数）
     Array(4001086, 20000000),
     Array(3992041, 20000000),
@@ -15,7 +16,7 @@ var itemSet = Array(
     Array(4001110, 1000000),
     Array(4001111, 1000000),
     Array(4001112, 1000000),
-    Array(4039020, 10000000)
+    Array(4039020, 10000000),
 );
 
 //金蛋
@@ -90,9 +91,13 @@ function action(mode, type, selection) {
             if (cm.getMeso() < cost) {
                 cm.sendOk("金币不足。");
             } else {
-                cm.gainMeso(-cost);
-                cm.gainItem(item, qty);
-                cm.sendOk("购买成功。");
+                if (cm.canHold(item, qty)) {
+                    cm.gainMeso(-cost);
+                    cm.gainItem(item, qty);
+                    cm.sendOk("购买成功。");
+                }else {
+                    cm.sendOk("背包空间不足。");
+                }
             }
         }
         cm.dispose();

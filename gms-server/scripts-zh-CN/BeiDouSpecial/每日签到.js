@@ -110,7 +110,7 @@ function level0() {
         cm.sendOk("您已经签到过了，请明天再来");
         cm.dispose();
     } else {
-        if (!cm.isNotCanHold(2, dailyRewards.length)) { // 检查足够的背包空间
+        if (canHold(dailyRewards)) { // 检查足够的背包空间
             saveCheckInCount();
             cm.saveOrUpdateAccountExtendValue(DAILY_CHECK_IN, "1", true);
             // 构建每日奖励提示
@@ -123,12 +123,22 @@ function level0() {
             dailyRewards.forEach(reward => {
                 cm.gainItem(reward.id, reward.qty);
             });
-            cm.getPlayer().sendAllWordNoticeNew("每日签到",`恭喜玩家${cm.getPlayer().getName()}签到成功!`);
+            cm.getPlayer().sendAllWordNoticeNew("每日签到", `恭喜玩家${cm.getPlayer().getName()}签到成功!`);
             cm.dispose();
         }
     }
 }
 
+function canHold(list) {
+    for (const {id, qty} of list) {
+        if (!cm.canHold(id, qty)) {
+            cm.sendOk(rewardText);
+            cm.dispose();
+            return false;
+        }
+    }
+    return true;
+}
 
 function getCheckInState() {
     text = cm.getAccountExtendValue(DAILY_CHECK_IN, true);
@@ -183,7 +193,7 @@ function levelChooseInventory(choose) {
                 cm.gainItem(reward.id, reward.qty);
             });
             cm.saveOrUpdateAccountExtendValue(tag, "1");
-            cm.getPlayer().sendAllWordNoticeNew("累计签到",`恭喜玩家${cm.getPlayer().getName()}领取${index}天累计签到奖励!`);
+            cm.getPlayer().sendAllWordNoticeNew("累计签到", `恭喜玩家${cm.getPlayer().getName()}领取${index}天累计签到奖励!`);
             cm.dispose();
         }
     }

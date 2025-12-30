@@ -31,12 +31,15 @@ function action(mode, type, selection) {
         var OldTitle = "\t\t\t\t\t#e#k欢迎大佬 #r[" + cm.getPlayer().getName() + "] #k您的到来#n\t\t\t\t\r\n";
         let text = OldTitle;
         text += " \r\n";
-        text += "#k当前点券：#r" + cm.getPlayer().getCashShop().getCash(1) + "   #k签到天数:#r" + Number(cm.getAccountExtendValue(DAILY_CHECK_IN_TOTAL));
+        text += "#bID:#r" + cm.getPlayer().getId() + "\t\t";
+        text += "#k当前点券：#r" + cm.getPlayer().getCashShop().getCash(1) + "\t\t#k签到天数:#r" + Number(cm.getAccountExtendValue(DAILY_CHECK_IN_TOTAL));
         const GameConfig = Java.type('org.gms.config.GameConfig');
         if (GameConfig.getServerBoolean("use_rebirth_system")) {
-            text += "     #k转生次数:#r" + cm.getChar().getReborns();
+            text += "\t\t#k转生次数:#r" + cm.getChar().getReborns();
         }
-        text += "     #k副本积分:#r" + cm.getPqPoints() + " \r\n";
+        text += "\r\n";
+        text += "#k累计副本积分:#r" + cm.getPqTotalPoints() + "\t\t";
+        text += "#k剩余副本积分:#r" + cm.getPqPoints() + " \r\n";
         text += "\r\n";
         var jobId = cm.getPlayer().getJob().getId();
         if ((jobId == 0 || jobId == 1000 || jobId == 2000) && !cm.getPlayer().isGM()) {
@@ -57,7 +60,7 @@ function action(mode, type, selection) {
         text += " \r\n";
         text += "#L13#" + icon + "额外仓库#l\t#L14#删除道具#l\t#L15#查询掉落#l\t#L16#其他功能#l\r\n";
         text += " \r\n";
-        text += "#L19#" + icon + "卷轴分解#l\t#L20#拍卖行#l\r\n";
+        text += "#L19#" + icon + "卷轴分解#l\t#L20#拍卖行\t   #L21#副本兑换#l\r\n";
         text += " \r\n";
         if (cm.getPlayer().isGM()) {
             text += "\r\n";
@@ -146,6 +149,9 @@ function doSelect(selection) {
             break;
         case 20://拍卖行
             拍卖系统();
+            break;
+        case 21://副本兑换
+            openNpc("副本相关/副本兑换");
             break;
         case 999://新人福利
             openNpc("新人福利");

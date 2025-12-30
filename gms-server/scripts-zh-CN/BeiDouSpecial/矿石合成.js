@@ -21,7 +21,6 @@ function start() {
 
 function action(mode, type, selection) {
     if (mode <= 0 && status == 0) {
-        cm.sendNext("如果你现在还不急，就等会儿再来。你也看到了，现在我手上的工作多得要命，可能没法按时交付你给我的任务。");
         cm.dispose();
         return;
     }

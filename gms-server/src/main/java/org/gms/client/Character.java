@@ -2187,7 +2187,7 @@ public class Character extends AbstractCharacterObject {
 
     public void decreaseBattleshipHp(int decrease) {
         //船长的船无限耐久
-        if (!GameConfig.getServerBoolean("family_rep_per_level_up_notice")) {
+        if (!GameConfig.getServerBoolean("battleship_unlimited_hp")) {
             this.battleshipHp -= decrease;
         }
         if (battleshipHp <= 0) {

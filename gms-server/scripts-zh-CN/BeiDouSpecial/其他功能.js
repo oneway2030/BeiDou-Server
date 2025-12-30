@@ -108,7 +108,7 @@ function 发放补偿奖励() {
             }
         });
         sendEquipment(1702920,3*24*60);
-        cm.saveOrUpdateAccountExtendValue(补偿奖励_KEY, "1", false);
+        cm.saveOrUpdateAccountExtendValue(补偿奖励_KEY, "1");
         cm.sendOk("恭喜你领取成功");
         cm.getPlayer().sendAllWordNoticeNew("外国节日",`恭喜玩家【${cm.getPlayer().getName()}】领取平安&夜圣诞节礼物! 祝大家节日快来~`);
         cm.dispose();
@@ -143,7 +143,7 @@ function 公测奖励() {
     cm.gainMeso(公测金币奖励 * 10000);  // 发放金币
     cm.getPlayer().getCashShop().gainCash(1, 100000);//点券
     // 标记为已领取（通过AccountExtendValue存储，账号级唯一）
-    cm.saveOrUpdateAccountExtendValue(TEST_PACKAGE_KEY, "1", true);
+    cm.saveOrUpdateAccountExtendValue(TEST_PACKAGE_KEY, "1");
 
     // 弹窗展示领取内容
     cm.sendOk(rewardText);
