@@ -195,6 +195,9 @@ public class MapleMap {
     private static final Lock bndLock = new ReentrantLock(true);
     //是否随机刷新位置
     private boolean mIsRandomRefresh;
+    //重叠掉落的消耗物品
+    private final Set<Integer> drop_item_overlap_list = Set.of(2060000, 2060001, 2060002, 2060003, 2060004,
+            2061000, 2061001, 2061002, 2061003, 2061004);
 
     public MapleMap(int mapid, int world, int channel, int returnMapId, float monsterRate) {
         this.mapid = mapid;
@@ -673,12 +676,10 @@ public class MapleMap {
             int dropChance = (int) Math.min((float) de.chance * chRate * cardRate, Integer.MAX_VALUE);
 
             if (Randomizer.nextInt(999999) < dropChance) {
-                if (droptype == 3) {
-                    pos.x = mobpos + ((d % 2 == 0) ? (40 * ((d + 1) / 2)) : -(40 * (d / 2)));
-                } else {
-                    pos.x = mobpos + ((d % 2 == 0) ? (25 * ((d + 1) / 2)) : -(25 * (d / 2)));
-                }
-                if (de.itemId == 0) { // meso
+                // 先计算当前掉落的基础位置（针对当前de的第一次掉落）
+                getPos(pos, d, droptype, mobpos);
+
+                if (de.itemId == 0) { // 处理金币掉落
                     int mesos = Randomizer.nextInt(de.Maximum - de.Minimum) + de.Minimum;
 
                     if (mesos > 0) {
@@ -689,29 +690,83 @@ public class MapleMap {
                         if (mesos <= 0) {
                             mesos = Integer.MAX_VALUE;
                         }
-
                         spawnMesoDrop(mesos, calcDropPos(pos, mob.getPosition()), mob, chr, false, droptype);
                     }
+                    d++;
                 } else {
                     if (ItemConstants.getInventoryType(de.itemId) == InventoryType.EQUIP) {
+                        // 装备掉落逻辑保持不变（单物品）
                         idrop = ii.randomizeStats((Equip) ii.getEquipById(de.itemId));
+                        spawnDrop(idrop, calcDropPos(pos, mob.getPosition()), mob, chr, droptype, de.questid);
+                        d++;
                     } else {
+                        // 非装备物品：计算总数量并循环生成，每次更新位置
                         int quantity = de.Minimum;
                         if (quantity <= 0) {
                             quantity = 1;
                         }
                         if (de.Maximum > de.Minimum) {
-                            quantity += Randomizer.nextInt(de.Maximum - de.Minimum+1);
+                            quantity += Randomizer.nextInt(de.Maximum - de.Minimum + 1);
                         }
-                        idrop = new Item(de.itemId, (short) 0, (short) (quantity));
+                        if (isIndependentDrop(de, quantity)) {
+                            //int playerCount = getMapPlayers(chr);
+                            for (int i = 0; i < quantity; i++) {
+                                getPos(pos, d, droptype, mobpos);
+                                idrop = new Item(de.itemId, (short) 0, (short) 1);
+                                spawnDrop(idrop, calcDropPos(pos, mob.getPosition()), mob, chr, droptype, de.questid);
+                                d++;
+                            }
+                        } else {
+                            idrop = new Item(de.itemId, (short) 0, (short) quantity);
+                            spawnDrop(idrop, calcDropPos(pos, mob.getPosition()), mob, chr, droptype, de.questid);
+                            d++;
+                        }
                     }
-                    spawnDrop(idrop, calcDropPos(pos, mob.getPosition()), mob, chr, droptype, de.questid);
                 }
-                d++;
             }
         }
 
         return d;
+    }
+
+    private boolean isIndependentDrop(MonsterDropEntry de, int quantity) {
+        if (quantity > 1) {
+            if (ItemConstants.getInventoryType(de.itemId) == InventoryType.USE) {
+                return !drop_item_overlap_list.contains(de.itemId);
+            } else {
+                return GameConfig.isIdInConfigList(de.itemId, "monster_independent_drop_list");
+            }
+        }
+        return false;
+    }
+
+    // getPos方法保持不变（其逻辑已支持根据d值计算左右交替偏移）
+    private void getPos(Point pos, byte d, byte droptype, int mobpos) {
+        if (droptype == 3) {
+            pos.x = mobpos + ((d % 2 == 0) ? (40 * ((d + 1) / 2)) : -(40 * (d / 2)));
+        } else {
+            pos.x = mobpos + ((d % 2 == 0) ? (25 * ((d + 1) / 2)) : -(25 * (d / 2)));
+        }
+    }
+
+    public int getMapPlayers(Character chr) {
+        // 获取当前玩家所在队伍在本地图的人数
+        int partyMembersInMap = 0;
+        int currentPartyId = chr.getPartyId(); // 获取当前玩家的队伍ID
+        if (currentPartyId != -1) { // -1 表示无队伍
+            // 加读锁，安全访问mapParty
+            objectRLock.lock();
+            try {
+                // 从mapParty中获取该队伍在本地图的队员ID集合
+                Set<Integer> partyMembers = mapParty.get(currentPartyId);
+                if (partyMembers != null) {
+                    partyMembersInMap = partyMembers.size(); // 集合大小即为队伍在本地图的人数
+                }
+            } finally {
+                objectRLock.unlock(); // 确保锁释放
+            }
+        }
+        return partyMembersInMap;
     }
 
     private byte dropGlobalItemsFromMonsterOnMap(List<MonsterGlobalDropEntry> globalEntry, Point pos, byte d, byte droptype, int mobpos, Character chr, Monster mob) {

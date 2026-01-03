@@ -1,0 +1,4 @@
+INSERT INTO `game_config` ( `config_type`, `config_sub_type`, `config_clazz`, `config_code`, `config_value`, `config_desc`)
+VALUES ( 'server', 'Game Mechanics', 'java.lang.String', 'monster_independent_drop_list', '2340000,2049100,4032133', 'monster_independent_drop_list');
+INSERT INTO `lang_resources` (`lang_type`, `lang_base`, `lang_code`, `lang_value`) VALUES ('zh-CN', 'game_config', 'monster_independent_drop_list', '怪物重叠掉落道具id列表');
+INSERT INTO `lang_resources` (`lang_type`, `lang_base`, `lang_code`, `lang_value`) VALUES ('en-US', 'game_config', 'monster_independent_drop_list', '怪物重叠掉落道具id列表');
