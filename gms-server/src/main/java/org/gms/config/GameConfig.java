@@ -1,5 +1,6 @@
 package org.gms.config;
 
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONException;
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.TypeReference;
@@ -547,13 +548,32 @@ public class GameConfig {
     }
 
     /**
-     * 根据配置键获取白名单数组，并检查指定ID是否在该白名单中
+     * 根据配置键获取名单数组，并检查指定ID是否在该白名单中
      *
      * @param id  待检查的ID
      * @param key 配置键
      * @return 若ID在配置对应的白名单中则返回true，否则返回false
      */
-    public static boolean isIdInConfigWhitelist(int id, String key) {
+    public static boolean isIdInConfigList(int id, String key) {
         return isIdInWhitelist(id, getGameConfigAsArray(key));
+    }
+
+    public static int isIdInConfigMap(int targetId, String key) {
+        String jsonStr = getServerString(key);
+        if (jsonStr == null || jsonStr.trim().isEmpty()) {
+            return -1;
+        }
+        try {
+            JSONObject jsonObject = JSON.parseObject(jsonStr);
+            String targetIdStr = String.valueOf(targetId);
+            if (jsonObject.containsKey(targetIdStr)) {
+                return jsonObject.getInteger(targetIdStr);
+            } else {
+                return -1;
+            }
+        } catch (Exception e) {
+            log.error("isIdInConfigMap Exception=", e);
+            return -1;
+        }
     }
 }

@@ -18,6 +18,30 @@ function start() {
     }
 }
 
+function addTextInfo(text) {
+    var id = cm.getPlayer().getId();
+    text = `#b用户ID:#r${id}`;
+    if (id < 10) {
+        text += "\t\t\t\t";
+    } else if (id < 1000) {
+        text += "\t\t\t";
+    } else {
+        text += "\t\t";
+    }
+    text += "#k当前点券：#r" + cm.getPlayer().getCashShop().getCash(1) + "\t\t\t"
+    text += "#k转生次数:#r" + cm.getChar().getReborns() + " \r\n";
+    var day = Number(cm.getAccountExtendValue(DAILY_CHECK_IN_TOTAL));
+    text += `#k签到天数:#r${day}`;
+    if (day < 10) {
+        text += "\t\t\t";
+    } else if (id < 1000) {
+        text += "\t\t";
+    }
+    text += "#k累计副本积分:#r" + cm.getPqTotalPoints() + "\t\t\t";
+    text += "#k剩余副本积分:#r" + cm.getPqPoints() + " \r\n";
+    return text;
+}
+
 function action(mode, type, selection) {
     if (mode === 1) {
         status++;
@@ -31,16 +55,7 @@ function action(mode, type, selection) {
         var OldTitle = "\t\t\t\t\t#e#k欢迎大佬 #r[" + cm.getPlayer().getName() + "] #k您的到来#n\t\t\t\t\r\n";
         let text = OldTitle;
         text += " \r\n";
-        text += "#bID:#r" + cm.getPlayer().getId() + "\t\t";
-        text += "#k当前点券：#r" + cm.getPlayer().getCashShop().getCash(1) + "\t\t#k签到天数:#r" + Number(cm.getAccountExtendValue(DAILY_CHECK_IN_TOTAL));
-        const GameConfig = Java.type('org.gms.config.GameConfig');
-        if (GameConfig.getServerBoolean("use_rebirth_system")) {
-            text += "\t\t#k转生次数:#r" + cm.getChar().getReborns();
-        }
-        text += "\r\n";
-        text += "#k累计副本积分:#r" + cm.getPqTotalPoints() + "\t\t";
-        text += "#k剩余副本积分:#r" + cm.getPqPoints() + " \r\n";
-        text += "\r\n";
+        text += addTextInfo();
         var jobId = cm.getPlayer().getJob().getId();
         if ((jobId == 0 || jobId == 1000 || jobId == 2000) && !cm.getPlayer().isGM() && 获取更换职业次数() == 1) {
             text += "#L999#新人福利#n#l\r\n\r\n\r\n";
@@ -60,7 +75,7 @@ function action(mode, type, selection) {
         text += " \r\n";
         text += "#L13#" + icon + "额外仓库#l\t#L14#删除道具#l\t#L15#查询掉落#l\t#L16#其他功能#l\r\n";
         text += " \r\n";
-        text += "#L19#" + icon + "卷轴分解#l\t#L20#拍卖行\t   #L21#副本兑换#l\r\n";
+        text += "#L19#" + icon + "卷轴分解#l\t#L21#副本兑换#l\t#L20#拍卖行#l\r\n";
         text += " \r\n";
         if (cm.getPlayer().isGM()) {
             text += "\r\n";

@@ -1,15 +1,12 @@
 /**
  * 就转涅槃(一键转生)
  */
-var cost;
-var ptcost = 100;  //普通职业转生消耗枫叶
-var qscost = 100; //骑士团转生消耗枫叶
-//消耗的金币，单位W
-var meso = 5000;
-
-var relevel;
-var relevela = 250;  //普通职业转生等级
-var relevelb = 250; //骑士团转生等级
+var needItemId = 4039020;
+var needItemCount = 50;
+var needItemId2 = 2049115;
+var needItemCount2 = 10;
+var meso = 20;
+var needLevel = 250;
 var text
 //重生后的等级，由服务器字段控制 rebirth_level
 var rebirthLevel = 1;
@@ -40,19 +37,10 @@ var 职业 = [
     ["战神", 2100, 10, 2000]
 ];
 var icon = "#fUI/UIWindow.img/Quest/icon8/0#";
+const GameConfig = Java.type('org.gms.config.GameConfig');
 var maxRebornCount; // 最大转生次数
 
 function start() {
-    // 初始化消耗和等级限制
-    cost = ptcost;    //默认是普通职业
-    relevel = relevela;
-    if (Math.floor(cm.getJobId() / 1000) == 1) {  //判断为骑士团职业
-        cost = qscost;
-        relevel = relevelb;
-    }
-
-    // 初始化配置和转生信息
-    const GameConfig = Java.type('org.gms.config.GameConfig');
     let baseRebirthLevel = GameConfig.getServerInt("rebirth_level");
     rebirthLevel = Math.max(1, baseRebirthLevel); // 确保最低为1级
     rebirthLevel = Math.min(rebirthLevel, cm.getPlayer().getMaxClassLevel()); // 限制不超过职业最大等级
@@ -62,15 +50,14 @@ function start() {
 
     // 检查涅槃条件
     var level = cm.getLevel();
-    var isCan = level >= relevel && cm.haveItem(4000313, cost) && cm.getMeso() >= meso * 10000;
-
+    var isCan = level >= needLevel && cm.haveItem(needItemId, needItemCount) && cm.haveItem(needItemId2, needItemCount2) && cm.getPlayer().getCashShop().getCash(1) >= getRealMeso();
     // 构建对话文本
     var text = "\t\t\t\t\t#e#k欢迎来到#r[九转涅槃]#k系统#n\t\t\t\t\r\n\r\n";
     text += `#e#k当前已涅槃#e#r${reborns}#k次\r\n\r\n`; // 新增最大次数显示
     text += "#e#b涅槃条件：#e#r\r\n";
-    text += `1.等级达到${relevel}级\r\n`;
+    text += `1.等级达到${needLevel}级\r\n`;
     text += `2.涅槃次数小于${maxRebornCount}次\r\n\r\n`;
-    text += `3.消耗 #v4000313##e#r x${cost} 个和${meso}W金币#k\r\n\r\n`;
+    text += `3.消耗 #v${needItemId}##e#r x${needItemCount} 个 + ${meso}W点卷 + #v${needItemId2}##e#r x${needItemCount2}#k\r\n\r\n`;
     text += "#b涅槃后：#r\r\n";
     text += `${icon} 等级回到${rebirthLevel}级\r\n`;
     text += `${icon} 每次涅槃装备最大升级次数+5级（最高50级）\r\n`;
@@ -101,6 +88,11 @@ function start() {
         cm.dispose();
     }
 }
+
+function getRealMeso() {
+    return meso * 10000;
+}
+
 
 function levelSelectEnquire(id) {
     jobId = parseInt(id);
@@ -149,10 +141,12 @@ function levelRebirth() {
     偷学技能点获取();
     cm.gainItem(item_hp_id, item_hp_count);
     cm.gainItem(item_mp_id, item_mp_count);
-    cm.gainMeso(-meso * 10000);
-    cm.gainItem(4000313, -cost);
+    //扣除点券
+    cm.getPlayer().getCashShop().gainCash(1, -getRealMeso());
+    cm.gainItem(needItemId, -needItemCount);
+    cm.gainItem(needItemId2, -needItemCount2);
     全服通告();
-    cm.sendOk("#r恭喜你，涅槃成功！");
+    cm.sendOk("#r恭喜你，涅槃成功！" + needItemCount);
     cm.dispose();
 }
 

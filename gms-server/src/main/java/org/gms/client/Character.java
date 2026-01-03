@@ -10040,6 +10040,6 @@ public class Character extends AbstractCharacterObject {
     }
 
     public boolean checkoutBroadcast() {
-        return GameConfig.isIdInConfigWhitelist(getId(), "broadcast_white_list");
+        return GameConfig.isIdInConfigList(getId(), "broadcast_white_list");
     }
 }

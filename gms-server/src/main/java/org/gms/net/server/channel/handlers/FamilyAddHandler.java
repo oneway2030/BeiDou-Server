@@ -42,6 +42,15 @@ public final class FamilyAddHandler extends AbstractPacketHandler {
         }
         String toAdd = p.readString();
         Character addChr = c.getChannelServer().getPlayerStorage().getCharacterByName(toAdd);
+        handlePacket(c, addChr);
+    }
+
+    public static void handlePacket(Client c, int addChrId) {
+        Character addChr = c.getChannelServer().getPlayerStorage().getCharacterById(addChrId);
+        handlePacket(c, addChr);
+    }
+
+    public static void handlePacket(Client c, Character addChr) {
         Character chr = c.getPlayer();
         if (addChr == null) {
             c.sendPacket(PacketCreator.sendFamilyMessage(65, 0));
@@ -51,7 +60,7 @@ public final class FamilyAddHandler extends AbstractPacketHandler {
             c.sendPacket(PacketCreator.sendFamilyMessage(69, 0));
         } else if (addChr.getLevel() <= 10) {
             c.sendPacket(PacketCreator.sendFamilyMessage(77, 0));
-        } else if (Math.abs(addChr.getLevel() - chr.getLevel()) > 20) {
+        } else if (Math.abs(addChr.getLevel() - chr.getLevel()) > GameConfig.getServerInt("family_add_add_level_range")) {
             c.sendPacket(PacketCreator.sendFamilyMessage(72, 0));
         } else if (addChr.getFamily() != null && addChr.getFamily() == chr.getFamily()) { //same family
             c.sendPacket(PacketCreator.enableActions());

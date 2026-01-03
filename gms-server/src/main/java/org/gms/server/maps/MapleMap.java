@@ -696,7 +696,14 @@ public class MapleMap {
                     if (ItemConstants.getInventoryType(de.itemId) == InventoryType.EQUIP) {
                         idrop = ii.randomizeStats((Equip) ii.getEquipById(de.itemId));
                     } else {
-                        idrop = new Item(de.itemId, (short) 0, (short) (de.Maximum != 1 ? Randomizer.nextInt(de.Maximum - de.Minimum) + de.Minimum : 1));
+                        int quantity = de.Minimum;
+                        if (quantity <= 0) {
+                            quantity = 1;
+                        }
+                        if (de.Maximum > de.Minimum) {
+                            quantity += Randomizer.nextInt(de.Maximum - de.Minimum+1);
+                        }
+                        idrop = new Item(de.itemId, (short) 0, (short) (quantity));
                     }
                     spawnDrop(idrop, calcDropPos(pos, mob.getPosition()), mob, chr, droptype, de.questid);
                 }
@@ -1364,22 +1371,22 @@ public class MapleMap {
 
     // 巴洛古(Balrog)讨伐胜利广播
     public void broadcastBalrogVictory(String leaderName) {
-        getWorldServer().dropMessage(6,"[远征凯旋] " + leaderName + "的远征队成功讨伐了火焰魔神巴洛古！" + "让我们歌颂这支队伍，他们以" + countAlivePlayers() + "名幸存者的战绩完成了壮举！");
+        getWorldServer().dropMessage(6, "[远征凯旋] " + leaderName + "的远征队成功讨伐了火焰魔神巴洛古！" + "让我们歌颂这支队伍，他们以" + countAlivePlayers() + "名幸存者的战绩完成了壮举！");
     }
 
     // 暗黑龙王(Horntail)讨伐胜利广播
     public void broadcastHorntailVictory() {
-        getWorldServer().dropMessage(6,"[远征凯旋] 致历经无数次挑战最终征服暗黑龙王的勇士们：" + "谨以此礼赞献给真正的神木村英雄！");
+        getWorldServer().dropMessage(6, "[远征凯旋] 致历经无数次挑战最终征服暗黑龙王的勇士们：" + "谨以此礼赞献给真正的神木村英雄！");
     }
 
     // 扎昆(Zakum)讨伐胜利广播
     public void broadcastZakumVictory() {
-        getWorldServer().dropMessage(6,"[远征凯旋] 长久笼罩天空之城的邪恶之树终于倾倒！" +"致那些历经无数次尝试最终征服扎昆的远征队，胜利属于你们！" +"你们是天空之城真正的传说！");
+        getWorldServer().dropMessage(6, "[远征凯旋] 长久笼罩天空之城的邪恶之树终于倾倒！" + "致那些历经无数次尝试最终征服扎昆的远征队，胜利属于你们！" + "你们是天空之城真正的传说！");
     }
 
     // 品克缤(PinkBean)讨伐胜利广播
     public void broadcastPinkBeanVictory(int channel) {
-        getWorldServer().dropMessage(6,"[远征凯旋] 在" + channel + "频道挑战品克缤的远征队，" +  "以雷霆之势完成了终极讨伐！时间神殿重现璀璨光辉，" + "当英雄们从战场凯旋之时，被夺走的白昼终于归来！"
+        getWorldServer().dropMessage(6, "[远征凯旋] 在" + channel + "频道挑战品克缤的远征队，" + "以雷霆之势完成了终极讨伐！时间神殿重现璀璨光辉，" + "当英雄们从战场凯旋之时，被夺走的白昼终于归来！"
         );
     }
 
@@ -2759,7 +2766,7 @@ public class MapleMap {
 
     /**
      * 无条件地将消息广播给所有玩家。
-     *
+     * <p>
      * Broadcasts a message to all players without any conditions.
      *
      * @param {Packet} packet - 要广播的数据包。The packet to be broadcasted.
@@ -2770,7 +2777,7 @@ public class MapleMap {
 
     /**
      * 无条件地将管理员消息广播给所有玩家。
-     *
+     * <p>
      * Broadcasts an admin message to all players without any conditions.
      *
      * @param {Packet} packet - 要广播的数据包。The packet to be broadcasted.
@@ -2781,13 +2788,13 @@ public class MapleMap {
 
     /**
      * 根据 repeatToSource 参数决定是否将消息重复发送给源角色，并无范围限制地广播消息。
-     *
+     * <p>
      * Broadcasts a message based on the repeatToSource parameter, repeating it to the source character if specified,
      * and broadcasts it without any range restrictions.
      *
      * @param {Character} source - 消息的源角色。The source character of the message.
-     * @param {Packet} packet - 要广播的数据包。The packet to be broadcasted.
-     * @param {boolean} repeatToSource - 是否重复发送给源角色。Whether to repeat the message to the source character.
+     * @param {Packet}    packet - 要广播的数据包。The packet to be broadcasted.
+     * @param {boolean}   repeatToSource - 是否重复发送给源角色。Whether to repeat the message to the source character.
      */
     public void broadcastMessage(Character source, Packet packet, boolean repeatToSource) {
         broadcastMessage(repeatToSource ? null : source, packet, Double.POSITIVE_INFINITY, source.getPosition());
@@ -2795,14 +2802,14 @@ public class MapleMap {
 
     /**
      * 根据 repeatToSource 和 ranged 参数决定是否将消息重复发送给源角色以及是否限定在一定范围内广播消息。
-     *
+     * <p>
      * Broadcasts a message based on the repeatToSource and ranged parameters, repeating it to the source character if specified,
      * and broadcasting it within a certain range if ranged is true.
      *
      * @param {Character} source - 消息的源角色。The source character of the message.
-     * @param {Packet} packet - 要广播的数据包。The packet to be broadcasted.
-     * @param {boolean} repeatToSource - 是否重复发送给源角色。Whether to repeat the message to the source character.
-     * @param {boolean} ranged - 是否限定在一定范围内广播消息。Whether to broadcast the message within a certain range.
+     * @param {Packet}    packet - 要广播的数据包。The packet to be broadcasted.
+     * @param {boolean}   repeatToSource - 是否重复发送给源角色。Whether to repeat the message to the source character.
+     * @param {boolean}   ranged - 是否限定在一定范围内广播消息。Whether to broadcast the message within a certain range.
      */
     public void broadcastMessage(Character source, Packet packet, boolean repeatToSource, boolean ranged) {
         broadcastMessage(repeatToSource ? null : source, packet, ranged ? getRangedDistance() : Double.POSITIVE_INFINITY, source.getPosition());
@@ -2810,11 +2817,11 @@ public class MapleMap {
 
     /**
      * 从指定点开始，在一定范围内广播消息。
-     *
+     * <p>
      * Broadcasts a message starting from a specified point within a certain range.
      *
      * @param {Packet} packet - 要广播的数据包。The packet to be broadcasted.
-     * @param {Point} rangedFrom - 广播的起点位置。The starting point for broadcasting.
+     * @param {Point}  rangedFrom - 广播的起点位置。The starting point for broadcasting.
      */
     public void broadcastMessage(Packet packet, Point rangedFrom) {
         broadcastMessage(null, packet, getRangedDistance(), rangedFrom);
@@ -2822,12 +2829,12 @@ public class MapleMap {
 
     /**
      * 从指定点开始，在一定范围内广播消息，并且不向源角色发送消息。
-     *
+     * <p>
      * Broadcasts a message starting from a specified point within a certain range and does not send it to the source character.
      *
      * @param {Character} source - 消息的源角色。The source character of the message.
-     * @param {Packet} packet - 要广播的数据包。The packet to be broadcasted.
-     * @param {Point} rangedFrom - 广播的起点位置。The starting point for broadcasting.
+     * @param {Packet}    packet - 要广播的数据包。The packet to be broadcasted.
+     * @param {Point}     rangedFrom - 广播的起点位置。The starting point for broadcasting.
      */
     public void broadcastMessage(Character source, Packet packet, Point rangedFrom) {
         broadcastMessage(source, packet, getRangedDistance(), rangedFrom);
@@ -2835,13 +2842,13 @@ public class MapleMap {
 
     /**
      * 核心广播方法，负责实际的消息分发工作。
-     *
+     * <p>
      * Core method responsible for actually dispatching the message.
      *
      * @param {Character} source - 消息的源角色。The source character of the message.
-     * @param {Packet} packet - 要广播的数据包。The packet to be broadcasted.
-     * @param {double} rangeSq - 广播的最大距离平方值。The maximum distance squared for broadcasting.
-     * @param {Point} rangedFrom - 广播的起点位置。The starting point for broadcasting.
+     * @param {Packet}    packet - 要广播的数据包。The packet to be broadcasted.
+     * @param {double}    rangeSq - 广播的最大距离平方值。The maximum distance squared for broadcasting.
+     * @param {Point}     rangedFrom - 广播的起点位置。The starting point for broadcasting.
      */
     private void broadcastMessage(Character source, Packet packet, double rangeSq, Point rangedFrom) {
         chrRLock.lock();
@@ -3237,14 +3244,14 @@ public class MapleMap {
     public void reportMonsterSpawnPoints(Character chr) {
         // 输出地图刷怪点统计信息头
         chr.dropMessage(6, "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        chr.dropMessage(6, "┃ 地图ID: " + getId() + " | 总刷怪点: " + monsterSpawn.size() +  " | 已刷怪: " + spawnedMonstersOnMap.get());
+        chr.dropMessage(6, "┃ 地图ID: " + getId() + " | 总刷怪点: " + monsterSpawn.size() + " | 已刷怪: " + spawnedMonstersOnMap.get());
         chr.dropMessage(6, "┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
         // 遍历所有刷怪点输出详细信息
         for (SpawnPoint sp : getAllMonsterSpawn()) {
             chr.dropMessage(6,
                     "┃ ID:" + sp.getMonsterId() + " | 可刷怪:" + (sp.getDenySpawn() ? "×" : "√") + " | 现存:" + sp.getSpawned() + "\n" +
-                    "┃ 坐标:(" +(int) sp.getPosition().getX() + " , " + (int) sp.getPosition().getY() + ") | 刷新:" + sp.getMobTime() + "ms | 阵营:" + sp.getTeam()
+                            "┃ 坐标:(" + (int) sp.getPosition().getX() + " , " + (int) sp.getPosition().getY() + ") | 刷新:" + sp.getMobTime() + "ms | 阵营:" + sp.getTeam()
             );
         }
         chr.dropMessage(6, "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
@@ -4060,7 +4067,7 @@ public class MapleMap {
 
     public String getEventNPC() {
         StringBuilder sb = new StringBuilder();
-        sb.append("请与 "+ mapName + " 的 ");
+        sb.append("请与 " + mapName + " 的 ");
         if (mapid == MapId.SOUTHPERRY) {
             sb.append("珀尔");
         } else if (mapid == MapId.LITH_HARBOUR) {

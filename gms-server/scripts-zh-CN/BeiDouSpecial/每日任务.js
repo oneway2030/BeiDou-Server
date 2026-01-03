@@ -11,7 +11,7 @@ const MesoNum = 20; // 金币奖励,单位W
 var selectedItemId = 0; // 当前任务道具ID
 var requiredItemCount = 0; // 当前任务所需道具数量
 var 额外奖励次数 = 8;
-
+var 声望 = 6000;
 // 定义每日签到奖励物品信息
 var 奖励道具集合 = [
     {id: 2029004, qty: 1},//三倍经验
@@ -95,10 +95,11 @@ function action(mode, type, selection) {
 }
 
 function 获取奖励文本() {
-    let text = "#b最后一轮获取，并且当天总完成次数大于8轮：#k\r\n";
+    let text = "#b第10轮，并且当天总完成次数大于8轮：#k\r\n";
     奖励道具集合.forEach(reward => {
         text += `- #v${reward.id}##t${reward.id}# x ${reward.qty}\r\n`;
     });
+    text += `- 学院声望 x #r${声望}\r\n`;
     text += "\r\n";
     return text;
 }
@@ -210,11 +211,14 @@ function completeTask() {
             // 总完成次数>8时发放额外道具
             if (totalCompleteCount >= 额外奖励次数) {
                 发放道具();
+                //发放6000声望
+                cm.getPlayer().getFamilyEntry().gainReputation(声望, true);
                 extraRewardText = `- 额外奖励：\r\n`;
                 奖励道具集合.forEach(item => {
                     extraRewardText += `  #v${item.id}##t${item.id}# x ${item.qty}\r\n`;
                 });
-                cm.getPlayer().sendAllWordNoticeNew("每日强化",`恭喜玩家${cm.getPlayer().getName()}完成每日任务10次!`)
+                extraRewardText += `  学院声望 x #r${声望}\r\n`;
+                cm.getPlayer().sendAllWordNoticeNew("每日任务",`恭喜玩家${cm.getPlayer().getName()}完成每日任务10次!`)
             } else {
                 extraRewardText = `- 今日总完成次数不足${额外奖励次数}次，未获得额外道具奖励\r\n`;
             }

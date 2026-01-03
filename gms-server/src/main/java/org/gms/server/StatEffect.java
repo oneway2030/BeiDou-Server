@@ -152,17 +152,6 @@ public class StatEffect {
     private byte mapProtection;
     private CardItemupStats cardStats;
 
-    //疾风步
-    private static final Set<Integer> BUFF_WHITELIST = Set.of(1001,   //团队治疗
-            1002);
-
-    private static final Map<Integer, Integer> CUSTOM_BUFF_TIME_LIST = Map.of(
-            4121006, 30 * 60 * 1000,
-            2121004, 60 * 1000,
-            2221004, 60 * 1000,
-            2321004, 60 * 1000);
-
-
     private static class CardItemupStats {
         protected int itemCode, prob;
         protected boolean party;
@@ -1240,42 +1229,51 @@ public class StatEffect {
         return bounds;
     }
 
+    private static final int DEFAULT_BUFF_DURATION = 30 * 60 * 1000; // 30分钟（毫秒）
+    private static final int PERMANENT_BUFF_DURATION = Integer.MAX_VALUE; // 永久buff时长
+
+    /**
+     * todo buff时间修改
+     */
+    public int getBuffLocalDuration(Character chr) {
+        if (chr == null) {
+            return duration;
+        }
+        if (!skill) {
+            return duration;
+        }
+        // 全局配置未开启，返回原始时长
+        if (!GameConfig.getServerBoolean("use_buff_everlasting")) {
+            return duration;
+        }
+        // 判断是否是自定义技能时间（优先级最高）
+        int customTime = GameConfig.isIdInConfigMap(this.sourceid, "job_buff_custom_time_list");
+        if (customTime > 0) {
+            return customTime;
+        }
+        // 优化2：合并冗余分支，减少嵌套（若业务允许合并两个配置列表的返回效果）
+        boolean isInSpecialList = GameConfig.isIdInConfigList(this.sourceid, "job_special_buff_time_list");
+        boolean isInOriginalList = GameConfig.isIdInConfigList(this.sourceid, "job_buff_original_time_list");
+        // 特殊buff列表，优先判断自身技能
+        if (isInSpecialList) {
+            return isOwnSkill(chr) ? PERMANENT_BUFF_DURATION : duration;
+        }
+        // 原始buff时间列表，直接返回原始时长
+        if (isInOriginalList) {
+            return duration;
+        }
+        // 兜底：自身技能返回永久时长，否则返回默认30分钟
+        return isOwnSkill(chr) ? PERMANENT_BUFF_DURATION : DEFAULT_BUFF_DURATION;
+    }
+
     // 新增：判断技能是否为角色自身职业的技能
     private boolean isOwnSkill(Character chr) {
         // 通过技能ID获取技能对象（假设sourceid为技能ID）
         int skillId = this.sourceid;
-        // 技能在黑名单中 → 强制视为非自身技能
-        if (GameConfig.isIdInConfigWhitelist(skillId, "job_buff_original_time_list")) {
-            return false;
-        } else if (BUFF_WHITELIST.contains(skillId)) {
-            //白名单的技能直接无限时间
-            return true;
-        }
         Skill curSkill = SkillFactory.getSkill(skillId);
-
         Map<Skill, SkillEntry> skillsMap = chr.getSkills();
         Set<Skill> skills = skillsMap.keySet();
         return skills.contains(curSkill);
-    }
-
-    // 修改后的获取时长方法，需要传入角色对象用于判定
-    public int getBuffLocalDuration(Character chr) {
-        //非技能类效果（如物品buff）直接视为非自身技能
-        if (!skill) {
-            return duration;
-        }
-        if (!GameConfig.getServerBoolean("use_buff_everlasting")) {
-            return duration;
-        }
-        //判断是否是自定义技能时间
-        Integer customTime = CUSTOM_BUFF_TIME_LIST.get(this.sourceid);
-        if (customTime != null && customTime > 0) {
-            return customTime;
-        }
-        if (isOwnSkill(chr)) {
-            return Integer.MAX_VALUE;
-        }
-        return 30 * 60 * 1000;//30分钟
     }
 
     public void silentApplyBuff(Character chr, long localStartTime) {

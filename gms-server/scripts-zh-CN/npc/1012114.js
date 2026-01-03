@@ -7,6 +7,7 @@ Growlie (that fatass uhh.. hungry lion or whatever)
 
 var status = 0;
 var chosen = -1;
+let 副本类型 = 7;
 
 function clearStage(stage, eim) {
   eim.setProperty(stage + "stageclear", "true");
@@ -70,6 +71,7 @@ function action(mode, type, selection) {
               //获取经验
               cm.gainPQExp(10);
               cm.gainMeso(50 * 10000);
+              let completedCount = cm.getPQEnteredCount(副本类型);
               if (completedCount < 5) {
                   cm.addPqPoints();
               }

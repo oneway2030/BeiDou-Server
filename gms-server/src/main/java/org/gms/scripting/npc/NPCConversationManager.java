@@ -1498,6 +1498,8 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
             pqKey = "女神已完成次数";
         } else if (pqType == 6) {
             pqKey = "男女已完成次数";
+        } else if (pqType == 7) {
+            pqKey = "月妙已完成次数";
         } else if (pqType == 100) {
             pqKey = "蜈蚣已完成次数";
         } else if (pqType == 1000) {

@@ -567,25 +567,17 @@ public class Monster extends AbstractLoadedLife {
             // int chrLevel = e.getKey().getLevel();
             // levelInterval.addInterval(chrLevel - GameConfig.getServerInt("exp_split_leech_interval"), chrLevel + GameConfig.getServerInt("exp_split_leech_interval"));
         }
-
+        //没有造成伤害并且跟怪物等级差距过大，则不获取经验
         List<Character> expMembers = new LinkedList<>();
         int totalPartyLevel = 0;
-
-        if (GameConfig.getServerBoolean("use_enforce_mob_level_range")) {
-            for (Character member : partyParticipation.keySet().iterator().next().getPartyMembersOnSameMap()) {
-                if (!leechInterval.inInterval(member.getLevel())) {
-                    underleveled.add(member);
-                    continue;
-                }
-
-                totalPartyLevel += member.getLevel();
-                expMembers.add(member);
+        for (Character member : partyParticipation.keySet().iterator().next().getPartyMembersOnSameMap()) {
+            Long entryDamage = partyParticipation.get(member);
+            if (!leechInterval.inInterval(member.getLevel()) && (entryDamage == null || entryDamage <= 0)) {
+                underleveled.add(member);
+                continue;
             }
-        } else {    // thanks Ari for noticing unused server flag after EXP system overhaul
-            for (Character member : partyParticipation.keySet().iterator().next().getPartyMembersOnSameMap()) {
-                totalPartyLevel += member.getLevel();
-                expMembers.add(member);
-            }
+            totalPartyLevel += member.getLevel();
+            expMembers.add(member);
         }
 
         int membersSize = expMembers.size();
