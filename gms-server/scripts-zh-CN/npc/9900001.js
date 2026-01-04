@@ -213,6 +213,11 @@ function openNpc(scriptName) {
 }
 
 function 拍卖系统() {
+    if (cm.getLevel() < 50) {
+        cm.sendOk("该功能50级以后开放");
+        cm.dispose();
+        return;
+    }
     const EnterMTSHandler = Java.type(
         "org.gms.net.server.channel.handlers.EnterMTSHandler"
     );

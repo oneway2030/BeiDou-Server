@@ -77,15 +77,21 @@ function action(mode, type, selection) {
                         cm.sendOk("必须由你的队长与我交谈才能开始这个组队任务。");
                         cm.dispose();
                     } else {
-                        var eli = em.getEligibleParty(cm.getParty());
-                        if (eli.size() > 0) {
-                            if (!em.startInstance(cm.getParty(), cm.getPlayer().getMap(), 1)) {
-                                cm.sendOk("另一个队伍已经进入了该频道的#r组队任务#k。请尝试其他频道，或者等待当前队伍完成。");
-                            }
+                        //判断ip是否超过2个
+                        if (checkDuplicateIpExceedTwo()) {
+                            let tip = "#b同一个玩家最多只能有2个角色能同时进入该副本\r\n";
+                            tip += "#r（该副本是为增强互动而设计，因此一个玩家最多只能有2个角色可同时进入，不必找GM，找了也不会理你）\r\n";
+                            cm.sendOk(tip);
                         } else {
-                            cm.sendOk("你目前无法开始这个组队任务，因为你的队伍可能不符合人数要求，有些队员可能不符合参与条件，或者他们不在这张地图上。如果你找不到队员，可以尝试使用组队搜索功能。");
+                            var eli = em.getEligibleParty(cm.getParty());
+                            if (eli.size() > 0) {
+                                if (!em.startInstance(cm.getParty(), cm.getPlayer().getMap(), 1)) {
+                                    cm.sendOk("另一个队伍已经进入了该频道的#r组队任务#k。请尝试其他频道，或者等待当前队伍完成。");
+                                }
+                            } else {
+                                cm.sendOk("你目前无法开始这个组队任务，因为你的队伍可能不符合人数要求，有些队员可能不符合参与条件，或者他们不在这张地图上。如果你找不到队员，可以尝试使用组队搜索功能。");
+                            }
                         }
-
                         cm.dispose();
                     }
                 } else if (selection == 1) {
@@ -99,4 +105,54 @@ function action(mode, type, selection) {
             }
         }
     }
+}
+
+/**
+ * 检查队伍中IP地址重复数量是否超过2个
+ * @returns {boolean} 若存在超过2个相同IP则返回true，否则返回false
+ */
+function checkDuplicateIpExceedTwo() {
+    let maxIpCount = 2;
+    let curMapId = cm.getMapId();
+    var party = cm.getParty();
+    if (party == null) {
+        return false; // 无队伍时默认不超标
+    }
+
+    var ipCountMap = {}; // 存储IP出现次数的映射表
+    var onlineMembers = party.getPartyMembersOnline(); // 获取在线队员列表
+
+    for (var i = 0; i < onlineMembers.size(); i++) {
+        var partyMember = onlineMembers.get(i);
+        var memberChar = partyMember.getPlayer(); // 获取队员的Character对象
+
+        if (memberChar == null || memberChar.isGM() || curMapId !== memberChar.getMapId()) {
+            continue; // 跳过获取失败的队员
+        }
+
+        var client = memberChar.getClient();
+        if (client == null) {
+            continue; // 跳过无客户端连接的队员
+        }
+
+        var remoteAddress = client.getRemoteAddress();
+        if (remoteAddress) {
+            // 统计IP出现次数
+            ipCountMap[remoteAddress] = (ipCountMap[remoteAddress] || 0) + 1;
+
+            // 提前判断：若当前IP已超过2个，直接返回true
+            if (ipCountMap[remoteAddress] > maxIpCount) {
+                return true;
+            }
+        }
+    }
+
+    // 遍历所有IP检查是否有超标
+    for (var ip in ipCountMap) {
+        if (ipCountMap[ip] > maxIpCount) {
+            return true;
+        }
+    }
+
+    return false; // 所有IP均未超过2个
 }

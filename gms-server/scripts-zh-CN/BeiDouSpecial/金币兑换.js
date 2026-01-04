@@ -94,6 +94,7 @@ function action(mode, type, selection) {
                 if (cm.canHold(item, qty)) {
                     cm.gainMeso(-cost);
                     cm.gainItem(item, qty);
+                    cm.getPlayer().sendAllWordNoticeNew(6, "金币兑换", `恭喜玩家${cm.getPlayer().getName()}兑换了${qty}个【${cm.getPlayer().getItemName(item)}】!`);
                     cm.sendOk("购买成功。");
                 }else {
                     cm.sendOk("背包空间不足。");
