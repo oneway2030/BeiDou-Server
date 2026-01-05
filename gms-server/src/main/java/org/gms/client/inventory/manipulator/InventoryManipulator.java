@@ -538,6 +538,13 @@ public class InventoryManipulator {
 
         Equip source = (Equip) eqpInv.getItem(src);
         int itemGender = ItemId.getGender(source.getItemId());
+        //装备超过自身的转生等级不能装备
+        int maxLevel = source.getEquipmentMaxLevelUp(c);
+        if (source.getItemLevel() > maxLevel) {
+            c.sendPacket(PacketCreator.enableActions());
+            chr.dropMessage(1, I18nUtil.getMessage("InventoryManipulator.equip.message2", maxLevel + 1));
+            return;
+        }
         //控制台参数为true时进行校验判断
         if (GameConfig.getServerBoolean("use_equipment_gender_limit") && itemGender != 2 && itemGender != chr.getGender()) {  //判断装备是否要求角色性别
             c.sendPacket(PacketCreator.enableActions());
