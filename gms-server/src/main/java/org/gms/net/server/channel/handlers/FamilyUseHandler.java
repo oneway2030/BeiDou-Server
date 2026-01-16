@@ -141,7 +141,7 @@ public final class FamilyUseHandler extends AbstractPacketHandler {
      * 警告：此处只针对buff相关的做了处理，一日只一次
      * 非buff相关的如传送到别人位置或将别人传送到自己位置都没有限制一日一次，因为从2019年开始这俩就没限
      *
-     * @param entry 学院实体类
+     * @param entry       学院实体类
      * @param entitlement 功能类型
      * @return 是否使用成功
      */
@@ -163,6 +163,10 @@ public final class FamilyUseHandler extends AbstractPacketHandler {
                 return;
             }
             for (PartyCharacter mpc : player.getParty().getMembers()) {
+                Character character = mpc.getPlayer();
+                if (character == null) {
+                    continue;
+                }
                 FamilyEntry mpcEntry = mpc.getPlayer().getFamilyEntry();
                 // 没有学院的不享受
                 if (mpcEntry == null) {

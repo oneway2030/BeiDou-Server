@@ -70,6 +70,7 @@ import org.gms.net.packet.Packet;
 import org.gms.net.server.PlayerCoolDownValueHolder;
 import org.gms.net.server.Server;
 import org.gms.net.server.channel.Channel;
+import org.gms.net.server.channel.handlers.MTSHandler;
 import org.gms.net.server.channel.handlers.PlayerInteractionHandler;
 import org.gms.net.server.channel.handlers.SummonDamageHandler.SummonAttackEntry;
 import org.gms.net.server.channel.handlers.WhisperHandler;
@@ -103,6 +104,8 @@ import org.gms.server.maps.PlayerShopItem;
 import org.gms.server.maps.Reactor;
 import org.gms.server.maps.Summon;
 import org.gms.server.movement.LifeMovementFragment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.lang.reflect.Field;
@@ -117,7 +120,7 @@ import java.util.stream.Collectors;
  * @author Frz
  */
 public class PacketCreator {
-
+    private static final Logger log = LoggerFactory.getLogger(PacketCreator.class);
     public static final List<Pair<Stat, Integer>> EMPTY_STATUPDATE = Collections.emptyList();
     private final static long FT_UT_OFFSET = 116444736010800000L + (10000L * TimeZone.getDefault().getOffset(System.currentTimeMillis())); // normalize with timezone offset suggested by Ari
     private final static long DEFAULT_TIME = 150842304000000000L;//00 80 05 BB 46 E6 17 02
@@ -1440,14 +1443,24 @@ public class PacketCreator {
         writeLongEncodeTemporaryMask(p, stati.keySet());    // packet structure mapped thanks to Eric
 
         for (Entry<MonsterStatus, MonsterStatusEffect> s : stati.entrySet()) {
+            MonsterStatus statusKey = s.getKey();
             MonsterStatusEffect mse = s.getValue();
-            p.writeShort(mse.getStati().get(s.getKey()));
+
+            // 1. 空值保护：获取状态值，null 则默认 0
+            Integer statusValue = mse.getStati().get(statusKey);
+            if (statusValue == null) {
+                // 可选：添加日志，排查异常的状态类型（生产环境可保留，方便定位根因）
+                log.warn("MonsterStatusEffect 中缺失 {} 对应的数值，使用默认值 0", statusKey);
+                statusValue = 0;
+            }
+            // 2. 写入短整型（安全拆箱）
+            p.writeShort(statusValue);
 
             MobSkill mobSkill = mse.getMobSkill();
             if (mobSkill != null) {
                 writeMobSkillId(p, mobSkill.getId());
 
-                switch (s.getKey()) {
+                switch (statusKey) {
                     case WEAPON_REFLECT -> pCounter = mobSkill.getX();
                     case MAGIC_REFLECT -> mCounter = mobSkill.getY();
                 }
@@ -3390,7 +3403,8 @@ public class PacketCreator {
         p.writeInt(0);
         return p;
     }
-    public static Packet getNPCTalkNum(int npc, String talk, int def, int min, int max,byte speaker) {
+
+    public static Packet getNPCTalkNum(int npc, String talk, int def, int min, int max, byte speaker) {
         final OutPacket p = OutPacket.create(SendOpcode.NPC_TALK);
         p.writeByte(4); // ?
         p.writeInt(npc);
@@ -3404,7 +3418,7 @@ public class PacketCreator {
         return p;
     }
 
-    public static Packet getNPCTalkText(int npc, String talk, String def,byte speaker) {
+    public static Packet getNPCTalkText(int npc, String talk, String def, byte speaker) {
         final OutPacket p = OutPacket.create(SendOpcode.NPC_TALK);
         p.writeByte(4); // Doesn't matter
         p.writeInt(npc);
@@ -3415,6 +3429,7 @@ public class PacketCreator {
         p.writeInt(0);
         return p;
     }
+
     // NPC Quiz packets thanks to Eric
     public static Packet OnAskQuiz(int nSpeakerTypeID, int nSpeakerTemplateID, int nResCode, String sTitle, String sProblemText, String sHintText, int nMinInput, int nMaxInput, int tRemainInitialQuiz) {
         OutPacket p = OutPacket.create(SendOpcode.NPC_TALK);
@@ -5445,9 +5460,10 @@ public class PacketCreator {
         p.writeByte(1);
         for (MTSItemInfo item : items) {
             addItemInfo(p, item.getItem(), true);
+            int realPrice = item.getPrice() * MTSHandler.MESO_PROPORTION;
             p.writeInt(item.getID()); //id
-            p.writeInt(item.getTaxes()); //this + below = price
-            p.writeInt(item.getPrice()); //price
+            p.writeInt((int) (realPrice * MTSHandler.TAX_RATE)); //this + below = price
+            p.writeInt(realPrice); //price
             p.writeInt(0);
             p.writeLong(getTime(item.getEndingDate()));
             p.writeString(item.getSeller()); //account name (what was nexon thinking?)
@@ -7494,12 +7510,11 @@ public class PacketCreator {
     }
 
 
-
     public static Packet cancelFamilyBuff() {
         return familyBuff(0, 0, 0, 0);
     }
 
-    public static Packet UseTreasureBox(int type){
+    public static Packet UseTreasureBox(int type) {
         OutPacket p = OutPacket.create(SendOpcode.SUCCESS_IN_USE_GACHAPON_BOX);
         p.writeInt(type);
         return p;

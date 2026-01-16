@@ -132,7 +132,7 @@ function level0() {
 function canHold(list) {
     for (const {id, qty} of list) {
         if (!cm.canHold(id, qty)) {
-            cm.sendOk(rewardText);
+            cm.sendOk("背包空间不足");
             cm.dispose();
             return false;
         }

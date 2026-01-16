@@ -70,18 +70,31 @@ public class HexTool {
         return input.replaceAll("\\s", "");
     }
 
+    /**
+     * 核心修改：先解码→再过滤，二进制字节统一标注为十六进制，不保留无意义假名
+     */
     public static String toStringFromCharset(final byte[] bytes) {
-        byte[] filteredBytes = new byte[bytes.length];
-        for (int i = 0; i < bytes.length; i++) {
-            if (isSpecialCharacter(bytes[i])) {
-                filteredBytes[i] = '.';
-            } else {
-                filteredBytes[i] = (byte) (bytes[i] & 0xFF);
-            }
+        if (bytes == null || bytes.length == 0) {
+            return "[EMPTY]";
         }
 
-        return new String(filteredBytes, CharsetConstants.getCharset(ThreadLocalUtil.getClientLang()));
+        // 仅保留ASCII可打印字符（32-126）为可读，其余全部标注十六进制
+        StringBuilder result = new StringBuilder();
+        for (byte b : bytes) {
+            // 第一步：先判断是否是ASCII可打印字符（二进制字节直接标注）
+            if (b >= 32 && b <= 126) {
+                result.append((char) b);
+            } else if (isSpecialCharacter(b)) {
+                // 0-31控制字符替换为.
+                result.append('.');
+            } else {
+                // 非ASCII可打印字符（包括二进制指令）统一标注十六进制
+                result.append(String.format("[0x%02X]", b & 0xFF));
+            }
+        }
+        return result.toString();
     }
+
 
     private static boolean isSpecialCharacter(byte asciiCode) {
         return asciiCode >= 0 && asciiCode <= 31;

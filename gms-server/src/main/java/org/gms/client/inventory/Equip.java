@@ -25,6 +25,7 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.TypeReference;
 import lombok.Getter;
+import lombok.Setter;
 import org.gms.client.Client;
 import org.gms.config.GameConfig;
 import org.gms.constants.game.ExpTable;
@@ -37,6 +38,8 @@ import org.slf4j.LoggerFactory;
 import org.gms.server.ItemInformationProvider;
 import org.gms.util.Pair;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -101,6 +104,51 @@ public class Equip extends Item {
     private List<List<Pair<StatUpgrade, Integer>>> mUpgradeHistoryList = new LinkedList<>();
     @Getter
     private String upgradeHistory = "";
+    //可额外升级的等级
+    @Setter
+    @Getter
+    private int levelExpand;
+    //套装类型
+    @Setter
+    @Getter
+    private int combinationType;
+    //混沌卷升级记录
+    @Setter
+    @Getter
+    private String chaosHistory = "";
+    //装备吸收历史
+    @Setter
+    @Getter
+    private String absorbHistory = "";
+    //
+    @Setter
+    @Getter
+    private int expandAttribute1;
+    @Setter
+    @Getter
+    private int expandAttribute2;
+    @Setter
+    @Getter
+    private String expandAttribute3;
+    @Setter
+    @Getter
+    private String expandAttribute4;
+    @Setter
+    @Getter
+    private int maxStar;//最大星级
+    @Setter
+    @Getter
+    private int starLevel;//当前星级数
+    @Setter
+    @Getter
+    private int starCount;//当前星级数失败次数
+    @Setter
+    @Getter
+    private int upgradeResetCount;//洗练次数
+    @Setter
+    @Getter
+    private int upgradeReturn;//洗练返回次数
+
 
     public Equip(int id, short position) {
         this(id, position, 0);
@@ -145,7 +193,65 @@ public class Equip extends Item {
         ret.setExpiration(getExpiration());
         ret.setGiftFrom(getGiftFrom());
         ret.setUpgradeHistory(upgradeHistory);
+        ret.levelExpand = levelExpand;
+        ret.combinationType = combinationType;
+        ret.maxStar = maxStar;
+        ret.starLevel = starLevel;
+        ret.starCount = starCount;
+        ret.upgradeResetCount = upgradeResetCount;
+        ret.upgradeReturn = upgradeReturn;
+        ret.chaosHistory = chaosHistory;
+        ret.absorbHistory = absorbHistory;
+        ret.expandAttribute1 = expandAttribute1;
+        ret.expandAttribute2 = expandAttribute2;
+        ret.expandAttribute3 = expandAttribute3;
+        ret.expandAttribute4 = expandAttribute4;
         return ret;
+    }
+
+    public Equip loadEquipFromDb(Equip equip, ResultSet rs) throws SQLException {
+        equip.setOwner(rs.getString("owner"));
+        equip.setQuantity((short) 1);
+        equip.setAcc((short) rs.getInt("acc"));
+        equip.setAvoid((short) rs.getInt("avoid"));
+        equip.setDex((short) rs.getInt("dex"));
+        equip.setHands((short) rs.getInt("hands"));
+        equip.setHp((short) rs.getInt("hp"));
+        equip.setInt((short) rs.getInt("int"));
+        equip.setJump((short) rs.getInt("jump"));
+        equip.setLuk((short) rs.getInt("luk"));
+        equip.setMatk((short) rs.getInt("matk"));
+        equip.setMdef((short) rs.getInt("mdef"));
+        equip.setMp((short) rs.getInt("mp"));
+        equip.setSpeed((short) rs.getInt("speed"));
+        equip.setStr((short) rs.getInt("str"));
+        equip.setWatk((short) rs.getInt("watk"));
+        equip.setWdef((short) rs.getInt("wdef"));
+        equip.setUpgradeSlots((byte) rs.getInt("upgradeslots"));
+        equip.setLevel((byte) rs.getInt("level"));
+        equip.setItemLevel(rs.getByte("itemlevel"));
+        equip.setItemExp(rs.getInt("itemexp"));
+        equip.setRingId(rs.getInt("ringid"));
+        equip.setVicious((byte) rs.getInt("vicious"));
+        equip.setFlag((short) rs.getInt("flag"));
+        equip.setExpiration(rs.getLong("expiration"));
+        equip.setGiftFrom(rs.getString("giftFrom"));
+        equip.setUpgradeHistory(rs.getString("upgradehistory"));
+        //TODO equip 新增属性
+        equip.setLevelExpand(rs.getInt("levelExpand"));
+        equip.setCombinationType(rs.getInt("combinationType"));
+        equip.setMaxStar(rs.getInt("maxStar"));
+        equip.setStarLevel(rs.getInt("starLevel"));
+        equip.setStarCount(rs.getInt("starCount"));
+        equip.setUpgradeResetCount(rs.getInt("upgradeResetCount"));
+        equip.setUpgradeReturn(rs.getInt("upgradeReturn"));
+        equip.setChaosHistory(rs.getString("chaosHistory"));
+        equip.setAbsorbHistory(rs.getString("absorbHistory"));
+        equip.setExpandAttribute1(rs.getInt("expandAttribute1"));
+        equip.setExpandAttribute2(rs.getInt("expandAttribute2"));
+        equip.setExpandAttribute3(rs.getString("expandAttribute3"));
+        equip.setExpandAttribute4(rs.getString("expandAttribute4"));
+        return equip;
     }
 
     @Override
@@ -904,16 +1010,15 @@ public class Equip extends Item {
     /**
      * 获取转生后的装备最大升级次数
      */
-    private int getEquipmentMaxLevelUp(Client c) {
-        //转生后的最大等级
-//        int equipMaxLevel = Math.min(30, Math.max(ii.getEquipLevel(this.getItemId(), true), GameConfig.getServerInt("use_equipment_level_up")));// 计算装备的最大等级
-        int equipMaxLevel = GameConfig.getServerInt("use_equipment_level_up");// 计算装备的最大等级
+    public int getEquipmentMaxLevelUp(Client c) {
+        //未涅槃（转生）时装备初始能升级的次数
+        int equipMaxLevel = GameConfig.getServerInt("use_equipment_level_up");
         int reborn = c.getPlayer().getReborns();
         //每次转生装备可升级的次数
         int addLevelUp = GameConfig.getServerInt("each_time_reborn_equipment_add_level_up");
         int incremental = reborn * addLevelUp;
-        int realMaxLevel = equipMaxLevel + incremental;
-        return Math.min(realMaxLevel, 51);
+        int realMaxLevel = equipMaxLevel + incremental + getLevelExpand();
+        return Math.min(realMaxLevel, 100);
     }
 
     /**

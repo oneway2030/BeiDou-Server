@@ -1,9 +1,6 @@
 package org.gms.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @AllArgsConstructor
@@ -107,7 +104,33 @@ public class InventoryEquipRtnDTO {
      */
     private Integer ringId;
     /**
-     *装备升级记录，对应upgradehistory
+     * 装备升级记录，对应upgradehistory
      */
     private String upgradeHistory;
+    //可额外升级的等级
+    private Integer levelExpand;
+    //套装类型
+    private Integer combinationType;
+    //最大星级
+    private Integer maxStar;
+
+    private Integer starLevel;//已升星次数
+
+    private Integer starCount;//当前星级数失败次数
+    //洗练次数
+    private Integer upgradeResetCount;
+    //是否已返还洗练道具
+    private Integer upgradeReturn;
+    //混沌卷升级记录
+    private String chaosHistory;
+    //装备吸收历史
+    private String absorbHistory;
+    //
+    private Integer expandAttribute1;
+
+    private Integer expandAttribute2;
+
+    private String expandAttribute3;
+
+    private String expandAttribute4;
 }

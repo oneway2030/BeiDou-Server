@@ -2128,7 +2128,7 @@ public class Monster extends AbstractLoadedLife {
         chrController.sendPacket(PacketCreator.spawnSummon(puppet, false));
     }
 
-    public void aggroUpdatePuppetVisibility() {
+    public synchronized void aggroUpdatePuppetVisibility() {
         if (!availablePuppetUpdate) {
             return;
         }

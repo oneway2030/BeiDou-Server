@@ -177,33 +177,7 @@ public class InventoryService {
         Long inventoryEquipmentId = obj.getLong("inventoryequipmentid");
         if (inventoryEquipmentId != null) {
             rtnDTO.setEquipment(true);
-            rtnDTO.setInventoryEquipment(InventoryEquipRtnDTO.builder()
-                    .id(inventoryEquipmentId)
-                    .inventoryItemId(obj.getLong("inventoryitemid"))
-                    .upgradeSlots(obj.getByte("upgradeslots"))
-                    .level(obj.getByte("level"))
-                    .attStr(obj.getShort("str"))
-                    .attDex(obj.getShort("dex"))
-                    .attInt(obj.getShort("int"))
-                    .attLuk(obj.getShort("luk"))
-                    .hp(obj.getShort("hp"))
-                    .mp(obj.getShort("mp"))
-                    .pAtk(obj.getShort("watk"))
-                    .mAtk(obj.getShort("matk"))
-                    .pDef(obj.getShort("wdef"))
-                    .mDef(obj.getShort("mdef"))
-                    .acc(obj.getShort("acc"))
-                    .avoid(obj.getShort("avoid"))
-                    .hands(obj.getShort("hands"))
-                    .speed(obj.getShort("speed"))
-                    .jump(obj.getShort("jump"))
-                    .locked(obj.getInt("locked"))
-                    .vicious(obj.getShort("vicious"))
-                    .itemLevel(obj.getByte("itemlevel"))
-                    .itemExp(obj.getInt("itemexp"))
-                    .ringId(obj.getInt("ringid"))
-                    .upgradeHistory(obj.getString("upgradehistory"))
-                    .build());
+            EquipUtils.buildByDb(obj, rtnDTO, inventoryEquipmentId);
         }
         return rtnDTO;
     }
@@ -231,33 +205,7 @@ public class InventoryService {
             if (type.isEquip()) {
                 Equip equip = (Equip) item;
                 rtnDTO.setEquipment(true);
-                rtnDTO.setInventoryEquipment(InventoryEquipRtnDTO.builder()
-                        .id(-1L)
-                        .inventoryItemId(-1L)
-                        .upgradeSlots(equip.getUpgradeSlots())
-                        .level(equip.getLevel())
-                        .attStr(equip.getStr())
-                        .attDex(equip.getDex())
-                        .attInt(equip.getInt())
-                        .attLuk(equip.getLuk())
-                        .hp(equip.getHp())
-                        .mp(equip.getMp())
-                        .pAtk(equip.getWatk())
-                        .mAtk(equip.getMatk())
-                        .pDef(equip.getWdef())
-                        .mDef(equip.getMdef())
-                        .acc(equip.getAcc())
-                        .avoid(equip.getAvoid())
-                        .hands(equip.getHands())
-                        .speed(equip.getSpeed())
-                        .jump(equip.getJump())
-                        .locked(0)
-                        .vicious(equip.getVicious())
-                        .itemLevel(equip.getItemLevel())
-                        .itemExp(equip.getItemExp())
-                        .ringId(equip.getRingId())
-                        .upgradeHistory(equip.getUpgradeHistory())
-                        .build());
+                EquipUtils.buildByOnline(rtnDTO, equip);
             }
             return rtnDTO;
         }).toList();
@@ -309,7 +257,6 @@ public class InventoryService {
             if (equipment.getSpeed() != null) equip.setSpeed(equipment.getSpeed());
             if (equipment.getJump() != null) equip.setJump(equipment.getJump());
             if (equipment.getVicious() != null) equip.setVicious(equipment.getVicious());
-            if (equipment.getUpgradeHistory() != null) equip.setUpgradeHistory(equipment.getUpgradeHistory());
         }
         character.sendPacket(PacketCreator.modifyInventory(true, Arrays.asList(new ModifyInventory(3, item), new ModifyInventory(0, item))));
     }
@@ -324,28 +271,7 @@ public class InventoryService {
                 data.setQuantity((short) 1);
             }
             InventoryEquipRtnDTO equipment = data.getInventoryEquipment();
-            inventoryequipmentMapper.updateByQuery(InventoryequipmentDO.builder()
-                            .upgradeslots(Optional.ofNullable(equipment.getUpgradeSlots()).map(Byte::intValue).orElse(null))
-                            .level(Optional.ofNullable(equipment.getLevel()).map(Byte::intValue).orElse(null))
-                            .str(Optional.ofNullable(equipment.getAttStr()).map(Short::intValue).orElse(null))
-                            .dex(Optional.ofNullable(equipment.getAttDex()).map(Short::intValue).orElse(null))
-                            .inte(Optional.ofNullable(equipment.getAttInt()).map(Short::intValue).orElse(null))
-                            .luk(Optional.ofNullable(equipment.getAttLuk()).map(Short::intValue).orElse(null))
-                            .hp(Optional.ofNullable(equipment.getHp()).map(Short::intValue).orElse(null))
-                            .mp(Optional.ofNullable(equipment.getMp()).map(Short::intValue).orElse(null))
-                            .watk(Optional.ofNullable(equipment.getPAtk()).map(Short::intValue).orElse(null))
-                            .matk(Optional.ofNullable(equipment.getMAtk()).map(Short::intValue).orElse(null))
-                            .wdef(Optional.ofNullable(equipment.getPDef()).map(Short::intValue).orElse(null))
-                            .mdef(Optional.ofNullable(equipment.getMDef()).map(Short::intValue).orElse(null))
-                            .acc(Optional.ofNullable(equipment.getAcc()).map(Short::intValue).orElse(null))
-                            .avoid(Optional.ofNullable(equipment.getAvoid()).map(Short::intValue).orElse(null))
-                            .hands(Optional.ofNullable(equipment.getHands()).map(Short::intValue).orElse(null))
-                            .speed(Optional.ofNullable(equipment.getSpeed()).map(Short::intValue).orElse(null))
-                            .jump(Optional.ofNullable(equipment.getJump()).map(Short::intValue).orElse(null))
-                            .vicious(Optional.ofNullable(equipment.getVicious()).map(Short::intValue).orElse(null))
-                            .upgradehistory(equipment.getUpgradeHistory())
-                            .build(),
-                    QueryWrapper.create().where(INVENTORYEQUIPMENT_D_O.INVENTORYITEMID.eq(inventoryitemsDO.getInventoryitemid())));
+            EquipUtils.updateDb(inventoryequipmentMapper, equipment, inventoryitemsDO);
         }
         inventoryitemsMapper.update(InventoryitemsDO.builder()
                 .inventoryitemid(inventoryitemsDO.getInventoryitemid())

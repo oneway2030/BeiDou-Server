@@ -345,7 +345,9 @@ function action(mode, type, selection) {
             text += `#b#n#v${itemId}# #z${itemId}# `;
             text += `#b#n[背包: #r#n${bagCount}] `;
             text += `#b#n[仓库: #r#n${storeCount}]#b#n\r\n`;
-            text += `  #L${i * 2}##b存储#l          `;
+            if (itemId != 2340000 && itemId != 2049115 && itemId != 2049100) {
+                text += `  #L${i * 2}##b存储#l          `;
+            }
             text += `#L${i * 2 + 1}##b取出#l\r\n\r\n`;
         });
 
@@ -504,7 +506,7 @@ function prepareBatchStoreAllItem() {
         const realStore = Math.min(bagCount, maxStore);
 
         if (realStore > 0) {
-            batchStoreItems.push({ itemId, quantity: realStore, type: 0 });
+            batchStoreItems.push({itemId, quantity: realStore, type: 0});
             text += `#v${itemId}# #z${itemId}# x ${realStore}\r\n`;
         }
     });
@@ -524,7 +526,7 @@ function prepareBatchStoreAllItem() {
                 text += "\r\n"; // 与宝石列表空一行
                 hasOre = true;
             }
-            batchStoreItems.push({ itemId, quantity: realStore, type: 1 });
+            batchStoreItems.push({itemId, quantity: realStore, type: 1});
             text += `#v${itemId}# #z${itemId}# x ${realStore}\r\n`;
         }
     });
@@ -557,7 +559,7 @@ function prepareBatchStoreAllScroll() {
         const realStore = Math.min(bagCount, maxStore);
 
         if (realStore > 0) {
-            batchStoreItems.push({ itemId, quantity: realStore, type: 2 });
+            batchStoreItems.push({itemId, quantity: realStore, type: 2});
             text += `#v${itemId}# #z${itemId}# x ${realStore}\r\n`;
         }
     });
@@ -577,7 +579,7 @@ function prepareBatchStoreAllScroll() {
                 text += "\r\n"; // 与10%卷轴列表空一行
                 has60 = true;
             }
-            batchStoreItems.push({ itemId, quantity: realStore, type: 3 });
+            batchStoreItems.push({itemId, quantity: realStore, type: 3});
             text += `#v${itemId}# #z${itemId}# x ${realStore}\r\n`;
         }
     });
@@ -585,6 +587,9 @@ function prepareBatchStoreAllScroll() {
     // 处理高级卷轴（type=5）
     let hasAdvancedScroll = false;
     itemlist5.forEach(itemId => {
+        if (itemId === 2340000 || itemId === 2049115 || itemId === 2049100) {
+            return;
+        }
         const bagCount = player.getItemQuantity(itemId, false);
         if (bagCount <= 0) return;
 
@@ -597,7 +602,7 @@ function prepareBatchStoreAllScroll() {
                 text += "\r\n"; // 与60%卷轴列表空一行
                 hasAdvancedScroll = true;
             }
-            batchStoreItems.push({ itemId, quantity: realStore, type: 5 });
+            batchStoreItems.push({itemId, quantity: realStore, type: 5});
             text += `#v${itemId}# #z${itemId}# x ${realStore}\r\n`;
         }
     });

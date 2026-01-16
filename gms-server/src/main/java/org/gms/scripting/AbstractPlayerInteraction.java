@@ -567,20 +567,20 @@ public class AbstractPlayerInteraction {
         return evolved;
     }
 
-    public void gainItem(int id, short quantity) {
-        gainItem(id, quantity, false, true);
+    public Item gainItem(int id, short quantity) {
+        return gainItem(id, quantity, false, true);
     }
 
-    public void gainItem(int id, short quantity, boolean show) {//this will fk randomStats equip :P
-        gainItem(id, quantity, false, show);
+    public Item gainItem(int id, short quantity, boolean show) {//this will fk randomStats equip :P
+        return  gainItem(id, quantity, false, show);
     }
 
-    public void gainItem(int id, boolean show) {
-        gainItem(id, (short) 1, false, show);
+    public Item gainItem(int id, boolean show) {
+        return gainItem(id, (short) 1, false, show);
     }
 
-    public void gainItem(int id) {
-        gainItem(id, (short) 1, false, true);
+    public Item gainItem(int id) {
+        return gainItem(id, (short) 1, false, true);
     }
 
     public Item gainItem(int id, short quantity, boolean randomStats, boolean showMessage) {
@@ -1344,13 +1344,9 @@ public class AbstractPlayerInteraction {
      * 获取账户在线时间
      * @return 返回当前账户角色在线时间，单位分钟
      */
-    public int getOnlineTime()
-    {
+    public int getOnlineTime() {
         return getPlayer().getCurrentOnlineTime();
     }
-
-
-
 
 
 }

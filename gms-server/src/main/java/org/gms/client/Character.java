@@ -9576,6 +9576,7 @@ public class Character extends AbstractCharacterObject {
 
     /**
      * 从数据库拿转生次数
+     *
      * @return
      */
     public int getReborns() {
@@ -10042,4 +10043,33 @@ public class Character extends AbstractCharacterObject {
     public boolean checkoutBroadcast() {
         return GameConfig.isIdInConfigList(getId(), "broadcast_white_list");
     }
+
+    public void sendBroadcast(int msgType, String title, String content) {
+        sendBroadcast(msgType, title, content, false);
+    }
+
+    /**
+     * @param msgType 0全局特效广播 1蓝底 2红底 3灰色文字无背景色 4蓝色文字无背景色
+     */
+    public void sendBroadcast(int msgType, String title, String content, boolean forcedBroadcast) {
+        if (checkoutBroadcast() && !forcedBroadcast) {
+            return;
+        }
+        String msg = I18nUtil.getMessage("Character.WordNotice.Common", title, content);
+        if (msgType == 0) {
+            sendFullServerBroadcast(msg, 5121009);
+        } else {
+            if (msgType == 1) {
+                msgType = 2;
+            } else if (msgType == 2) {
+                msgType = 3;
+            } else if (msgType == 3) {
+                msgType = 5;
+            } else if (msgType == 4) {
+                msgType = 6;
+            }
+            Server.getInstance().broadcastMessage(getWorld(), PacketCreator.serverNotice(msgType, getClient().getChannel(), msg));
+        }
+    }
+
 }

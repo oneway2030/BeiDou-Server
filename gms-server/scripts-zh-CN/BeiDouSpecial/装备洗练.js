@@ -75,7 +75,7 @@ function main() {
     propStr += `\r\n`;
     if (firstEquip) {
         propStr += "#b装备属性：#k\r\n";
-        propStr += `装备名字: #b#t${firstEquip.getItemId()}##k\r\n`;
+        propStr += `装备名字: #b#t${firstEquip.getItemId()}#\t\t#r已洗练次数:${firstEquip.getUpgradeResetCount()}#k\r\n`;
         propStr += `需求等级: ${firstEquip.getLevel()}\t\t`;
         propStr += `道具等级: ${firstEquip.getItemLevel()}\t\t\t`;
         propStr += `升级次数: ${firstEquip.getUpgradeSlots()}\t\r\n`;
@@ -198,6 +198,7 @@ function handleConfirmResult(selection) {
             var client = cm.getPlayer().getClient();
             // 执行洗练逻辑
             var isSuccess = firstEquip.replaceUpgradeHistory(client, selectedUpgradeIndex, newStats);
+            firstEquip.setUpgradeResetCount(firstEquip.getUpgradeResetCount() + 1);
             if (isSuccess) {
                 cm.sendOk("#b属性洗练成功！#n\r\n" +
                     "已消耗所需道具，新属性已覆盖原第" + (selectedUpgradeIndex + 1) + "次升级属性~");
@@ -220,6 +221,7 @@ function handleConfirmResult(selection) {
         if (checkRequiredItems()) {
             // 消耗道具
             consumeRequiredItems();
+            firstEquip.setUpgradeResetCount(firstEquip.getUpgradeResetCount() + 1);
             // 将状态重置为1，以便再次调用 showAttrConfirmPage 生成新属性
             status = 1;
             showAttrConfirmPage();

@@ -245,16 +245,38 @@ public class Client extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        if (player != null && !player.isLoggedInWorld()) {  //判断玩家不为空且不在线才进行救援
-            String MapName = player.getMap().getMapName().isEmpty() ? I18nUtil.getLogMessage("SystemRescue.info.map.message1") : player.getMap().getMapName();  //读取出错地图名称，这里是读取服务端String.wz地图名称，不存在则设为 未知地图
-            log.warn(I18nUtil.getLogMessage("Client.warn.map.message1"), player, MapName , player.getMapId(), cause);
-            sysRescue.setMapChange(player);   // 尝试解救那些卡地图的倒霉蛋。
+        // 修复点1：多层非空校验 + 状态防护，避免NPE
+        if (player != null && !player.isLoggedInWorld()) {
+            // 防护：player.getMap() 可能为null
+            String mapName = "未知地图";
+            int mapId = -1;
+            if (player.getMap() != null) {
+                mapName = player.getMap().getMapName().isEmpty() ? I18nUtil.getLogMessage("SystemRescue.info.map.message1") : player.getMap().getMapName();
+                mapId = player.getMapId();
+            }
+
+            log.warn(I18nUtil.getLogMessage("Client.warn.map.message1"), player, mapName, mapId, cause);
+
+            // 修复点2：防护 sysRescue 为null（仅初始化后执行救援）
+            if (sysRescue != null) {
+                try {
+                    sysRescue.setMapChange(player);   // 尝试解救卡地图玩家
+                } catch (Exception e) {
+                    log.warn("卡地图救援逻辑执行失败", e);
+                }
+            }
         }
 
+        // 原有逻辑：按异常类型处理连接关闭
         if (cause instanceof InvalidPacketHeaderException) {
             SessionCoordinator.getInstance().closeSession(this, true);
         } else if (cause instanceof IOException) {
-            closeMapleSession();
+            // 修复点3：closeMapleSession 时增加异常防护，避免连锁报错
+            try {
+                closeMapleSession();
+            } catch (Throwable t) {
+                log.warn("关闭MapleSession时发生异常", t);
+            }
         }
     }
 

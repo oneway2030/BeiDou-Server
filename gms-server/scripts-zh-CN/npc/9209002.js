@@ -53,7 +53,7 @@ function action(mode, type, selection) {
             greeting += "#L1#购买百宝券#l\r\n";
             greeting += "#L6#购买高级百宝券#l\r\n";
             greeting += "#L2#购买#z4001126##l\r\n";
-            greeting += "#L3#购买#z4310000##l\r\n";
+            // greeting += "#L3#购买#z4310000##l\r\n";
 	greeting += "#L4#点券兑换信用点#l\r\n";
 	greeting += "#L5#信用点兑换点券#l\r\n";
 	greeting += "#L7#购买复活护符#l\r\n";

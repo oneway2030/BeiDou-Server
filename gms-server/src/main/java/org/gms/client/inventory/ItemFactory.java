@@ -71,7 +71,7 @@ public enum ItemFactory {
     /**
      * 按账号id or 角色id加载物品
      *
-     * @param id 账号id or 角色id。注意：如果是仓库，这个id是storageId，而非账号id
+     * @param id    账号id or 角色id。注意：如果是仓库，这个id是storageId，而非账号id
      * @param login 是否是已装备
      * @return 物品信息
      * @throws SQLException 查询异常
@@ -100,33 +100,7 @@ public enum ItemFactory {
 
     private static Equip loadEquipFromResultSet(ResultSet rs) throws SQLException {
         Equip equip = new Equip(rs.getInt("itemid"), (short) rs.getInt("position"));
-        equip.setOwner(rs.getString("owner"));
-        equip.setQuantity((short) rs.getInt("quantity"));
-        equip.setAcc((short) rs.getInt("acc"));
-        equip.setAvoid((short) rs.getInt("avoid"));
-        equip.setDex((short) rs.getInt("dex"));
-        equip.setHands((short) rs.getInt("hands"));
-        equip.setHp((short) rs.getInt("hp"));
-        equip.setInt((short) rs.getInt("int"));
-        equip.setJump((short) rs.getInt("jump"));
-        equip.setVicious((short) rs.getInt("vicious"));
-        equip.setFlag((short) rs.getInt("flag"));
-        equip.setLuk((short) rs.getInt("luk"));
-        equip.setMatk((short) rs.getInt("matk"));
-        equip.setMdef((short) rs.getInt("mdef"));
-        equip.setMp((short) rs.getInt("mp"));
-        equip.setSpeed((short) rs.getInt("speed"));
-        equip.setStr((short) rs.getInt("str"));
-        equip.setWatk((short) rs.getInt("watk"));
-        equip.setWdef((short) rs.getInt("wdef"));
-        equip.setUpgradeSlots((byte) rs.getInt("upgradeslots"));
-        equip.setLevel(rs.getByte("level"));
-        equip.setItemExp(rs.getInt("itemexp"));
-        equip.setItemLevel(rs.getByte("itemlevel"));
-        equip.setExpiration(rs.getLong("expiration"));
-        equip.setGiftFrom(rs.getString("giftFrom"));
-        equip.setRingId(rs.getInt("ringid"));
-        equip.setUpgradeHistory(rs.getString("upgradehistory"));
+        equip.loadEquipFromDb(equip, rs);
         return equip;
     }
 
@@ -234,43 +208,15 @@ public enum ItemFactory {
                         psItem.setLong(11, item.getExpiration());
                         psItem.setString(12, item.getGiftFrom());
                         psItem.executeUpdate();
-
+                        int genKey = 0;
                         if (mit.equals(InventoryType.EQUIP) || mit.equals(InventoryType.EQUIPPED)) {
-                            try (PreparedStatement psEquip = con.prepareStatement("INSERT INTO `inventoryequipment` VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                                try (ResultSet rs = psItem.getGeneratedKeys()) {
-                                    if (!rs.next()) {
-                                        throw new RuntimeException("Inserting item failed.");
-                                    }
-
-                                    psEquip.setInt(1, rs.getInt(1));
+                            try (ResultSet rs = psItem.getGeneratedKeys()) {
+                                if (!rs.next()) {
+                                    throw new RuntimeException("Inserting item failed.");
                                 }
-
-                                Equip equip = (Equip) item;
-                                psEquip.setInt(2, equip.getUpgradeSlots());
-                                psEquip.setInt(3, equip.getLevel());
-                                psEquip.setInt(4, equip.getStr());
-                                psEquip.setInt(5, equip.getDex());
-                                psEquip.setInt(6, equip.getInt());
-                                psEquip.setInt(7, equip.getLuk());
-                                psEquip.setInt(8, equip.getHp());
-                                psEquip.setInt(9, equip.getMp());
-                                psEquip.setInt(10, equip.getWatk());
-                                psEquip.setInt(11, equip.getMatk());
-                                psEquip.setInt(12, equip.getWdef());
-                                psEquip.setInt(13, equip.getMdef());
-                                psEquip.setInt(14, equip.getAcc());
-                                psEquip.setInt(15, equip.getAvoid());
-                                psEquip.setInt(16, equip.getHands());
-                                psEquip.setInt(17, equip.getSpeed());
-                                psEquip.setInt(18, equip.getJump());
-                                psEquip.setInt(19, 0);
-                                psEquip.setInt(20, equip.getVicious());
-                                psEquip.setInt(21, equip.getItemLevel());
-                                psEquip.setInt(22, equip.getItemExp());
-                                psEquip.setInt(23, equip.getRingId());
-                                psEquip.setString(24,equip.getUpgradeHistory());
-                                psEquip.executeUpdate();
+                                genKey = rs.getInt(1);
                             }
+                            EquipUtils.insertEquipTable((Equip) item, genKey, con);
                         }
                     }
                 }
@@ -397,35 +343,7 @@ public enum ItemFactory {
 
                 // Equipment
                 if (mit.equals(InventoryType.EQUIP) || mit.equals(InventoryType.EQUIPPED)) {
-                    try (PreparedStatement ps = con.prepareStatement("INSERT INTO `inventoryequipment` VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                        ps.setInt(1, genKey);
-
-                        Equip equip = (Equip) item;
-                        ps.setInt(2, equip.getUpgradeSlots());
-                        ps.setInt(3, equip.getLevel());
-                        ps.setInt(4, equip.getStr());
-                        ps.setInt(5, equip.getDex());
-                        ps.setInt(6, equip.getInt());
-                        ps.setInt(7, equip.getLuk());
-                        ps.setInt(8, equip.getHp());
-                        ps.setInt(9, equip.getMp());
-                        ps.setInt(10, equip.getWatk());
-                        ps.setInt(11, equip.getMatk());
-                        ps.setInt(12, equip.getWdef());
-                        ps.setInt(13, equip.getMdef());
-                        ps.setInt(14, equip.getAcc());
-                        ps.setInt(15, equip.getAvoid());
-                        ps.setInt(16, equip.getHands());
-                        ps.setInt(17, equip.getSpeed());
-                        ps.setInt(18, equip.getJump());
-                        ps.setInt(19, 0);
-                        ps.setInt(20, equip.getVicious());
-                        ps.setInt(21, equip.getItemLevel());
-                        ps.setInt(22, equip.getItemExp());
-                        ps.setInt(23, equip.getRingId());
-                        ps.setString(24,equip.getUpgradeHistory());
-                        ps.executeUpdate();
-                    }
+                    EquipUtils.insertEquipTable((Equip) item, genKey, con);
                 }
             }
         } finally {
