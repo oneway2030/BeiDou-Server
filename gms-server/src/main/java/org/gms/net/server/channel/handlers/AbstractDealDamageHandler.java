@@ -235,12 +235,12 @@ public abstract class AbstractDealDamageHandler extends AbstractPacketHandler {
                         distanceToDetect += 60000;
                     }
 
-                    if (distance > distanceToDetect) {
-//                        AutobanFactory.DISTANCE_HACK.alert(player, "距离Sq到怪物: " + distance + " SID: " + attack.skill + " MID: " + monster.getId());
-                        AutobanFactory.DISTANCE_HACK.addPoint(player.getAutoBanManager(), "玩家：" + player.getName() + "距离Sq到怪物: " + distance + " SID: " + attack.skill + " MID: " + monster.getId());
-                        log.warn("玩家：{}距离Sq到怪物: {} SID: {} MID: {}", player.getName(), distance, attack.skill, monster.getId());
-
-                    }
+//                    if (distance > distanceToDetect) {
+////                        AutobanFactory.DISTANCE_HACK.alert(player, "距离Sq到怪物: " + distance + " SID: " + attack.skill + " MID: " + monster.getId());
+//                        AutobanFactory.DISTANCE_HACK.addPoint(player.getAutoBanManager(), "玩家：" + player.getName() + "距离Sq到怪物: " + distance + " SID: " + attack.skill + " MID: " + monster.getId());
+//                        log.warn("玩家：{}距离Sq到怪物: {} SID: {} MID: {}", player.getName(), distance, attack.skill, monster.getId());
+//
+//                    }
 
                     int totDamageToOneMonster = 0;
                     List<Integer> onedList = attack.allDamage.get(oned);
