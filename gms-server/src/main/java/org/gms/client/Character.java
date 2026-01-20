@@ -491,6 +491,14 @@ public class Character extends AbstractCharacterObject {
 
     private int rebornsCount = -1;//重生次数
 
+    /**
+     * 最后攻击时间
+     * 用来校验攻击速度是否过快
+     */
+    @Setter
+    @Getter
+    private long lastAttackTime = 0;
+
     private Character() {
         super.setListener(new CharacterListener(this));
         useCS = false;

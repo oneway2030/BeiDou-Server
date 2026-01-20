@@ -231,15 +231,18 @@ public class SessionCoordinator {
      * 校验多开
      */
     public boolean isMultiOpen(String remoteHost) {
+        log.info("白名单校验 isMultiOpen");
         try {
             int maxAllowed = GameConfig.getServerInt("max_accounts_per_user");
             if (maxAllowed <= 0) {
+                log.info("白名单校验返回 maxAllowed=" + maxAllowed);
                 return false;
             }
             String ip = remoteHost.split("-")[0]; // 分割后第一个元素为IP
             String whiteIp = GameConfig.getServerString("multi_open_whitelist_ip");
             // 步骤2：检查IP是否在白名单中，若在则不校验多开
             if (ip != null && ip.equals(whiteIp)) {
+                log.info("白名单 直接跳过");
                 return false;
             }
             Set<Integer> existingAccounts = userAccountMap.getOrDefault(remoteHost, Collections.emptySet());
