@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<imgdir name="01702736.img">
+<imgdir indent="2" media="NONE" name="01702736.img">
   <imgdir name="info">
-    <canvas name="icon" width="38" height="38">
+    <canvas format="2" height="38" name="icon" scale="0" width="38">
       <vector name="origin" x="3" y="34"/>
       <string name="_hash" value="63568b4d19407648ac48778ab71809b5122e68ea0e8104572017b9d1fa97ef69"/>
     </canvas>
-    <canvas name="iconRaw" width="38" height="38">
+    <canvas format="2" height="38" name="iconRaw" scale="0" width="38">
       <vector name="origin" x="3" y="34"/>
       <string name="_hash" value="b709fcd6c7d0c8402389edde8d77fa5548c027192cb967caf6f0b6ba2372a295"/>
     </canvas>
@@ -24,7 +24,7 @@
   <imgdir name="30">
     <imgdir name="walk1">
       <imgdir name="0">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="103" y="33"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -32,7 +32,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="b29eb46f718d17d7f6c235718a34e5e08000c87a6e00e508bd8ba42a5a84ffbf"/>
         </canvas>
-        <canvas name="effect" width="152" height="101">
+        <canvas format="2" height="101" name="effect" scale="0" width="152">
           <vector name="origin" x="120" y="52"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -42,7 +42,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="112" height="82">
+        <canvas format="2" height="82" name="weapon" scale="0" width="112">
           <vector name="origin" x="91" y="68"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -50,7 +50,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="c3911b230c728f0b5ab26638238d72752a7bbcbf1925a628ba0416d9580c207c"/>
         </canvas>
-        <canvas name="effect" width="183" height="109">
+        <canvas format="2" height="109" name="effect" scale="0" width="183">
           <vector name="origin" x="111" y="89"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -60,7 +60,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="104" y="33"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -68,7 +68,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="197" height="107">
+        <canvas format="2" height="107" name="effect" scale="0" width="197">
           <vector name="origin" x="120" y="58"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -78,7 +78,7 @@
         </canvas>
       </imgdir>
       <imgdir name="3">
-        <canvas name="weapon" width="113" height="83">
+        <canvas format="2" height="83" name="weapon" scale="0" width="113">
           <vector name="origin" x="92" y="17"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -86,7 +86,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="85b39d72224827405079e54fcdc9c7876473912967c01914374378e5da8b978d"/>
         </canvas>
-        <canvas name="effect" width="214" height="141">
+        <canvas format="2" height="141" name="effect" scale="0" width="214">
           <vector name="origin" x="111" y="59"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -98,7 +98,7 @@
     </imgdir>
     <imgdir name="stand1">
       <imgdir name="0">
-        <canvas name="weapon" width="113" height="83">
+        <canvas format="2" height="83" name="weapon" scale="0" width="113">
           <vector name="origin" x="89" y="16"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -106,7 +106,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/3/weapon"/>
         </canvas>
-        <canvas name="effect" width="164" height="110">
+        <canvas format="2" height="110" name="effect" scale="0" width="164">
           <vector name="origin" x="106" y="20"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -116,7 +116,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="effect" width="164" height="108">
+        <canvas format="2" height="108" name="effect" scale="0" width="164">
           <vector name="origin" x="107" y="21"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -124,7 +124,7 @@
           <string name="z" value="characterEnd"/>
           <string name="_hash" value="5d97381b3819a8c77cb3ce8b3c0a861d54e0080582fce1dac101b184775b4cdf"/>
         </canvas>
-        <canvas name="weapon" width="113" height="83">
+        <canvas format="2" height="83" name="weapon" scale="0" width="113">
           <vector name="origin" x="89" y="16"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -134,7 +134,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="effect" width="165" height="109">
+        <canvas format="2" height="109" name="effect" scale="0" width="165">
           <vector name="origin" x="109" y="22"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -142,7 +142,7 @@
           <string name="z" value="characterEnd"/>
           <string name="_hash" value="a4b5eebf223140fb29bfcb5b3f2eaabaf67afd5d752ea5e2ddc4db0ecc60cf66"/>
         </canvas>
-        <canvas name="weapon" width="113" height="83">
+        <canvas format="2" height="83" name="weapon" scale="0" width="113">
           <vector name="origin" x="89" y="16"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -154,7 +154,7 @@
     </imgdir>
     <imgdir name="alert">
       <imgdir name="0">
-        <canvas name="weapon" width="112" height="82">
+        <canvas format="2" height="82" name="weapon" scale="0" width="112">
           <vector name="origin" x="92" y="68"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -162,7 +162,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="169" height="104">
+        <canvas format="2" height="104" name="effect" scale="0" width="169">
           <vector name="origin" x="114" y="87"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -172,7 +172,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="112" height="82">
+        <canvas format="2" height="82" name="weapon" scale="0" width="112">
           <vector name="origin" x="91" y="67"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -180,7 +180,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="184" height="110">
+        <canvas format="2" height="110" name="effect" scale="0" width="184">
           <vector name="origin" x="128" y="94"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -190,7 +190,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="136" height="180">
+        <canvas format="2" height="180" name="weapon" scale="0" width="136">
           <vector name="origin" x="92" y="66"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -198,7 +198,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="4f40ba3c8b1f5d8db553f489934e40de7a5156dd70b3494a878eaa929dfb2adc"/>
         </canvas>
-        <canvas name="effect" width="184" height="110">
+        <canvas format="2" height="110" name="effect" scale="0" width="184">
           <vector name="origin" x="129" y="94"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -210,7 +210,7 @@
     </imgdir>
     <imgdir name="swingO1">
       <imgdir name="0">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="24" y="35"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -218,7 +218,7 @@
           <string name="z" value="weaponBelowBody"/>
           <string name="_hash" value="193ec0756e7592c20596dee85e8a98edd4362012f65ef365dcdcf8493689b30a"/>
         </canvas>
-        <canvas name="effect" width="68" height="89">
+        <canvas format="2" height="89" name="effect" scale="0" width="68">
           <vector name="origin" x="-34" y="63"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -228,7 +228,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="113" height="83">
+        <canvas format="2" height="83" name="weapon" scale="0" width="113">
           <vector name="origin" x="19" y="18"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -236,7 +236,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="62b46b978bade7fb4f26b3f882dc995444ded2b8c42522caffb714ee5c65eee1"/>
         </canvas>
-        <canvas name="effect" width="103" height="133">
+        <canvas format="2" height="133" name="effect" scale="0" width="103">
           <vector name="origin" x="-3" y="57"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -246,7 +246,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="159" height="168">
+        <canvas format="2" height="168" name="weapon" scale="0" width="159">
           <vector name="origin" x="77" y="79"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -254,7 +254,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="b855aca25dec9965915d0115d01569bbc291969b858d00586ce19b6371179d1c"/>
         </canvas>
-        <canvas name="effect" width="200" height="204">
+        <canvas format="2" height="204" name="effect" scale="0" width="200">
           <vector name="origin" x="118" y="111"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -266,7 +266,7 @@
     </imgdir>
     <imgdir name="swingO2">
       <imgdir name="0">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="19" y="77"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -274,7 +274,7 @@
           <string name="z" value="weaponOverBody"/>
           <string name="_hash" value="af73953d93b9e39d874d3e8dfd6dcf05bdbef4b95cedb0f9b9b90b26ad032c5e"/>
         </canvas>
-        <canvas name="effect" width="66" height="97">
+        <canvas format="2" height="97" name="effect" scale="0" width="66">
           <vector name="origin" x="-22" y="94"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -284,7 +284,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="62" height="128">
+        <canvas format="2" height="128" name="weapon" scale="0" width="62">
           <vector name="origin" x="30" y="113"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -292,7 +292,7 @@
           <string name="z" value="weaponOverBody"/>
           <string name="_hash" value="0f022d20f26a75474055d4a8efbe7a7dda0c8a41638fb19b66462065b47ea187"/>
         </canvas>
-        <canvas name="effect" width="79" height="217">
+        <canvas format="2" height="217" name="effect" scale="0" width="79">
           <vector name="origin" x="38" y="120"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -302,7 +302,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="80" y="21"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -310,7 +310,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="1f8df808b3f8f4face7ead8cf7e3ed54a131420a88b6b0aa8a53e1fc54370f66"/>
         </canvas>
-        <canvas name="effect" width="208" height="218">
+        <canvas format="2" height="218" name="effect" scale="0" width="208">
           <vector name="origin" x="134" y="117"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -322,7 +322,7 @@
     </imgdir>
     <imgdir name="swingO3">
       <imgdir name="0">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="18" y="80"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -330,7 +330,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO2/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="61" height="84">
+        <canvas format="2" height="84" name="effect" scale="0" width="61">
           <vector name="origin" x="-27" y="89"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -340,7 +340,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="77" y="79"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -348,7 +348,7 @@
           <string name="z" value="weaponOverBody"/>
           <string name="_hash" value="f5f9a961a2b64a3255ef235b0dc887c526f42fc416a77d30fbd8619947fee206"/>
         </canvas>
-        <canvas name="effect" width="157" height="114">
+        <canvas format="2" height="114" name="effect" scale="0" width="157">
           <vector name="origin" x="88" y="91"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -358,7 +358,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="17" y="35"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -366,7 +366,7 @@
           <string name="z" value="weaponBelowBody"/>
           <string name="_hash" value="af5d893733d641961bc493f9058cb9fac28c1b3480bc9c34c745e0a23abc8cc3"/>
         </canvas>
-        <canvas name="effect" width="244" height="241">
+        <canvas format="2" height="241" name="effect" scale="0" width="244">
           <vector name="origin" x="117" y="128"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -378,7 +378,7 @@
     </imgdir>
     <imgdir name="swingOF">
       <imgdir name="0">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="21" y="20"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -386,7 +386,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="05be527ccfa5c62746d600f233064fb32dd9d99529aaaa0b4811ae6e39058aa7"/>
         </canvas>
-        <canvas name="effect" width="81" height="84">
+        <canvas format="2" height="84" name="effect" scale="0" width="81">
           <vector name="origin" x="-11" y="-7"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -396,7 +396,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="125" height="66">
+        <canvas format="2" height="66" name="weapon" scale="0" width="125">
           <vector name="origin" x="46" y="68"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -404,7 +404,7 @@
           <string name="z" value="backWeapon"/>
           <string name="_hash" value="6e3ef910989afbde06b3aab61062437a14c9d9d41db23e7aa58e45e3558e38ca"/>
         </canvas>
-        <canvas name="effect" width="71" height="101">
+        <canvas format="2" height="101" name="effect" scale="0" width="71">
           <vector name="origin" x="-16" y="62"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -414,7 +414,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="1" y="90"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -422,7 +422,7 @@
           <string name="z" value="weaponBelowBody"/>
           <string name="_inlink" value="30/swingO2/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="122" height="163">
+        <canvas format="2" height="163" name="effect" scale="0" width="122">
           <vector name="origin" x="-4" y="104"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -432,7 +432,7 @@
         </canvas>
       </imgdir>
       <imgdir name="3">
-        <canvas name="weapon" width="124" height="66">
+        <canvas format="2" height="66" name="weapon" scale="0" width="124">
           <vector name="origin" x="24" y="52"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -440,7 +440,7 @@
           <string name="z" value="weaponBelowBody"/>
           <string name="_hash" value="bb8c240397e72bdb6b462b634b2ed42a24135843e44f405b6da45114a4a0e642"/>
         </canvas>
-        <canvas name="effect" width="250" height="201">
+        <canvas format="2" height="201" name="effect" scale="0" width="250">
           <vector name="origin" x="150" y="97"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -452,7 +452,7 @@
     </imgdir>
     <imgdir name="stabO1">
       <imgdir name="0">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="103" y="32"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -460,7 +460,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="208" height="92">
+        <canvas format="2" height="92" name="effect" scale="0" width="208">
           <vector name="origin" x="108" y="41"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -470,7 +470,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="102" y="32"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -478,7 +478,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="ac0139886a7ad32ab59ad0207e6c1db0f18114aa0d9d5ebbb6201464f2117f06"/>
         </canvas>
-        <canvas name="effect" width="250" height="152">
+        <canvas format="2" height="152" name="effect" scale="0" width="250">
           <vector name="origin" x="113" y="92"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -490,7 +490,7 @@
     </imgdir>
     <imgdir name="stabO2">
       <imgdir name="0">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="102" y="30"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -498,7 +498,7 @@
           <string name="z" value="weaponBelowArm"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="76" height="92">
+        <canvas format="2" height="92" name="effect" scale="0" width="76">
           <vector name="origin" x="108" y="37"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -508,7 +508,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="104" y="31"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -516,7 +516,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="837fec90b82a68febcc670e2646410eea3a162da2d105537f4f6ccf8880f788b"/>
         </canvas>
-        <canvas name="effect" width="250" height="152">
+        <canvas format="2" height="152" name="effect" scale="0" width="250">
           <vector name="origin" x="117" y="89"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -528,7 +528,7 @@
     </imgdir>
     <imgdir name="stabOF">
       <imgdir name="0">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="103" y="32"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -536,7 +536,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="67" height="51">
+        <canvas format="2" height="51" name="effect" scale="0" width="67">
           <vector name="origin" x="102" y="27"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -546,7 +546,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="209" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="209">
           <vector name="origin" x="69" y="36"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -554,7 +554,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="3162925a5d36d1b1870c26d2b5ff20a98376ff9a6db2fb4ebe181d3c1c0fe0af"/>
         </canvas>
-        <canvas name="effect" width="83" height="167">
+        <canvas format="2" height="167" name="effect" scale="0" width="83">
           <vector name="origin" x="81" y="87"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -564,7 +564,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="126" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="126">
           <vector name="origin" x="102" y="44"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -572,7 +572,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="a20c00e34ea08d1223a38277d8b727d89078ad88a3ca24610acc9f95f55aea79"/>
         </canvas>
-        <canvas name="effect" width="229" height="103">
+        <canvas format="2" height="103" name="effect" scale="0" width="229">
           <vector name="origin" x="94" y="58"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -584,7 +584,7 @@
     </imgdir>
     <imgdir name="proneStab">
       <imgdir name="0">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="101" y="31"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -592,7 +592,7 @@
           <string name="z" value="weaponBelowArm"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="79" height="77">
+        <canvas format="2" height="77" name="effect" scale="0" width="79">
           <vector name="origin" x="110" y="39"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -602,7 +602,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="100" y="32"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -610,7 +610,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="b190ebccd018c36697015596402f05700b80291d8f59aa1fd1cd13a60f22ca06"/>
         </canvas>
-        <canvas name="effect" width="247" height="129">
+        <canvas format="2" height="129" name="effect" scale="0" width="247">
           <vector name="origin" x="118" y="50"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -642,7 +642,7 @@
     </imgdir>
     <imgdir name="jump">
       <imgdir name="0">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="19" y="79"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -650,7 +650,7 @@
           <string name="z" value="weaponOverArm"/>
           <string name="_inlink" value="30/swingO2/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="233" height="249">
+        <canvas format="2" height="249" name="effect" scale="0" width="233">
           <vector name="origin" x="119" y="124"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -662,7 +662,7 @@
     </imgdir>
     <imgdir name="fly">
       <imgdir name="0">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="22" y="76"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -670,7 +670,7 @@
           <string name="z" value="weaponOverArm"/>
           <string name="_inlink" value="30/swingO2/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="90" height="98">
+        <canvas format="2" height="98" name="effect" scale="0" width="90">
           <vector name="origin" x="-4" y="97"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -681,7 +681,7 @@
       </imgdir>
       <imgdir name="1">
         <uol name="weapon" value="../0/weapon"/>
-        <canvas name="effect" width="95" height="124">
+        <canvas format="2" height="124" name="effect" scale="0" width="95">
           <vector name="origin" x="-1" y="102"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -693,7 +693,7 @@
     </imgdir>
     <imgdir name="sit">
       <imgdir name="0">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="85" y="69"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -705,7 +705,7 @@
     </imgdir>
     <imgdir name="ladder">
       <imgdir name="0">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="50" y="49"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -713,7 +713,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO3/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="90" height="98">
+        <canvas format="2" height="98" name="effect" scale="0" width="90">
           <vector name="origin" x="70" y="67"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -723,7 +723,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="50" y="49"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -731,7 +731,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO3/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="95" height="102">
+        <canvas format="2" height="102" name="effect" scale="0" width="95">
           <vector name="origin" x="67" y="90"/>
           <imgdir name="map">
             <vector name="navel" x="0" y="0"/>
@@ -743,7 +743,7 @@
     </imgdir>
     <imgdir name="rope">
       <imgdir name="0">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="50" y="49"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -751,7 +751,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO3/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="90" height="98">
+        <canvas format="2" height="98" name="effect" scale="0" width="90">
           <vector name="origin" x="70" y="67"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -761,7 +761,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="50" y="49"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -769,7 +769,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO3/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="95" height="102">
+        <canvas format="2" height="102" name="effect" scale="0" width="95">
           <vector name="origin" x="71" y="82"/>
           <imgdir name="map">
             <vector name="navel" x="0" y="0"/>
@@ -830,7 +830,7 @@
     <uol name="swingOF" value="../30/swingOF"/>
     <imgdir name="swingPF">
       <imgdir name="0">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="103" y="32"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -838,7 +838,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="69" height="51">
+        <canvas format="2" height="51" name="effect" scale="0" width="69">
           <vector name="origin" x="107" y="27"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -848,7 +848,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="124" height="65">
+        <canvas format="2" height="65" name="weapon" scale="0" width="124">
           <vector name="origin" x="101" y="16"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -856,7 +856,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="770af13b694dbf7637ecffbf03f1ac1d3daabeff04b28aff9962a8b9e77c03bf"/>
         </canvas>
-        <canvas name="effect" width="92" height="104">
+        <canvas format="2" height="104" name="effect" scale="0" width="92">
           <vector name="origin" x="125" y="21"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -866,7 +866,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="112" height="82">
+        <canvas format="2" height="82" name="weapon" scale="0" width="112">
           <vector name="origin" x="26" y="61"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -874,7 +874,7 @@
           <string name="z" value="weaponBelowArm"/>
           <string name="_hash" value="de36684c198bc4051410bf024137bb574bae2136732f45e17e1d581d22f234e5"/>
         </canvas>
-        <canvas name="effect" width="124" height="185">
+        <canvas format="2" height="185" name="effect" scale="0" width="124">
           <vector name="origin" x="28" y="79"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -884,7 +884,7 @@
         </canvas>
       </imgdir>
       <imgdir name="3">
-        <canvas name="weapon" width="113" height="83">
+        <canvas format="2" height="83" name="weapon" scale="0" width="113">
           <vector name="origin" x="81" y="14"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -892,7 +892,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="5f6db7c340efb5dc8eb1a038b2638b886d66e4bb81fc54823555fde549bd849c"/>
         </canvas>
-        <canvas name="effect" width="208" height="211">
+        <canvas format="2" height="211" name="effect" scale="0" width="208">
           <vector name="origin" x="114" y="129"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -904,7 +904,7 @@
     </imgdir>
     <imgdir name="stabT1">
       <imgdir name="0">
-        <canvas name="weapon" width="113" height="83">
+        <canvas format="2" height="83" name="weapon" scale="0" width="113">
           <vector name="origin" x="93" y="17"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -912,7 +912,7 @@
           <string name="z" value="weaponOverBody"/>
           <string name="_inlink" value="30/walk1/3/weapon"/>
         </canvas>
-        <canvas name="effect" width="74" height="64">
+        <canvas format="2" height="64" name="effect" scale="0" width="74">
           <vector name="origin" x="93" y="-4"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -922,7 +922,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="113" height="83">
+        <canvas format="2" height="83" name="weapon" scale="0" width="113">
           <vector name="origin" x="93" y="16"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -930,7 +930,7 @@
           <string name="z" value="weaponOverBody"/>
           <string name="_inlink" value="30/walk1/3/weapon"/>
         </canvas>
-        <canvas name="effect" width="79" height="105">
+        <canvas format="2" height="105" name="effect" scale="0" width="79">
           <vector name="origin" x="104" y="0"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -940,7 +940,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="103" y="30"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -948,7 +948,7 @@
           <string name="z" value="weaponOverBody"/>
           <string name="_hash" value="c23644c3e3a04d764cadcdf2b797312b631e945323f068410b5ebbe94ec1a7bf"/>
         </canvas>
-        <canvas name="effect" width="226" height="151">
+        <canvas format="2" height="151" name="effect" scale="0" width="226">
           <vector name="origin" x="116" y="90"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -980,7 +980,7 @@
     <uol name="swingOF" value="../30/swingOF"/>
     <imgdir name="shoot1">
       <imgdir name="0">
-        <canvas name="weapon" width="62" height="128">
+        <canvas format="2" height="128" name="weapon" scale="0" width="62">
           <vector name="origin" x="45" y="100"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -988,7 +988,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO2/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="144" height="123">
+        <canvas format="2" height="123" name="effect" scale="0" width="144">
           <vector name="origin" x="67" y="58"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -998,7 +998,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="62" height="128">
+        <canvas format="2" height="128" name="weapon" scale="0" width="62">
           <vector name="origin" x="59" y="100"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1006,7 +1006,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO2/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="168" height="180">
+        <canvas format="2" height="180" name="effect" scale="0" width="168">
           <vector name="origin" x="89" y="93"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1016,7 +1016,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="62" height="128">
+        <canvas format="2" height="128" name="weapon" scale="0" width="62">
           <vector name="origin" x="59" y="100"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1024,7 +1024,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO2/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="219" height="218">
+        <canvas format="2" height="218" name="effect" scale="0" width="219">
           <vector name="origin" x="118" y="113"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1036,7 +1036,7 @@
     </imgdir>
     <imgdir name="shootF">
       <imgdir name="0">
-        <canvas name="weapon" width="62" height="128">
+        <canvas format="2" height="128" name="weapon" scale="0" width="62">
           <vector name="origin" x="48" y="99"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1044,7 +1044,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO2/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="168" height="198">
+        <canvas format="2" height="198" name="effect" scale="0" width="168">
           <vector name="origin" x="77" y="93"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1054,7 +1054,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="62" height="128">
+        <canvas format="2" height="128" name="weapon" scale="0" width="62">
           <vector name="origin" x="65" y="102"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1062,7 +1062,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="f6953666abf3ef929f423743ad5a384d00c366b7275edb4bbccbacccd9c014c5"/>
         </canvas>
-        <canvas name="effect" width="219" height="218">
+        <canvas format="2" height="218" name="effect" scale="0" width="219">
           <vector name="origin" x="118" y="116"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1119,7 +1119,7 @@
     <uol name="stabOF" value="../30/stabOF"/>
     <imgdir name="walk2">
       <imgdir name="0">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="24" y="75"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1127,7 +1127,7 @@
           <string name="z" value="weaponBelowArm"/>
           <string name="_inlink" value="30/swingO2/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="119" height="101">
+        <canvas format="2" height="101" name="effect" scale="0" width="119">
           <vector name="origin" x="1" y="95"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1137,7 +1137,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="24" y="75"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1145,7 +1145,7 @@
           <string name="z" value="weaponBelowArm"/>
           <string name="_inlink" value="30/swingO2/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="107" height="101">
+        <canvas format="2" height="101" name="effect" scale="0" width="107">
           <vector name="origin" x="1" y="99"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1155,7 +1155,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="24" y="75"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1163,7 +1163,7 @@
           <string name="z" value="weaponBelowArm"/>
           <string name="_inlink" value="30/swingO2/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="116" height="101">
+        <canvas format="2" height="101" name="effect" scale="0" width="116">
           <vector name="origin" x="3" y="95"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1173,7 +1173,7 @@
         </canvas>
       </imgdir>
       <imgdir name="3">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="24" y="77"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1181,7 +1181,7 @@
           <string name="z" value="weaponBelowArm"/>
           <string name="_inlink" value="30/swingO2/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="117" height="101">
+        <canvas format="2" height="101" name="effect" scale="0" width="117">
           <vector name="origin" x="3" y="101"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1193,7 +1193,7 @@
     </imgdir>
     <imgdir name="stand2">
       <imgdir name="0">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="24" y="76"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1201,7 +1201,7 @@
           <string name="z" value="weaponBelowArm"/>
           <string name="_inlink" value="30/swingO2/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="127" height="123">
+        <canvas format="2" height="123" name="effect" scale="0" width="127">
           <vector name="origin" x="37" y="97"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1211,7 +1211,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="24" y="76"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1219,7 +1219,7 @@
           <string name="z" value="weaponBelowArm"/>
           <string name="_hash" value="34634b18388c603f0713f6f74d22d6e7fa9375b027c19ef18741f700f679f556"/>
         </canvas>
-        <canvas name="effect" width="133" height="128">
+        <canvas format="2" height="128" name="effect" scale="0" width="133">
           <vector name="origin" x="39" y="101"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1229,7 +1229,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="24" y="76"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1237,7 +1237,7 @@
           <string name="z" value="weaponBelowArm"/>
           <string name="_hash" value="f35e0b778f8ee6d7a4950ceb5c5d2c52a05963d7d9a8bc58f3d85ec86e1b43d9"/>
         </canvas>
-        <canvas name="effect" width="131" height="126">
+        <canvas format="2" height="126" name="effect" scale="0" width="131">
           <vector name="origin" x="39" y="98"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1249,7 +1249,7 @@
     </imgdir>
     <imgdir name="swingT1">
       <imgdir name="0">
-        <canvas name="weapon" width="112" height="82">
+        <canvas format="2" height="82" name="weapon" scale="0" width="112">
           <vector name="origin" x="15" y="65"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1257,7 +1257,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="33/swingPF/2/weapon"/>
         </canvas>
-        <canvas name="effect" width="60" height="62">
+        <canvas format="2" height="62" name="effect" scale="0" width="60">
           <vector name="origin" x="-42" y="71"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1267,7 +1267,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="15" y="85"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1275,7 +1275,7 @@
           <string name="z" value="weaponBelowArm"/>
           <string name="_inlink" value="30/swingO2/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="118" height="217">
+        <canvas format="2" height="217" name="effect" scale="0" width="118">
           <vector name="origin" x="-17" y="97"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1285,7 +1285,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="163" height="96">
+        <canvas format="2" height="96" name="weapon" scale="0" width="163">
           <vector name="origin" x="91" y="29"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1293,7 +1293,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="9a3ffaa307502b9ca5e31a497adce4c8979db6c7754d4bcb4fbe80bb7c4314e5"/>
         </canvas>
-        <canvas name="effect" width="249" height="226">
+        <canvas format="2" height="226" name="effect" scale="0" width="249">
           <vector name="origin" x="107" y="139"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1305,7 +1305,7 @@
     </imgdir>
     <imgdir name="swingT2">
       <imgdir name="0">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="24" y="80"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1313,7 +1313,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO2/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="56" height="79">
+        <canvas format="2" height="79" name="effect" scale="0" width="56">
           <vector name="origin" x="-25" y="87"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1323,7 +1323,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="78" y="78"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1331,7 +1331,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO3/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="147" height="88">
+        <canvas format="2" height="88" name="effect" scale="0" width="147">
           <vector name="origin" x="89" y="92"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1341,7 +1341,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="113" height="83">
+        <canvas format="2" height="83" name="weapon" scale="0" width="113">
           <vector name="origin" x="85" y="18"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1349,7 +1349,7 @@
           <string name="z" value="weaponOverBody"/>
           <string name="_hash" value="98323d3f599eb2cdf1484562d3db1bc00b1a0caadf3469d75d9b26e7e92c80bd"/>
         </canvas>
-        <canvas name="effect" width="246" height="225">
+        <canvas format="2" height="225" name="effect" scale="0" width="246">
           <vector name="origin" x="125" y="134"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1361,7 +1361,7 @@
     </imgdir>
     <imgdir name="swingT3">
       <imgdir name="0">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="25" y="32"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1369,7 +1369,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="baa76b3190bca3234e0771dbcaee75af1fd2fd184d54f047221d11f7bb7cd42b"/>
         </canvas>
-        <canvas name="effect" width="236" height="82">
+        <canvas format="2" height="82" name="effect" scale="0" width="236">
           <vector name="origin" x="135" y="30"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1379,7 +1379,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="effect" width="83" height="85">
+        <canvas format="2" height="85" name="effect" scale="0" width="83">
           <vector name="origin" x="-23" y="2"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1387,7 +1387,7 @@
           <string name="z" value="characterEnd"/>
           <string name="_hash" value="04415d5f7d2d24148d30ed87c65d5adb3108583640f8f93a78e877d8c3b12d1c"/>
         </canvas>
-        <canvas name="weapon" width="113" height="83">
+        <canvas format="2" height="83" name="weapon" scale="0" width="113">
           <vector name="origin" x="21" y="16"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1397,7 +1397,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="17" y="79"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1405,7 +1405,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="f80751b83a16286a05afad3c011d892913edf91b59acb7343159f61af7032675"/>
         </canvas>
-        <canvas name="effect" width="213" height="218">
+        <canvas format="2" height="218" name="effect" scale="0" width="213">
           <vector name="origin" x="104" y="109"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1417,7 +1417,7 @@
     </imgdir>
     <imgdir name="swingTF">
       <imgdir name="0">
-        <canvas name="weapon" width="62" height="128">
+        <canvas format="2" height="128" name="weapon" scale="0" width="62">
           <vector name="origin" x="30" y="96"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1425,7 +1425,7 @@
           <string name="z" value="backWeapon"/>
           <string name="_inlink" value="30/swingO2/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="54" height="56">
+        <canvas format="2" height="56" name="effect" scale="0" width="54">
           <vector name="origin" x="25" y="94"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1435,7 +1435,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="84" y="79"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1443,7 +1443,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO3/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="79" height="217">
+        <canvas format="2" height="217" name="effect" scale="0" width="79">
           <vector name="origin" x="96" y="90"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1453,7 +1453,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="20" y="77"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1461,7 +1461,7 @@
           <string name="z" value="weaponBelowArm"/>
           <string name="_inlink" value="30/swingO2/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="156" height="197">
+        <canvas format="2" height="197" name="effect" scale="0" width="156">
           <vector name="origin" x="34" y="95"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1471,7 +1471,7 @@
         </canvas>
       </imgdir>
       <imgdir name="3">
-        <canvas name="weapon" width="113" height="83">
+        <canvas format="2" height="83" name="weapon" scale="0" width="113">
           <vector name="origin" x="90" y="17"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1479,7 +1479,7 @@
           <string name="z" value="weaponOverBody"/>
           <string name="_hash" value="49194828bf8893911b942e88399f1669dfcc60e43d7657f781686f0f38f89dd2"/>
         </canvas>
-        <canvas name="effect" width="237" height="223">
+        <canvas format="2" height="223" name="effect" scale="0" width="237">
           <vector name="origin" x="107" y="131"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1547,7 +1547,7 @@
     <uol name="alert" value="../30/alert"/>
     <imgdir name="swingP1">
       <imgdir name="0">
-        <canvas name="weapon" width="112" height="82">
+        <canvas format="2" height="82" name="weapon" scale="0" width="112">
           <vector name="origin" x="7" y="66"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1555,7 +1555,7 @@
           <string name="z" value="weaponBelowArm"/>
           <string name="_inlink" value="33/swingPF/2/weapon"/>
         </canvas>
-        <canvas name="effect" width="64" height="49">
+        <canvas format="2" height="49" name="effect" scale="0" width="64">
           <vector name="origin" x="-44" y="62"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1565,7 +1565,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="18" y="76"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1573,7 +1573,7 @@
           <string name="z" value="weaponBelowArm"/>
           <string name="_inlink" value="30/swingO2/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="132" height="172">
+        <canvas format="2" height="172" name="effect" scale="0" width="132">
           <vector name="origin" x="1" y="103"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1583,7 +1583,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="113" height="83">
+        <canvas format="2" height="83" name="weapon" scale="0" width="113">
           <vector name="origin" x="88" y="19"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1591,7 +1591,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="b0f6c268f39d55e885087b4fa67ea40f6f0808e27d0ec625c16c9c1ea9e6ee15"/>
         </canvas>
-        <canvas name="effect" width="250" height="223">
+        <canvas format="2" height="223" name="effect" scale="0" width="250">
           <vector name="origin" x="107" y="137"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1603,7 +1603,7 @@
     </imgdir>
     <imgdir name="swingP2">
       <imgdir name="0">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="20" y="77"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1611,7 +1611,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO2/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="65" height="56">
+        <canvas format="2" height="56" name="effect" scale="0" width="65">
           <vector name="origin" x="-19" y="76"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1621,7 +1621,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="65" height="124">
+        <canvas format="2" height="124" name="weapon" scale="0" width="65">
           <vector name="origin" x="13" y="101"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1629,7 +1629,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="742908d24b2f660681ecd8c51daabb93450d6998ff936b9b4a67589354f1b538"/>
         </canvas>
-        <canvas name="effect" width="153" height="131">
+        <canvas format="2" height="131" name="effect" scale="0" width="153">
           <vector name="origin" x="18" y="112"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1639,7 +1639,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="113" height="83">
+        <canvas format="2" height="83" name="weapon" scale="0" width="113">
           <vector name="origin" x="87" y="20"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1647,7 +1647,7 @@
           <string name="z" value="weaponOverBody"/>
           <string name="_hash" value="374b0e9babec3706d6a31983dbd7bcfea3186090b73e288d9813fba5be4ebaaf"/>
         </canvas>
-        <canvas name="effect" width="250" height="225">
+        <canvas format="2" height="225" name="effect" scale="0" width="250">
           <vector name="origin" x="130" y="140"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1659,7 +1659,7 @@
     </imgdir>
     <imgdir name="swingPF">
       <imgdir name="0">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="103" y="32"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1667,7 +1667,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="69" height="51">
+        <canvas format="2" height="51" name="effect" scale="0" width="69">
           <vector name="origin" x="107" y="27"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1677,7 +1677,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="124" height="65">
+        <canvas format="2" height="65" name="weapon" scale="0" width="124">
           <vector name="origin" x="101" y="16"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1685,7 +1685,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="33/swingPF/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="92" height="104">
+        <canvas format="2" height="104" name="effect" scale="0" width="92">
           <vector name="origin" x="125" y="21"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1695,7 +1695,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="112" height="82">
+        <canvas format="2" height="82" name="weapon" scale="0" width="112">
           <vector name="origin" x="26" y="61"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1703,7 +1703,7 @@
           <string name="z" value="weaponBelowArm"/>
           <string name="_inlink" value="33/swingPF/2/weapon"/>
         </canvas>
-        <canvas name="effect" width="124" height="185">
+        <canvas format="2" height="185" name="effect" scale="0" width="124">
           <vector name="origin" x="28" y="79"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1713,7 +1713,7 @@
         </canvas>
       </imgdir>
       <imgdir name="3">
-        <canvas name="weapon" width="113" height="83">
+        <canvas format="2" height="83" name="weapon" scale="0" width="113">
           <vector name="origin" x="81" y="14"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1721,7 +1721,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="33/swingPF/3/weapon"/>
         </canvas>
-        <canvas name="effect" width="208" height="211">
+        <canvas format="2" height="211" name="effect" scale="0" width="208">
           <vector name="origin" x="114" y="129"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1733,7 +1733,7 @@
     </imgdir>
     <imgdir name="stabT1">
       <imgdir name="0">
-        <canvas name="weapon" width="113" height="83">
+        <canvas format="2" height="83" name="weapon" scale="0" width="113">
           <vector name="origin" x="93" y="17"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1741,7 +1741,7 @@
           <string name="z" value="weaponOverBody"/>
           <string name="_inlink" value="30/walk1/3/weapon"/>
         </canvas>
-        <canvas name="effect" width="74" height="64">
+        <canvas format="2" height="64" name="effect" scale="0" width="74">
           <vector name="origin" x="93" y="-4"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1751,7 +1751,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="113" height="83">
+        <canvas format="2" height="83" name="weapon" scale="0" width="113">
           <vector name="origin" x="93" y="16"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1759,7 +1759,7 @@
           <string name="z" value="weaponOverBody"/>
           <string name="_inlink" value="30/walk1/3/weapon"/>
         </canvas>
-        <canvas name="effect" width="79" height="105">
+        <canvas format="2" height="105" name="effect" scale="0" width="79">
           <vector name="origin" x="104" y="0"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1769,7 +1769,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="103" y="30"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1777,7 +1777,7 @@
           <string name="z" value="weaponOverBody"/>
           <string name="_inlink" value="33/stabT1/2/weapon"/>
         </canvas>
-        <canvas name="effect" width="226" height="151">
+        <canvas format="2" height="151" name="effect" scale="0" width="226">
           <vector name="origin" x="116" y="90"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1789,7 +1789,7 @@
     </imgdir>
     <imgdir name="stabT2">
       <imgdir name="0">
-        <canvas name="weapon" width="124" height="65">
+        <canvas format="2" height="65" name="weapon" scale="0" width="124">
           <vector name="origin" x="100" y="18"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1797,7 +1797,7 @@
           <string name="z" value="weaponOverBody"/>
           <string name="_inlink" value="33/swingPF/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="74" height="48">
+        <canvas format="2" height="48" name="effect" scale="0" width="74">
           <vector name="origin" x="105" y="9"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1807,7 +1807,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="124" height="65">
+        <canvas format="2" height="65" name="weapon" scale="0" width="124">
           <vector name="origin" x="100" y="16"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1815,7 +1815,7 @@
           <string name="z" value="weaponOverBody"/>
           <string name="_inlink" value="33/swingPF/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="148" height="148">
+        <canvas format="2" height="148" name="effect" scale="0" width="148">
           <vector name="origin" x="110" y="59"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1825,7 +1825,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="124" height="64">
+        <canvas format="2" height="64" name="weapon" scale="0" width="124">
           <vector name="origin" x="100" y="51"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1833,7 +1833,7 @@
           <string name="z" value="weaponOverBody"/>
           <string name="_hash" value="2b5caa527021352e779bb3bfbe9446903b33d457afe77cb906f723092314244c"/>
         </canvas>
-        <canvas name="effect" width="202" height="99">
+        <canvas format="2" height="99" name="effect" scale="0" width="202">
           <vector name="origin" x="127" y="66"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1845,7 +1845,7 @@
     </imgdir>
     <imgdir name="stabTF">
       <imgdir name="2">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="72" y="2"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1853,7 +1853,7 @@
           <string name="z" value="weaponOverBody"/>
           <string name="_hash" value="a32d8d0329bc94376195d664ba749119e3fdff589eccbe62692659a8a71baa39"/>
         </canvas>
-        <canvas name="effect" width="212" height="226">
+        <canvas format="2" height="226" name="effect" scale="0" width="212">
           <vector name="origin" x="118" y="63"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1865,7 +1865,7 @@
     </imgdir>
     <imgdir name="shoot2">
       <imgdir name="0">
-        <canvas name="weapon" width="62" height="128">
+        <canvas format="2" height="128" name="weapon" scale="0" width="62">
           <vector name="origin" x="49" y="105"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1873,7 +1873,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO2/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="144" height="123">
+        <canvas format="2" height="123" name="effect" scale="0" width="144">
           <vector name="origin" x="77" y="66"/>
           <string name="z" value="characterEnd"/>
           <imgdir name="map">
@@ -1883,7 +1883,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="62" height="128">
+        <canvas format="2" height="128" name="weapon" scale="0" width="62">
           <vector name="origin" x="48" y="105"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1891,7 +1891,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO2/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="168" height="180">
+        <canvas format="2" height="180" name="effect" scale="0" width="168">
           <vector name="origin" x="84" y="101"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1901,7 +1901,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="62" height="128">
+        <canvas format="2" height="128" name="weapon" scale="0" width="62">
           <vector name="origin" x="53" y="99"/>
           <imgdir name="map">
             <vector name="hand" x="-20" y="0"/>
@@ -1909,7 +1909,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO2/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="219" height="218">
+        <canvas format="2" height="218" name="effect" scale="0" width="219">
           <vector name="origin" x="118" y="115"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1919,7 +1919,7 @@
         </canvas>
       </imgdir>
       <imgdir name="3">
-        <canvas name="weapon" width="62" height="128">
+        <canvas format="2" height="128" name="weapon" scale="0" width="62">
           <vector name="origin" x="46" y="97"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="1"/>
@@ -1927,7 +1927,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="b8efd9e2f903a6922fd58acab0ec65051477ae7d109ca3e5b5a3055895a9489f"/>
         </canvas>
-        <canvas name="effect" width="233" height="224">
+        <canvas format="2" height="224" name="effect" scale="0" width="233">
           <vector name="origin" x="121" y="119"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1937,7 +1937,7 @@
         </canvas>
       </imgdir>
       <imgdir name="4">
-        <canvas name="weapon" width="62" height="128">
+        <canvas format="2" height="128" name="weapon" scale="0" width="62">
           <vector name="origin" x="43" y="97"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -1945,7 +1945,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="61cd04b898b232e1f10847d8bb93f43d6b5b4ddb2157c2e49bbb355ccec1dd75"/>
         </canvas>
-        <canvas name="effect" width="244" height="194">
+        <canvas format="2" height="194" name="effect" scale="0" width="244">
           <vector name="origin" x="137" y="100"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2040,7 +2040,7 @@
   <imgdir name="48">
     <imgdir name="stand1">
       <imgdir name="0">
-        <canvas name="weapon" width="113" height="83">
+        <canvas format="2" height="83" name="weapon" scale="0" width="113">
           <vector name="origin" x="89" y="16"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2048,7 +2048,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/3/weapon"/>
         </canvas>
-        <canvas name="effect" width="164" height="110">
+        <canvas format="2" height="110" name="effect" scale="0" width="164">
           <vector name="origin" x="106" y="20"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2058,7 +2058,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="113" height="83">
+        <canvas format="2" height="83" name="weapon" scale="0" width="113">
           <vector name="origin" x="89" y="16"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2066,7 +2066,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/stand1/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="164" height="108">
+        <canvas format="2" height="108" name="effect" scale="0" width="164">
           <vector name="origin" x="107" y="21"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2076,7 +2076,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="113" height="83">
+        <canvas format="2" height="83" name="weapon" scale="0" width="113">
           <vector name="origin" x="89" y="16"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2084,7 +2084,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/stand1/2/weapon"/>
         </canvas>
-        <canvas name="effect" width="165" height="109">
+        <canvas format="2" height="109" name="effect" scale="0" width="165">
           <vector name="origin" x="109" y="22"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2096,7 +2096,7 @@
     </imgdir>
     <imgdir name="walk1">
       <imgdir name="0">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="103" y="33"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2104,7 +2104,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="152" height="101">
+        <canvas format="2" height="101" name="effect" scale="0" width="152">
           <vector name="origin" x="120" y="52"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2114,7 +2114,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="112" height="82">
+        <canvas format="2" height="82" name="weapon" scale="0" width="112">
           <vector name="origin" x="91" y="68"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2122,7 +2122,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="183" height="109">
+        <canvas format="2" height="109" name="effect" scale="0" width="183">
           <vector name="origin" x="111" y="89"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2132,7 +2132,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="104" y="33"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2140,7 +2140,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="197" height="107">
+        <canvas format="2" height="107" name="effect" scale="0" width="197">
           <vector name="origin" x="120" y="58"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2150,7 +2150,7 @@
         </canvas>
       </imgdir>
       <imgdir name="3">
-        <canvas name="weapon" width="113" height="83">
+        <canvas format="2" height="83" name="weapon" scale="0" width="113">
           <vector name="origin" x="92" y="17"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2158,7 +2158,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/3/weapon"/>
         </canvas>
-        <canvas name="effect" width="214" height="141">
+        <canvas format="2" height="141" name="effect" scale="0" width="214">
           <vector name="origin" x="111" y="59"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2170,7 +2170,7 @@
     </imgdir>
     <imgdir name="alert">
       <imgdir name="0">
-        <canvas name="weapon" width="112" height="82">
+        <canvas format="2" height="82" name="weapon" scale="0" width="112">
           <vector name="origin" x="92" y="68"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2178,7 +2178,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="169" height="104">
+        <canvas format="2" height="104" name="effect" scale="0" width="169">
           <vector name="origin" x="114" y="87"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2188,7 +2188,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="112" height="82">
+        <canvas format="2" height="82" name="weapon" scale="0" width="112">
           <vector name="origin" x="91" y="67"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2196,7 +2196,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="184" height="110">
+        <canvas format="2" height="110" name="effect" scale="0" width="184">
           <vector name="origin" x="128" y="94"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2206,7 +2206,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="136" height="180">
+        <canvas format="2" height="180" name="weapon" scale="0" width="136">
           <vector name="origin" x="92" y="66"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2214,7 +2214,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/alert/2/weapon"/>
         </canvas>
-        <canvas name="effect" width="184" height="110">
+        <canvas format="2" height="110" name="effect" scale="0" width="184">
           <vector name="origin" x="129" y="94"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2226,7 +2226,7 @@
     </imgdir>
     <imgdir name="swingO2">
       <imgdir name="0">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="19" y="77"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2234,7 +2234,7 @@
           <string name="z" value="weaponOverBody"/>
           <string name="_inlink" value="30/swingO2/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="66" height="97">
+        <canvas format="2" height="97" name="effect" scale="0" width="66">
           <vector name="origin" x="-22" y="94"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2244,7 +2244,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="62" height="128">
+        <canvas format="2" height="128" name="weapon" scale="0" width="62">
           <vector name="origin" x="30" y="113"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2252,7 +2252,7 @@
           <string name="z" value="weaponOverBody"/>
           <string name="_inlink" value="30/swingO2/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="79" height="217">
+        <canvas format="2" height="217" name="effect" scale="0" width="79">
           <vector name="origin" x="38" y="120"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2264,7 +2264,7 @@
     </imgdir>
     <imgdir name="swingOF">
       <imgdir name="0">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="21" y="20"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2272,7 +2272,7 @@
           <string name="z" value="weaponOverHand"/>
           <string name="_inlink" value="30/swingOF/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="81" height="84">
+        <canvas format="2" height="84" name="effect" scale="0" width="81">
           <vector name="origin" x="-11" y="-7"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2282,7 +2282,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="125" height="66">
+        <canvas format="2" height="66" name="weapon" scale="0" width="125">
           <vector name="origin" x="46" y="68"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2290,7 +2290,7 @@
           <string name="z" value="backWeaponOverGlove"/>
           <string name="_inlink" value="30/swingOF/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="71" height="101">
+        <canvas format="2" height="101" name="effect" scale="0" width="71">
           <vector name="origin" x="-16" y="62"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2300,7 +2300,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="1" y="90"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2308,7 +2308,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO2/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="122" height="163">
+        <canvas format="2" height="163" name="effect" scale="0" width="122">
           <vector name="origin" x="-4" y="104"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2318,7 +2318,7 @@
         </canvas>
       </imgdir>
       <imgdir name="3">
-        <canvas name="weapon" width="124" height="66">
+        <canvas format="2" height="66" name="weapon" scale="0" width="124">
           <vector name="origin" x="24" y="52"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2326,7 +2326,7 @@
           <string name="z" value="weaponBelowBody"/>
           <string name="_inlink" value="30/swingOF/3/weapon"/>
         </canvas>
-        <canvas name="effect" width="250" height="201">
+        <canvas format="2" height="201" name="effect" scale="0" width="250">
           <vector name="origin" x="150" y="97"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2338,7 +2338,7 @@
     </imgdir>
     <imgdir name="swingT1">
       <imgdir name="2">
-        <canvas name="weapon" width="163" height="96">
+        <canvas format="2" height="96" name="weapon" scale="0" width="163">
           <vector name="origin" x="91" y="29"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2346,7 +2346,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="40/swingT1/2/weapon"/>
         </canvas>
-        <canvas name="effect" width="249" height="226">
+        <canvas format="2" height="226" name="effect" scale="0" width="249">
           <vector name="origin" x="107" y="139"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2358,7 +2358,7 @@
     </imgdir>
     <imgdir name="swingT2">
       <imgdir name="0">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="24" y="80"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2366,7 +2366,7 @@
           <string name="z" value="weaponBelowBody"/>
           <string name="_inlink" value="30/swingO2/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="56" height="79">
+        <canvas format="2" height="79" name="effect" scale="0" width="56">
           <vector name="origin" x="-25" y="87"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2376,7 +2376,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="113" height="83">
+        <canvas format="2" height="83" name="weapon" scale="0" width="113">
           <vector name="origin" x="85" y="18"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2384,7 +2384,7 @@
           <string name="z" value="weaponOverBody"/>
           <string name="_inlink" value="40/swingT2/2/weapon"/>
         </canvas>
-        <canvas name="effect" width="246" height="225">
+        <canvas format="2" height="225" name="effect" scale="0" width="246">
           <vector name="origin" x="125" y="134"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2396,7 +2396,7 @@
     </imgdir>
     <imgdir name="swingTF">
       <imgdir name="1">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="84" y="79"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2404,7 +2404,7 @@
           <string name="z" value="weaponBelowBody"/>
           <string name="_inlink" value="30/swingO3/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="79" height="217">
+        <canvas format="2" height="217" name="effect" scale="0" width="79">
           <vector name="origin" x="96" y="90"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2416,7 +2416,7 @@
     </imgdir>
     <imgdir name="swingP2">
       <imgdir name="0">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="20" y="77"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2424,7 +2424,7 @@
           <string name="z" value="weaponBelowBody"/>
           <string name="_inlink" value="30/swingO2/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="65" height="56">
+        <canvas format="2" height="56" name="effect" scale="0" width="65">
           <vector name="origin" x="-19" y="76"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2434,7 +2434,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="65" height="124">
+        <canvas format="2" height="124" name="weapon" scale="0" width="65">
           <vector name="origin" x="13" y="101"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2442,7 +2442,7 @@
           <string name="z" value="weaponBelowBody"/>
           <string name="_inlink" value="43/swingP2/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="153" height="131">
+        <canvas format="2" height="131" name="effect" scale="0" width="153">
           <vector name="origin" x="18" y="112"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2454,7 +2454,7 @@
     </imgdir>
     <imgdir name="swingPF">
       <imgdir name="3">
-        <canvas name="weapon" width="113" height="83">
+        <canvas format="2" height="83" name="weapon" scale="0" width="113">
           <vector name="origin" x="81" y="14"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2462,7 +2462,7 @@
           <string name="z" value="weaponBelowBody"/>
           <string name="_inlink" value="33/swingPF/3/weapon"/>
         </canvas>
-        <canvas name="effect" width="208" height="211">
+        <canvas format="2" height="211" name="effect" scale="0" width="208">
           <vector name="origin" x="114" y="129"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2474,7 +2474,7 @@
     </imgdir>
     <imgdir name="stabO1">
       <imgdir name="0">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="103" y="32"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2482,7 +2482,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="208" height="92">
+        <canvas format="2" height="92" name="effect" scale="0" width="208">
           <vector name="origin" x="108" y="41"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2492,7 +2492,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="102" y="32"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2500,7 +2500,7 @@
           <string name="z" value="weaponBelowArm"/>
           <string name="_inlink" value="30/stabO1/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="250" height="152">
+        <canvas format="2" height="152" name="effect" scale="0" width="250">
           <vector name="origin" x="113" y="92"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2512,7 +2512,7 @@
     </imgdir>
     <imgdir name="stabO2">
       <imgdir name="0">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="102" y="30"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2520,7 +2520,7 @@
           <string name="z" value="weaponBelowArm"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="76" height="92">
+        <canvas format="2" height="92" name="effect" scale="0" width="76">
           <vector name="origin" x="108" y="37"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2530,7 +2530,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="104" y="31"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2538,7 +2538,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/stabO2/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="250" height="152">
+        <canvas format="2" height="152" name="effect" scale="0" width="250">
           <vector name="origin" x="117" y="89"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2550,7 +2550,7 @@
     </imgdir>
     <imgdir name="stabOF">
       <imgdir name="0">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="103" y="32"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2558,7 +2558,7 @@
           <string name="z" value="weaponBelowArm"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="67" height="51">
+        <canvas format="2" height="51" name="effect" scale="0" width="67">
           <vector name="origin" x="102" y="27"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2568,7 +2568,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="209" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="209">
           <vector name="origin" x="69" y="36"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2576,7 +2576,7 @@
           <string name="z" value="weaponBelowArm"/>
           <string name="_inlink" value="30/stabOF/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="83" height="167">
+        <canvas format="2" height="167" name="effect" scale="0" width="83">
           <vector name="origin" x="81" y="87"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2588,7 +2588,7 @@
     </imgdir>
     <imgdir name="stabT2">
       <imgdir name="0">
-        <canvas name="weapon" width="124" height="65">
+        <canvas format="2" height="65" name="weapon" scale="0" width="124">
           <vector name="origin" x="100" y="18"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2596,7 +2596,7 @@
           <string name="z" value="weaponBelowArm"/>
           <string name="_inlink" value="33/swingPF/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="74" height="48">
+        <canvas format="2" height="48" name="effect" scale="0" width="74">
           <vector name="origin" x="105" y="9"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2606,7 +2606,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="124" height="65">
+        <canvas format="2" height="65" name="weapon" scale="0" width="124">
           <vector name="origin" x="100" y="16"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2614,7 +2614,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="33/swingPF/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="148" height="148">
+        <canvas format="2" height="148" name="effect" scale="0" width="148">
           <vector name="origin" x="110" y="59"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2626,7 +2626,7 @@
     </imgdir>
     <imgdir name="stabTF">
       <imgdir name="2">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="72" y="2"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2634,7 +2634,7 @@
           <string name="z" value="weaponOverBody"/>
           <string name="_inlink" value="43/stabTF/2/weapon"/>
         </canvas>
-        <canvas name="effect" width="212" height="226">
+        <canvas format="2" height="226" name="effect" scale="0" width="212">
           <vector name="origin" x="118" y="63"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2646,7 +2646,7 @@
     </imgdir>
     <imgdir name="shoot2">
       <imgdir name="3">
-        <canvas name="weapon" width="62" height="128">
+        <canvas format="2" height="128" name="weapon" scale="0" width="62">
           <vector name="origin" x="46" y="97"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2654,7 +2654,7 @@
           <string name="z" value="weaponOverArm"/>
           <string name="_inlink" value="43/shoot2/3/weapon"/>
         </canvas>
-        <canvas name="effect" width="233" height="224">
+        <canvas format="2" height="224" name="effect" scale="0" width="233">
           <vector name="origin" x="121" y="119"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2666,7 +2666,7 @@
     </imgdir>
     <imgdir name="proneStab">
       <imgdir name="0">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="101" y="31"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2676,7 +2676,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="100" y="32"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2693,7 +2693,7 @@
     </imgdir>
     <imgdir name="jump">
       <imgdir name="0">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="19" y="79"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2701,7 +2701,7 @@
           <string name="z" value="weaponOverArm"/>
           <string name="_inlink" value="30/swingO2/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="233" height="249">
+        <canvas format="2" height="249" name="effect" scale="0" width="233">
           <vector name="origin" x="119" y="124"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2713,7 +2713,7 @@
     </imgdir>
     <imgdir name="fly">
       <imgdir name="0">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="22" y="76"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2721,7 +2721,7 @@
           <string name="z" value="weaponOverArm"/>
           <string name="_inlink" value="30/swingO2/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="90" height="98">
+        <canvas format="2" height="98" name="effect" scale="0" width="90">
           <vector name="origin" x="-4" y="97"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2731,7 +2731,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="21" y="77"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2739,7 +2739,7 @@
           <string name="z" value="weaponOverArm"/>
           <string name="_inlink" value="30/swingO2/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="95" height="124">
+        <canvas format="2" height="124" name="effect" scale="0" width="95">
           <vector name="origin" x="-1" y="102"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2751,7 +2751,7 @@
     </imgdir>
     <imgdir name="straight">
       <imgdir name="0">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="88" y="28"/>
           <imgdir name="map">
             <vector name="navel" x="0" y="0"/>
@@ -2759,7 +2759,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="47" height="45">
+        <canvas format="2" height="45" name="effect" scale="0" width="47">
           <vector name="origin" x="84" y="23"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2769,7 +2769,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="131" y="39"/>
           <imgdir name="map">
             <vector name="navel" x="0" y="0"/>
@@ -2777,7 +2777,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="89" height="59">
+        <canvas format="2" height="59" name="effect" scale="0" width="89">
           <vector name="origin" x="128" y="38"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2789,7 +2789,7 @@
     </imgdir>
     <imgdir name="doublefire">
       <imgdir name="0">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="114" y="37"/>
           <imgdir name="map">
             <vector name="navel" x="0" y="0"/>
@@ -2797,7 +2797,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="47" height="45">
+        <canvas format="2" height="45" name="effect" scale="0" width="47">
           <vector name="origin" x="110" y="32"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2807,7 +2807,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="123" y="36"/>
           <imgdir name="map">
             <vector name="navel" x="0" y="0"/>
@@ -2815,7 +2815,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="89" height="59">
+        <canvas format="2" height="59" name="effect" scale="0" width="89">
           <vector name="origin" x="121" y="35"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2825,7 +2825,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="115" y="37"/>
           <imgdir name="map">
             <vector name="navel" x="0" y="0"/>
@@ -2833,7 +2833,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="41b7151843e764e42d22c705aed4d1838c8f309d2683f5dc510709adf6068cb5"/>
         </canvas>
-        <canvas name="effect" width="79" height="111">
+        <canvas format="2" height="111" name="effect" scale="0" width="79">
           <vector name="origin" x="125" y="43"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2845,7 +2845,7 @@
     </imgdir>
     <imgdir name="somersault">
       <imgdir name="0">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="71" y="73"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2853,7 +2853,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO3/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="53" height="55">
+        <canvas format="2" height="55" name="effect" scale="0" width="53">
           <vector name="origin" x="70" y="75"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2863,7 +2863,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="113" height="83">
+        <canvas format="2" height="83" name="weapon" scale="0" width="113">
           <vector name="origin" x="99" y="12"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2871,7 +2871,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/3/weapon"/>
         </canvas>
-        <canvas name="effect" width="79" height="105">
+        <canvas format="2" height="105" name="effect" scale="0" width="79">
           <vector name="origin" x="111" y="-3"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2881,7 +2881,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="20" y="94"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2889,7 +2889,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO2/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="155" height="135">
+        <canvas format="2" height="135" name="effect" scale="0" width="155">
           <vector name="origin" x="60" y="117"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2899,7 +2899,7 @@
         </canvas>
       </imgdir>
       <imgdir name="3">
-        <canvas name="weapon" width="62" height="128">
+        <canvas format="2" height="128" name="weapon" scale="0" width="62">
           <vector name="origin" x="49" y="103"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2907,7 +2907,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="9e3687ef9033aa2fece1f704275dfe7ceba7664e4a448d7ad87073d9c8eed8aa"/>
         </canvas>
-        <canvas name="effect" width="206" height="220">
+        <canvas format="2" height="220" name="effect" scale="0" width="206">
           <vector name="origin" x="103" y="111"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2917,7 +2917,7 @@
         </canvas>
       </imgdir>
       <imgdir name="4">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="36" y="90"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2925,7 +2925,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="176c0b68de29cc84603ba25144ad61c50c708c127e03ebb059c6f536d00de687"/>
         </canvas>
-        <canvas name="effect" width="200" height="204">
+        <canvas format="2" height="204" name="effect" scale="0" width="200">
           <vector name="origin" x="134" y="120"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2935,7 +2935,7 @@
         </canvas>
       </imgdir>
       <imgdir name="5">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="50" y="49"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2943,7 +2943,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO2/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="155" height="135">
+        <canvas format="2" height="135" name="effect" scale="0" width="155">
           <vector name="origin" x="77" y="67"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2953,7 +2953,7 @@
         </canvas>
       </imgdir>
       <imgdir name="6">
-        <canvas name="weapon" width="113" height="83">
+        <canvas format="2" height="83" name="weapon" scale="0" width="113">
           <vector name="origin" x="56" y="41"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2961,7 +2961,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/3/weapon"/>
         </canvas>
-        <canvas name="effect" width="79" height="105">
+        <canvas format="2" height="105" name="effect" scale="0" width="79">
           <vector name="origin" x="39" y="52"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2971,7 +2971,7 @@
         </canvas>
       </imgdir>
       <imgdir name="7">
-        <canvas name="weapon" width="124" height="65">
+        <canvas format="2" height="65" name="weapon" scale="0" width="124">
           <vector name="origin" x="62" y="32"/>
           <imgdir name="map">
             <vector name="hand" x="-1" y="-3"/>
@@ -2979,7 +2979,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="33/swingPF/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="66" height="97">
+        <canvas format="2" height="97" name="effect" scale="0" width="66">
           <vector name="origin" x="33" y="48"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2989,7 +2989,7 @@
         </canvas>
       </imgdir>
       <imgdir name="8">
-        <canvas name="weapon" width="124" height="64">
+        <canvas format="2" height="64" name="weapon" scale="0" width="124">
           <vector name="origin" x="62" y="32"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -2997,7 +2997,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="d7c3f65ba286733a7b734366f2c4adaed5c00d5edce722a31cdfa1823ee3a206"/>
         </canvas>
-        <canvas name="effect" width="56" height="68">
+        <canvas format="2" height="68" name="effect" scale="0" width="56">
           <vector name="origin" x="28" y="34"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3009,7 +3009,7 @@
     </imgdir>
     <imgdir name="backspin">
       <imgdir name="0">
-        <canvas name="weapon" width="62" height="128">
+        <canvas format="2" height="128" name="weapon" scale="0" width="62">
           <vector name="origin" x="27" y="103"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3019,7 +3019,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="62" height="128">
+        <canvas format="2" height="128" name="weapon" scale="0" width="62">
           <vector name="origin" x="29" y="111"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3027,7 +3027,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO2/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="56" height="76">
+        <canvas format="2" height="76" name="effect" scale="0" width="56">
           <vector name="origin" x="25" y="109"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3037,7 +3037,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="65" height="124">
+        <canvas format="2" height="124" name="weapon" scale="0" width="65">
           <vector name="origin" x="14" y="98"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3045,7 +3045,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="43/swingP2/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="77" height="92">
+        <canvas format="2" height="92" name="effect" scale="0" width="77">
           <vector name="origin" x="18" y="109"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3055,7 +3055,7 @@
         </canvas>
       </imgdir>
       <imgdir name="3">
-        <canvas name="weapon" width="62" height="128">
+        <canvas format="2" height="128" name="weapon" scale="0" width="62">
           <vector name="origin" x="28" y="111"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3063,7 +3063,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO2/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="77" height="71">
+        <canvas format="2" height="71" name="effect" scale="0" width="77">
           <vector name="origin" x="49" y="114"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3073,7 +3073,7 @@
         </canvas>
       </imgdir>
       <imgdir name="4">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="97" y="36"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="-8"/>
@@ -3081,7 +3081,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="103" height="133">
+        <canvas format="2" height="133" name="effect" scale="0" width="103">
           <vector name="origin" x="5" y="65"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3093,7 +3093,7 @@
     </imgdir>
     <imgdir name="doubleupper">
       <imgdir name="0">
-        <canvas name="weapon" width="124" height="66">
+        <canvas format="2" height="66" name="weapon" scale="0" width="124">
           <vector name="origin" x="94" y="47"/>
           <imgdir name="map">
             <vector name="navel" x="0" y="0"/>
@@ -3101,7 +3101,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="505d807dacaedb9638abd5ca22cf7922833add4397f91038ecdf631c4ff01bcd"/>
         </canvas>
-        <canvas name="effect" width="62" height="59">
+        <canvas format="2" height="59" name="effect" scale="0" width="62">
           <vector name="origin" x="95" y="46"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3111,7 +3111,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="1" y="27"/>
           <imgdir name="map">
             <vector name="navel" x="0" y="0"/>
@@ -3119,7 +3119,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingOF/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="67" height="101">
+        <canvas format="2" height="101" name="effect" scale="0" width="67">
           <vector name="origin" x="-36" y="40"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3129,7 +3129,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="40" y="77"/>
           <imgdir name="map">
             <vector name="navel" x="0" y="0"/>
@@ -3137,7 +3137,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO2/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="221" height="133">
+        <canvas format="2" height="133" name="effect" scale="0" width="221">
           <vector name="origin" x="106" y="57"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3147,7 +3147,7 @@
         </canvas>
       </imgdir>
       <imgdir name="3">
-        <canvas name="weapon" width="81" height="111">
+        <canvas format="2" height="111" name="weapon" scale="0" width="81">
           <vector name="origin" x="36" y="98"/>
           <imgdir name="map">
             <vector name="navel" x="0" y="0"/>
@@ -3155,7 +3155,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="1f676c185b5973b948feb39a369fea59d268c4d9eeb69931fb60ecdd2bd909fb"/>
         </canvas>
-        <canvas name="effect" width="210" height="218">
+        <canvas format="2" height="218" name="effect" scale="0" width="210">
           <vector name="origin" x="137" y="127"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3165,7 +3165,7 @@
         </canvas>
       </imgdir>
       <imgdir name="4">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="25" y="35"/>
           <imgdir name="map">
             <vector name="navel" x="0" y="0"/>
@@ -3173,7 +3173,7 @@
           <string name="z" value="weaponBelowBody"/>
           <string name="_inlink" value="40/swingT3/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="237" height="211">
+        <canvas format="2" height="211" name="effect" scale="0" width="237">
           <vector name="origin" x="127" y="96"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3183,7 +3183,7 @@
         </canvas>
       </imgdir>
       <imgdir name="5">
-        <canvas name="weapon" width="127" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="127">
           <vector name="origin" x="86" y="42"/>
           <imgdir name="map">
             <vector name="navel" x="0" y="0"/>
@@ -3191,7 +3191,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="0f44db3ebe97cb45ef526d8c68cc883a3effb55ab0628094753d6f35935fc1ef"/>
         </canvas>
-        <canvas name="effect" width="112" height="67">
+        <canvas format="2" height="67" name="effect" scale="0" width="112">
           <vector name="origin" x="81" y="38"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3201,7 +3201,7 @@
         </canvas>
       </imgdir>
       <imgdir name="6">
-        <canvas name="weapon" width="127" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="127">
           <vector name="origin" x="96" y="36"/>
           <imgdir name="map">
             <vector name="navel" x="0" y="0"/>
@@ -3209,7 +3209,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="48/doubleupper/5/weapon"/>
         </canvas>
-        <canvas name="effect" width="79" height="98">
+        <canvas format="2" height="98" name="effect" scale="0" width="79">
           <vector name="origin" x="106" y="43"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3219,7 +3219,7 @@
         </canvas>
       </imgdir>
       <imgdir name="7">
-        <canvas name="weapon" width="124" height="66">
+        <canvas format="2" height="66" name="weapon" scale="0" width="124">
           <vector name="origin" x="94" y="47"/>
           <imgdir name="map">
             <vector name="navel" x="0" y="0"/>
@@ -3227,7 +3227,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="48/doubleupper/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="70" height="62">
+        <canvas format="2" height="62" name="effect" scale="0" width="70">
           <vector name="origin" x="98" y="49"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3239,7 +3239,7 @@
     </imgdir>
     <imgdir name="screw">
       <imgdir name="0">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="123" y="37"/>
           <imgdir name="map">
             <vector name="navel" x="0" y="0"/>
@@ -3247,7 +3247,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="244" height="102">
+        <canvas format="2" height="102" name="effect" scale="0" width="244">
           <vector name="origin" x="135" y="51"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3257,7 +3257,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="81" height="111">
+        <canvas format="2" height="111" name="weapon" scale="0" width="81">
           <vector name="origin" x="33" y="92"/>
           <imgdir name="map">
             <vector name="navel" x="0" y="0"/>
@@ -3265,7 +3265,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="f8853ae07f46fb1b0e1e4eb74f383d87ce045fd386be27281503b8ceafdf6dd4"/>
         </canvas>
-        <canvas name="effect" width="196" height="132">
+        <canvas format="2" height="132" name="effect" scale="0" width="196">
           <vector name="origin" x="135" y="105"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3277,7 +3277,7 @@
     </imgdir>
     <imgdir name="dragonstrike">
       <imgdir name="0">
-        <canvas name="weapon" width="65" height="124">
+        <canvas format="2" height="124" name="weapon" scale="0" width="65">
           <vector name="origin" x="32" y="103"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3285,7 +3285,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="43/swingP2/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="60" height="62">
+        <canvas format="2" height="62" name="effect" scale="0" width="60">
           <vector name="origin" x="26" y="102"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3295,7 +3295,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="82" height="111">
+        <canvas format="2" height="111" name="weapon" scale="0" width="82">
           <vector name="origin" x="33" y="101"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3303,7 +3303,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="a4448b58eee7f95b81c11d87c465d0db7c8b96cfeddd26201d670298c8cffdd1"/>
         </canvas>
-        <canvas name="effect" width="79" height="56">
+        <canvas format="2" height="56" name="effect" scale="0" width="79">
           <vector name="origin" x="25" y="107"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3313,7 +3313,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="125" height="66">
+        <canvas format="2" height="66" name="weapon" scale="0" width="125">
           <vector name="origin" x="31" y="67"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3321,7 +3321,7 @@
           <string name="z" value="Wp"/>
           <string name="_inlink" value="30/swingOF/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="83" height="85">
+        <canvas format="2" height="85" name="effect" scale="0" width="83">
           <vector name="origin" x="-24" y="78"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3331,7 +3331,7 @@
         </canvas>
       </imgdir>
       <imgdir name="3">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="18" y="90"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3339,7 +3339,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO2/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="155" height="135">
+        <canvas format="2" height="135" name="effect" scale="0" width="155">
           <vector name="origin" x="59" y="117"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3349,7 +3349,7 @@
         </canvas>
       </imgdir>
       <imgdir name="4">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="70" y="93"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3357,7 +3357,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO3/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="53" height="54">
+        <canvas format="2" height="54" name="effect" scale="0" width="53">
           <vector name="origin" x="68" y="95"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3367,7 +3367,7 @@
         </canvas>
       </imgdir>
       <imgdir name="5">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="70" y="93"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3375,7 +3375,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO3/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="70" height="70">
+        <canvas format="2" height="70" name="effect" scale="0" width="70">
           <vector name="origin" x="77" y="102"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3385,7 +3385,7 @@
         </canvas>
       </imgdir>
       <imgdir name="6">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="70" y="94"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3393,7 +3393,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO3/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="70" height="70">
+        <canvas format="2" height="70" name="effect" scale="0" width="70">
           <vector name="origin" x="75" y="103"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3403,7 +3403,7 @@
         </canvas>
       </imgdir>
       <imgdir name="7">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="70" y="93"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3411,7 +3411,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="08de16ff52799de4e738407be3591f87874d77d9fe155d6e9e557da1dc8ae750"/>
         </canvas>
-        <canvas name="effect" width="216" height="194">
+        <canvas format="2" height="194" name="effect" scale="0" width="216">
           <vector name="origin" x="110" y="109"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3421,7 +3421,7 @@
         </canvas>
       </imgdir>
       <imgdir name="8">
-        <canvas name="weapon" width="125" height="66">
+        <canvas format="2" height="66" name="weapon" scale="0" width="125">
           <vector name="origin" x="11" y="65"/>
           <imgdir name="map">
             <vector name="hand" x="22" y="-16"/>
@@ -3429,7 +3429,7 @@
           <string name="z" value="weaponBelowBody"/>
           <string name="_hash" value="b478b0eb16b2b3ffb81c286f9be207c065475b3f3ccb6ffcc071943e717fd07a"/>
         </canvas>
-        <canvas name="effect" width="232" height="225">
+        <canvas format="2" height="225" name="effect" scale="0" width="232">
           <vector name="origin" x="113" y="139"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3439,7 +3439,7 @@
         </canvas>
       </imgdir>
       <imgdir name="9">
-        <canvas name="weapon" width="125" height="66">
+        <canvas format="2" height="66" name="weapon" scale="0" width="125">
           <vector name="origin" x="11" y="65"/>
           <imgdir name="map">
             <vector name="hand" x="22" y="-16"/>
@@ -3447,7 +3447,7 @@
           <string name="z" value="weaponBelowBody"/>
           <string name="_inlink" value="30/swingOF/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="247" height="218">
+        <canvas format="2" height="218" name="effect" scale="0" width="247">
           <vector name="origin" x="131" y="132"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3457,7 +3457,7 @@
         </canvas>
       </imgdir>
       <imgdir name="10">
-        <canvas name="weapon" width="125" height="66">
+        <canvas format="2" height="66" name="weapon" scale="0" width="125">
           <vector name="origin" x="11" y="65"/>
           <imgdir name="map">
             <vector name="hand" x="22" y="-16"/>
@@ -3465,7 +3465,7 @@
           <string name="z" value="weaponBelowBody"/>
           <string name="_inlink" value="30/swingOF/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="168" height="180">
+        <canvas format="2" height="180" name="effect" scale="0" width="168">
           <vector name="origin" x="74" y="112"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3475,7 +3475,7 @@
         </canvas>
       </imgdir>
       <imgdir name="11">
-        <canvas name="weapon" width="125" height="66">
+        <canvas format="2" height="66" name="weapon" scale="0" width="125">
           <vector name="origin" x="11" y="65"/>
           <imgdir name="map">
             <vector name="hand" x="22" y="-16"/>
@@ -3483,7 +3483,7 @@
           <string name="z" value="weaponBelowBody"/>
           <string name="_inlink" value="30/swingOF/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="144" height="123">
+        <canvas format="2" height="123" name="effect" scale="0" width="144">
           <vector name="origin" x="66" y="77"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3495,7 +3495,7 @@
     </imgdir>
     <imgdir name="eorb">
       <imgdir name="0">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="5" y="31"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3503,7 +3503,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingOF/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="101" height="67">
+        <canvas format="2" height="67" name="effect" scale="0" width="101">
           <vector name="origin" x="17" y="-8"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3513,7 +3513,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="125" height="66">
+        <canvas format="2" height="66" name="weapon" scale="0" width="125">
           <vector name="origin" x="27" y="72"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3521,7 +3521,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingOF/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="88" height="133">
+        <canvas format="2" height="133" name="effect" scale="0" width="88">
           <vector name="origin" x="-22" y="82"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3531,7 +3531,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="125" height="66">
+        <canvas format="2" height="66" name="weapon" scale="0" width="125">
           <vector name="origin" x="27" y="72"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3539,7 +3539,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingOF/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="61" height="84">
+        <canvas format="2" height="84" name="effect" scale="0" width="61">
           <vector name="origin" x="-43" y="79"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3549,7 +3549,7 @@
         </canvas>
       </imgdir>
       <imgdir name="3">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="28" y="102"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3557,7 +3557,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO2/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="106" height="125">
+        <canvas format="2" height="125" name="effect" scale="0" width="106">
           <vector name="origin" x="-5" y="114"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3567,7 +3567,7 @@
         </canvas>
       </imgdir>
       <imgdir name="4">
-        <canvas name="weapon" width="125" height="66">
+        <canvas format="2" height="66" name="weapon" scale="0" width="125">
           <vector name="origin" x="12" y="65"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3575,7 +3575,7 @@
           <string name="z" value="weapon"/>
           <string name="_hash" value="53e29e2a10432629eb0f6ed7f758a5f7db48cac96027603ee2b2080c7e4c024b"/>
         </canvas>
-        <canvas name="effect" width="250" height="201">
+        <canvas format="2" height="201" name="effect" scale="0" width="250">
           <vector name="origin" x="131" y="115"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3585,7 +3585,7 @@
         </canvas>
       </imgdir>
       <imgdir name="5">
-        <canvas name="weapon" width="124" height="65">
+        <canvas format="2" height="65" name="weapon" scale="0" width="124">
           <vector name="origin" x="82" y="18"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3593,7 +3593,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="33/swingPF/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="229" height="133">
+        <canvas format="2" height="133" name="effect" scale="0" width="229">
           <vector name="origin" x="138" y="80"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3603,7 +3603,7 @@
         </canvas>
       </imgdir>
       <imgdir name="6">
-        <canvas name="weapon" width="124" height="64">
+        <canvas format="2" height="64" name="weapon" scale="0" width="124">
           <vector name="origin" x="92" y="45"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3611,7 +3611,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="48/somersault/8/weapon"/>
         </canvas>
-        <canvas name="effect" width="79" height="98">
+        <canvas format="2" height="98" name="effect" scale="0" width="79">
           <vector name="origin" x="102" y="54"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3623,7 +3623,7 @@
     </imgdir>
     <imgdir name="fist">
       <imgdir name="0">
-        <canvas name="weapon" width="111" height="82">
+        <canvas format="2" height="82" name="weapon" scale="0" width="111">
           <vector name="origin" x="86" y="59"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3631,7 +3631,7 @@
           <string name="z" value="weaponOverArm"/>
           <string name="_hash" value="0f36186004df38a12be8468352bcfe7bd5f942ee82b1c75985684b72aefeaad0"/>
         </canvas>
-        <canvas name="effect" width="53" height="54">
+        <canvas format="2" height="54" name="effect" scale="0" width="53">
           <vector name="origin" x="87" y="57"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3641,7 +3641,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="111" height="82">
+        <canvas format="2" height="82" name="weapon" scale="0" width="111">
           <vector name="origin" x="86" y="61"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3649,7 +3649,7 @@
           <string name="z" value="weaponOverArm"/>
           <string name="_inlink" value="48/fist/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="70" height="70">
+        <canvas format="2" height="70" name="effect" scale="0" width="70">
           <vector name="origin" x="96" y="66"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3659,7 +3659,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="111" height="82">
+        <canvas format="2" height="82" name="weapon" scale="0" width="111">
           <vector name="origin" x="86" y="63"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3667,7 +3667,7 @@
           <string name="z" value="weaponOverArm"/>
           <string name="_inlink" value="48/fist/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="70" height="70">
+        <canvas format="2" height="70" name="effect" scale="0" width="70">
           <vector name="origin" x="94" y="68"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3677,7 +3677,7 @@
         </canvas>
       </imgdir>
       <imgdir name="3">
-        <canvas name="effect" width="101" height="71">
+        <canvas format="2" height="71" name="effect" scale="0" width="101">
           <vector name="origin" x="74" y="25"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3685,7 +3685,7 @@
           <string name="z" value="characterEnd"/>
           <string name="_hash" value="a4db83755209207b7ae0d434591ba5b33024fc20d8049ad7aca2af0733e6cf08"/>
         </canvas>
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="86" y="30"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3695,7 +3695,7 @@
         </canvas>
       </imgdir>
       <imgdir name="4">
-        <canvas name="effect" width="97" height="66">
+        <canvas format="2" height="66" name="effect" scale="0" width="97">
           <vector name="origin" x="98" y="32"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3703,7 +3703,7 @@
           <string name="z" value="characterEnd"/>
           <string name="_hash" value="877204d3638d1056c0e25ddb159b9abf5dc2fe15a6ae019b5d855cd62165daeb"/>
         </canvas>
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="86" y="30"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3713,7 +3713,7 @@
         </canvas>
       </imgdir>
       <imgdir name="5">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="84" y="42"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3721,7 +3721,7 @@
           <string name="z" value="weaponOverArm"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="47" height="45">
+        <canvas format="2" height="45" name="effect" scale="0" width="47">
           <vector name="origin" x="77" y="37"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3731,7 +3731,7 @@
         </canvas>
       </imgdir>
       <imgdir name="6">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="121" y="39"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3739,7 +3739,7 @@
           <string name="z" value="weaponOverArm"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="226" height="151">
+        <canvas format="2" height="151" name="effect" scale="0" width="226">
           <vector name="origin" x="131" y="101"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3749,7 +3749,7 @@
         </canvas>
       </imgdir>
       <imgdir name="7">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="121" y="39"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3757,7 +3757,7 @@
           <string name="z" value="weaponOverArm"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="101" height="71">
+        <canvas format="2" height="71" name="effect" scale="0" width="101">
           <vector name="origin" x="108" y="35"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3767,7 +3767,7 @@
         </canvas>
       </imgdir>
       <imgdir name="8">
-        <canvas name="weapon" width="99" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="99">
           <vector name="origin" x="70" y="90"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3775,7 +3775,7 @@
           <string name="z" value="weaponOverArm"/>
           <string name="_hash" value="14bdd54bb42f0ab3beae78415a07f1ba8270ca3691a344c569fa4e9d79be4c74"/>
         </canvas>
-        <canvas name="effect" width="60" height="81">
+        <canvas format="2" height="81" name="effect" scale="0" width="60">
           <vector name="origin" x="69" y="91"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3785,7 +3785,7 @@
         </canvas>
       </imgdir>
       <imgdir name="9">
-        <canvas name="effect" width="197" height="99">
+        <canvas format="2" height="99" name="effect" scale="0" width="197">
           <vector name="origin" x="104" y="46"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3793,7 +3793,7 @@
           <string name="z" value="characterEnd"/>
           <string name="_hash" value="1d0d2497094883521fa39dc26831f4b9bd0cd5fb0f24856a31cc986daad3d500"/>
         </canvas>
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="83" y="29"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3803,7 +3803,7 @@
         </canvas>
       </imgdir>
       <imgdir name="10">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="83" y="29"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3811,7 +3811,7 @@
           <string name="z" value="weaponOverArm"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="101" height="71">
+        <canvas format="2" height="71" name="effect" scale="0" width="101">
           <vector name="origin" x="71" y="26"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3821,7 +3821,7 @@
         </canvas>
       </imgdir>
       <imgdir name="11">
-        <canvas name="weapon" width="98" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="98">
           <vector name="origin" x="28" y="86"/>
           <imgdir name="map">
             <vector name="navel" x="0" y="0"/>
@@ -3829,7 +3829,7 @@
           <string name="z" value="weaponBelowBody"/>
           <string name="_hash" value="84433b4015427f2e6351c6ba4d4cd2e5de337149823f42abbbdc2bb79a4a5b5e"/>
         </canvas>
-        <canvas name="effect" width="155" height="135">
+        <canvas format="2" height="135" name="effect" scale="0" width="155">
           <vector name="origin" x="72" y="110"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3839,7 +3839,7 @@
         </canvas>
       </imgdir>
       <imgdir name="12">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="121" y="39"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3847,7 +3847,7 @@
           <string name="z" value="weaponOverArm"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="97" height="66">
+        <canvas format="2" height="66" name="effect" scale="0" width="97">
           <vector name="origin" x="132" y="37"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3857,7 +3857,7 @@
         </canvas>
       </imgdir>
       <imgdir name="13">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="121" y="39"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3865,7 +3865,7 @@
           <string name="z" value="weaponOverArm"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="53" height="54">
+        <canvas format="2" height="54" name="effect" scale="0" width="53">
           <vector name="origin" x="123" y="37"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3875,7 +3875,7 @@
         </canvas>
       </imgdir>
       <imgdir name="14">
-        <canvas name="weapon" width="111" height="81">
+        <canvas format="2" height="81" name="weapon" scale="0" width="111">
           <vector name="origin" x="67" y="26"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3883,7 +3883,7 @@
           <string name="z" value="weaponOverArm"/>
           <string name="_hash" value="2236aa2709819bb00c7c84256248b8ed512b4070a5c039eb45f1e958f28b89d4"/>
         </canvas>
-        <canvas name="effect" width="61" height="84">
+        <canvas format="2" height="84" name="effect" scale="0" width="61">
           <vector name="origin" x="68" y="9"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3893,7 +3893,7 @@
         </canvas>
       </imgdir>
       <imgdir name="15">
-        <canvas name="weapon" width="125" height="66">
+        <canvas format="2" height="66" name="weapon" scale="0" width="125">
           <vector name="origin" x="31" y="74"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3901,7 +3901,7 @@
           <string name="z" value="weaponOverArm"/>
           <string name="_inlink" value="30/swingOF/1/weapon"/>
         </canvas>
-        <canvas name="effect" width="88" height="147">
+        <canvas format="2" height="147" name="effect" scale="0" width="88">
           <vector name="origin" x="-20" y="89"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3911,7 +3911,7 @@
         </canvas>
       </imgdir>
       <imgdir name="16">
-        <canvas name="weapon" width="98" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="98">
           <vector name="origin" x="31" y="95"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3919,7 +3919,7 @@
           <string name="z" value="weaponOverArm"/>
           <string name="_inlink" value="48/fist/11/weapon"/>
         </canvas>
-        <canvas name="effect" width="79" height="98">
+        <canvas format="2" height="98" name="effect" scale="0" width="79">
           <vector name="origin" x="1" y="107"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3929,7 +3929,7 @@
         </canvas>
       </imgdir>
       <imgdir name="17">
-        <canvas name="weapon" width="111" height="81">
+        <canvas format="2" height="81" name="weapon" scale="0" width="111">
           <vector name="origin" x="103" y="6"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3937,7 +3937,7 @@
           <string name="z" value="weaponOverArm"/>
           <string name="_hash" value="e12347dff8dd5c4fa97e4a909ae53a18e7d2df6b736e3a265ec3ade9bc44fd6f"/>
         </canvas>
-        <canvas name="effect" width="241" height="226">
+        <canvas format="2" height="226" name="effect" scale="0" width="241">
           <vector name="origin" x="115" y="126"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3947,7 +3947,7 @@
         </canvas>
       </imgdir>
       <imgdir name="18">
-        <canvas name="weapon" width="111" height="81">
+        <canvas format="2" height="81" name="weapon" scale="0" width="111">
           <vector name="origin" x="103" y="6"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3955,7 +3955,7 @@
           <string name="z" value="weaponOverArm"/>
           <string name="_inlink" value="48/fist/14/weapon"/>
         </canvas>
-        <canvas name="effect" width="159" height="197">
+        <canvas format="2" height="197" name="effect" scale="0" width="159">
           <vector name="origin" x="124" y="100"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3965,7 +3965,7 @@
         </canvas>
       </imgdir>
       <imgdir name="19">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="96" y="40"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3973,7 +3973,7 @@
           <string name="z" value="weaponOverArm"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="79" height="98">
+        <canvas format="2" height="98" name="effect" scale="0" width="79">
           <vector name="origin" x="106" y="46"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3983,7 +3983,7 @@
         </canvas>
       </imgdir>
       <imgdir name="20">
-        <canvas name="weapon" width="98" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="98">
           <vector name="origin" x="46" y="82"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -3991,7 +3991,7 @@
           <string name="z" value="weaponOverArm"/>
           <string name="_inlink" value="48/fist/11/weapon"/>
         </canvas>
-        <canvas name="effect" width="66" height="97">
+        <canvas format="2" height="97" name="effect" scale="0" width="66">
           <vector name="origin" x="4" y="95"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -4001,7 +4001,7 @@
         </canvas>
       </imgdir>
       <imgdir name="21">
-        <canvas name="weapon" width="110" height="80">
+        <canvas format="2" height="80" name="weapon" scale="0" width="110">
           <vector name="origin" x="29" y="82"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -4009,7 +4009,7 @@
           <string name="z" value="weaponOverArm"/>
           <string name="_hash" value="79b655e527f9609b2e19374fe38560525e58e32e06152cc5b7a42eb1ac7b1b2d"/>
         </canvas>
-        <canvas name="effect" width="88" height="133">
+        <canvas format="2" height="133" name="effect" scale="0" width="88">
           <vector name="origin" x="-6" y="99"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -4019,7 +4019,7 @@
         </canvas>
       </imgdir>
       <imgdir name="22">
-        <canvas name="weapon" width="110" height="80">
+        <canvas format="2" height="80" name="weapon" scale="0" width="110">
           <vector name="origin" x="29" y="82"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -4027,7 +4027,7 @@
           <string name="z" value="weaponOverArm"/>
           <string name="_inlink" value="48/fist/21/weapon"/>
         </canvas>
-        <canvas name="effect" width="79" height="105">
+        <canvas format="2" height="105" name="effect" scale="0" width="79">
           <vector name="origin" x="-15" y="93"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -4037,7 +4037,7 @@
         </canvas>
       </imgdir>
       <imgdir name="23">
-        <canvas name="weapon" width="98" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="98">
           <vector name="origin" x="37" y="87"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -4045,7 +4045,7 @@
           <string name="z" value="weaponOverArm"/>
           <string name="_inlink" value="48/fist/11/weapon"/>
         </canvas>
-        <canvas name="effect" width="66" height="97">
+        <canvas format="2" height="97" name="effect" scale="0" width="66">
           <vector name="origin" x="-7" y="102"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -4055,7 +4055,7 @@
         </canvas>
       </imgdir>
       <imgdir name="24">
-        <canvas name="weapon" width="111" height="81">
+        <canvas format="2" height="81" name="weapon" scale="0" width="111">
           <vector name="origin" x="103" y="9"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -4063,7 +4063,7 @@
           <string name="z" value="weaponOverArm"/>
           <string name="_hash" value="cdbf04062c80aeedcb9df723a843a9ff073783d4269bcb8e649644d91304affb"/>
         </canvas>
-        <canvas name="effect" width="208" height="218">
+        <canvas format="2" height="218" name="effect" scale="0" width="208">
           <vector name="origin" x="137" y="130"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -4075,7 +4075,7 @@
     </imgdir>
     <imgdir name="eburster">
       <imgdir name="0">
-        <canvas name="weapon" width="111" height="82">
+        <canvas format="2" height="82" name="weapon" scale="0" width="111">
           <vector name="origin" x="84" y="62"/>
           <imgdir name="map">
             <vector name="navel" x="0" y="0"/>
@@ -4083,7 +4083,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="48/fist/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="201" height="99">
+        <canvas format="2" height="99" name="effect" scale="0" width="201">
           <vector name="origin" x="91" y="70"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -4093,7 +4093,7 @@
         </canvas>
       </imgdir>
       <imgdir name="1">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="126" y="38"/>
           <imgdir name="map">
             <vector name="navel" x="0" y="0"/>
@@ -4101,7 +4101,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="247" height="161">
+        <canvas format="2" height="161" name="effect" scale="0" width="247">
           <vector name="origin" x="140" y="116"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -4111,7 +4111,7 @@
         </canvas>
       </imgdir>
       <imgdir name="2">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="126" y="38"/>
           <imgdir name="map">
             <vector name="navel" x="0" y="0"/>
@@ -4119,7 +4119,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="97" height="66">
+        <canvas format="2" height="66" name="effect" scale="0" width="97">
           <vector name="origin" x="137" y="39"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -4129,7 +4129,7 @@
         </canvas>
       </imgdir>
       <imgdir name="3">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="126" y="38"/>
           <imgdir name="map">
             <vector name="navel" x="0" y="0"/>
@@ -4137,7 +4137,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="53" height="54">
+        <canvas format="2" height="54" name="effect" scale="0" width="53">
           <vector name="origin" x="125" y="36"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -4147,7 +4147,7 @@
         </canvas>
       </imgdir>
       <imgdir name="4">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="126" y="38"/>
           <imgdir name="map">
             <vector name="navel" x="0" y="0"/>
@@ -4155,7 +4155,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="70" height="70">
+        <canvas format="2" height="70" name="effect" scale="0" width="70">
           <vector name="origin" x="134" y="43"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -4165,7 +4165,7 @@
         </canvas>
       </imgdir>
       <imgdir name="5">
-        <canvas name="weapon" width="128" height="62">
+        <canvas format="2" height="62" name="weapon" scale="0" width="128">
           <vector name="origin" x="126" y="38"/>
           <imgdir name="map">
             <vector name="navel" x="0" y="0"/>
@@ -4173,7 +4173,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/walk1/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="70" height="70">
+        <canvas format="2" height="70" name="effect" scale="0" width="70">
           <vector name="origin" x="132" y="43"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -4183,7 +4183,7 @@
         </canvas>
       </imgdir>
       <imgdir name="6">
-        <canvas name="weapon" width="100" height="99">
+        <canvas format="2" height="99" name="weapon" scale="0" width="100">
           <vector name="origin" x="42" y="87"/>
           <imgdir name="map">
             <vector name="navel" x="0" y="0"/>
@@ -4191,7 +4191,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="30/swingO2/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="133" height="88">
+        <canvas format="2" height="88" name="effect" scale="0" width="133">
           <vector name="origin" x="58" y="99"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
@@ -4201,7 +4201,7 @@
         </canvas>
       </imgdir>
       <imgdir name="7">
-        <canvas name="weapon" width="124" height="66">
+        <canvas format="2" height="66" name="weapon" scale="0" width="124">
           <vector name="origin" x="92" y="47"/>
           <imgdir name="map">
             <vector name="navel" x="0" y="0"/>
@@ -4209,7 +4209,7 @@
           <string name="z" value="weapon"/>
           <string name="_inlink" value="48/doubleupper/0/weapon"/>
         </canvas>
-        <canvas name="effect" width="60" height="81">
+        <canvas format="2" height="81" name="effect" scale="0" width="60">
           <vector name="origin" x="90" y="44"/>
           <imgdir name="map">
             <vector name="hand" x="0" y="0"/>
