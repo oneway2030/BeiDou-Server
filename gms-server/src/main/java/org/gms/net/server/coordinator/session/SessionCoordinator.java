@@ -185,16 +185,17 @@ public class SessionCoordinator {
 //            client.setHwid(hwid);
 //            return AntiMulticlientResult.SUCCESS;
 //        }
-
         String remoteHost = getSessionRemoteHost(client);
+        log.info("进行登陆会话逻辑 ip:" + remoteHost + " accountId=" + accountId);
         InitializationResult initResult = sessionInit.initialize(remoteHost);
         if (initResult != InitializationResult.SUCCESS) {
+            log.info("直接登陆的未校验多开 ip:" + remoteHost);
             return initResult.getAntiMulticlientResult();
         }
 
         try {
             //校验多开
-            if (isMultiOpen(remoteHost)) {
+            if (accountId != 1 && isMultiOpen(remoteHost)) {
                 return AntiMulticlientResult.REMOTE_REACHED_LIMIT; // 超过限制，拒绝登录
             }
 //            else if (!loginStorage.registerLogin(accountId)) {
@@ -245,6 +246,9 @@ public class SessionCoordinator {
             if (existingAccounts.size() >= maxAllowed) {
                 log.info("用户多开超过最大限制 ip:" + remoteHost);
                 return true;
+            } else {
+                log.info("校验多开用户 ip:" + remoteHost + " 已开账号数量=" + existingAccounts.size());
+                log.info("校验多开用户 总账号=" + userAccountMap);
             }
         } catch (Exception e) {
             log.error("Failed to check whether multi-open is enabled", e);

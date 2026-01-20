@@ -1157,6 +1157,7 @@ public class ItemInformationProvider {
                             scrollEquipWithChaos(nEquip, GameConfig.getServerInt("chaos_scroll_stat_range"), false); // 使用混沌卷轴增加随机属性
                             break;
                         case ItemId.FORWARD_CHAOTIC_SCROLL:
+                        case ItemId.FORWARD_CHAOTIC_SCROLL2:
                             scrollEquipWithChaos(nEquip, GameConfig.getServerInt("forward_chaos_scroll_stat_range"), true); // 使用混沌卷轴增加随机属性
                             break;
                         default:

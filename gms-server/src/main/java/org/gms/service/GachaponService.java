@@ -144,6 +144,9 @@ public class GachaponService {
     }
 
     public void updateReward(GachaponRewardDO reward) {
+        if (reward.getItemId() <= 0) {
+            return;
+        }
         wLock.lock();
         try {
             gachaponRewardMapper.insertOrUpdate(reward);
@@ -264,7 +267,7 @@ public class GachaponService {
         if (itemGained == null) {
             return;
         }
-        String gachaponMessage = I18nUtil.getMessage("GachaMessage.message1",player.getMap().getMapName(),reward.getQuantity(),ItemInformationProvider.getInstance().getName(reward.getItemId()));
+        String gachaponMessage = I18nUtil.getMessage("GachaMessage.message1", player.getMap().getMapName(), reward.getQuantity(), ItemInformationProvider.getInstance().getName(reward.getItemId()));
         player.dropMessage(gachaponMessage);
         Gachapon.log(player, reward.getItemId(), player.getMap().getMapName());
 

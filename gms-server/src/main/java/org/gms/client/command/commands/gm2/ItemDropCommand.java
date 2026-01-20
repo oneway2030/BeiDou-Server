@@ -43,6 +43,7 @@ public class ItemDropCommand extends Command {
 
     @Override
     public void execute(Client c, String[] params) {
+
         Character player = c.getPlayer();
 
         if (params.length < 1) {

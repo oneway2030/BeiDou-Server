@@ -38,7 +38,7 @@ public class Global extends GachaponItems {
     public int[] getRareItems() {
         return new int[]{
                 /* Scrolls */
-                2049100, 2340000,
+                2049100, 2340000,2340001,
 
                 /* Chairs */
                 3010063, 3010064

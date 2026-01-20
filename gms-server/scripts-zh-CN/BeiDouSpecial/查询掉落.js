@@ -1,5 +1,6 @@
 var status = -1;
 var choice = 0;
+const LoggerFactory = Java.type('org.slf4j.LoggerFactory');
 
 function start() {
     action(1, 0, 0)
@@ -23,6 +24,8 @@ function action(mode, type, selection) {
     }
     // 初始界面：显示两个查询选项
     if (status == 0) {
+        var log = LoggerFactory.getLogger("searchDrops");
+        log.warn(`===========================[${cm.getPlayer().getName()}]用户在查询,只是记录一下看是否是这里卡顿===========================`);
         let msg = "请选择查询类型：\r\n\r\n";
         msg += "#b#L0# 查询当前地图怪物掉落#l\r\n\r\n";
         msg += "#b#L1# 查询物品掉落（输入物品名称）#l\r\n\r\n";
@@ -67,7 +70,7 @@ function queryDrops(searchString) {
     if (searchResult != null && searchResult.length > 0) {
         cm.sendOk(searchResult);
     } else {
-        cm.sendOk(choice === 0 ? `未找到名称为【${monsterName}】的怪物` : `未找到名称为【${monsterName}】的物品`);
+        cm.sendOk(choice === 0 ? `未找到名称为【${searchString}】的怪物` : `未找到名称为【${searchString}】的物品`);
     }
     cm.dispose();
 }

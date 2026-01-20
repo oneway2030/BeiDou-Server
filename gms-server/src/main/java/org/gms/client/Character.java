@@ -488,7 +488,7 @@ public class Character extends AbstractCharacterObject {
     private int mxjMaxLevel;//冒险家最高等级
     @Getter
     private int qstMaxLevel;//骑士团最高等级
-    
+
     private int rebornsCount = -1;//重生次数
 
     private Character() {
@@ -2974,6 +2974,10 @@ public class Character extends AbstractCharacterObject {
         }
 
         sendPacket(PacketCreator.getShowExpGain((int) gain, equip, party, inChat, white));
+    }
+
+    public synchronized void reduceExp(int gain) {
+        updateSingleStat(Stat.EXP, exp.addAndGet(gain));
     }
 
     private synchronized void gainExpInternal(long gain, int equip, int party, boolean show, boolean inChat, boolean white) {   // need of method synchonization here detected thanks to MedicOP

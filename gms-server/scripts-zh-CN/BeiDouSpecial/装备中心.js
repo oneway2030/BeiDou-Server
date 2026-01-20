@@ -46,6 +46,7 @@ function action(mode, type, selection) {
         text += "#L1#装备洗练#l\t\r\n\r\n";
         text += "#L0#时装属性转移#l\t\r\n\r\n";
         text += "#L2#装备制作#l\t\r\n\r\n";
+        text += "#L4#星级强化（未完成，可以预览）#l\t\r\n\r\n";
         cm.sendSimple(text);
     } else if (status === 1) {
         doSelect(selection);
@@ -67,6 +68,9 @@ function doSelect(selection) {
             break;
         case 3:
             openNpc("每日装备强化");
+            break;
+        case 4:
+            openNpc("装备制作/星级强化");
             break;
         default:
             cm.sendOk("该功能暂不支持，敬请期待！");

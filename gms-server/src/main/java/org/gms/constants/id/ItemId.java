@@ -154,6 +154,7 @@ public class ItemId {
     public static final int LIAR_TREE_SAP = 2049101;
     public static final int MAPLE_SYRUP = 2049102;
     public static final int WHITE_SCROLL = 2340000;
+    public static final int WHITE_SCROLL2 = 2340001;
     public static final int CLEAN_SLATE_1 = 2049000;
     public static final int CLEAN_SLATE_3 = 2049001;
     public static final int CLEAN_SLATE_5 = 2049002;
@@ -173,6 +174,7 @@ public class ItemId {
     public static final int WHITE_ELIXIR = 2022544;
 
     public final static int FORWARD_CHAOTIC_SCROLL = 2049115;//正向混沌卷
+    public final static int FORWARD_CHAOTIC_SCROLL2 = 2049116;//正向混沌卷 不可交易
 
     public static boolean isPartyAllCure(int itemId) {
         return itemId == DOJO_PARTY_ALL_CURE || itemId == CARNIVAL_PARTY_ALL_CURE;
@@ -352,7 +354,7 @@ public class ItemId {
 
     public static int[] getOwlItems() {
         return new int[]{WORK_GLOVES, STEELY_THROWING_KNIVES, ILBI_THROWING_STARS, OWL_BALL_MASK, PINK_ADVENTURER_CAPE,
-                CLAW_30_SCROLL, WHITE_SCROLL, HELMET_60_ACC_SCROLL, MAPLE_SHIELD, GLOVES_ATT_60_SCROLL};
+                CLAW_30_SCROLL, WHITE_SCROLL, WHITE_SCROLL2, HELMET_60_ACC_SCROLL, MAPLE_SHIELD, GLOVES_ATT_60_SCROLL};
     }
 
     // Henesys PQ

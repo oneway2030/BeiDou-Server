@@ -1182,6 +1182,185 @@ public class Equip extends Item {
         return this.gainStatsDes(stats);
     }
 
+    public void replaceData(Equip oldItem) {
+        // 复制旧装备的核心属性
+        setStarLevel(oldItem.getStarLevel());
+        setStarCount(oldItem.getStarCount());
+        setUpgradeResetCount(oldItem.getUpgradeResetCount());
+        setUpgradeHistory(oldItem.getUpgradeHistory());
+
+        // 计算星级对应的属性加成值
+        int starLevelAttribute = calculateTotalAttributeByStarLevel();
+        // 场景1：升级历史为空 → 所有大于0的属性直接加星级加成
+        if (mUpgradeHistoryList.isEmpty()) {
+            addStarAttributeToAllValidStats(starLevelAttribute);
+            return;
+        }
+
+        // 场景2：升级历史非空 → 遍历升级历史叠加属性（保留原有逻辑）
+        for (List<Pair<StatUpgrade, Integer>> pairs : mUpgradeHistoryList) {
+            for (Pair<StatUpgrade, Integer> pair : pairs) {
+                StatUpgrade statType = pair.getLeft();
+                int upgradeValue = pair.getRight();
+                if (canStarLevel(statType)) {
+                    upgradeValue += starLevelAttribute;
+                }
+                if (upgradeValue <= 0) {
+                    continue;
+                }
+                addAttributeByType(statType, upgradeValue);
+            }
+        }
+    }
+
+    /**
+     * 为所有大于0的属性追加星级加成（升级历史为空时调用）
+     */
+    public void addStarAttributeToAllValidStats(int starAddValue) {
+        // 按StatUpgrade枚举全量遍历，确保覆盖所有属性类型
+        for (StatUpgrade statType : StatUpgrade.values()) {
+            if (canStarLevel(statType)) {
+                addAttributeByType(statType, starAddValue);
+            }
+        }
+    }
+
+    public boolean canStarLevel(StatUpgrade statType) {
+        return statType == StatUpgrade.incDEX || statType == StatUpgrade.incSTR || statType == StatUpgrade.incINT || statType == StatUpgrade.incLUK
+                || statType == StatUpgrade.incPAD || statType == StatUpgrade.incMAD || statType == StatUpgrade.incSpeed;
+    }
+
+    /**
+     * 根据属性类型追加指定数值（仅当属性当前值>0时生效）
+     * 抽离通用逻辑，避免代码冗余
+     */
+    private void addAttributeByType(StatUpgrade statType, int addValue) {
+        if (addValue <= 0) {
+            return;
+        }
+        switch (statType) {
+            case incSTR:
+                if (getStr() > 0) {
+                    setStr((short) (getStr() + addValue));
+                }
+                break;
+            case incDEX:
+                if (getDex() > 0) {
+                    setDex((short) (getDex() + addValue));
+                }
+                break;
+            case incINT:
+                if (getInt() > 0) {
+                    setInt((short) (getInt() + addValue));
+                }
+                break;
+            case incLUK:
+                if (getLuk() > 0) {
+                    setLuk((short) (getLuk() + addValue));
+                }
+                break;
+            case incMHP:
+                if (getHp() > 0) {
+                    setHp((short) (getHp() + addValue));
+                }
+                break;
+            case incMMP:
+                if (getMp() > 0) {
+                    setMp((short) (getMp() + addValue));
+                }
+                break;
+            case incPAD:
+                if (getWatk() > 0) {
+                    setWatk((short) (getWatk() + addValue));
+                }
+                break;
+            case incMAD:
+                if (getMatk() > 0) {
+                    setMatk((short) (getMatk() + addValue));
+                }
+                break;
+            case incPDD:
+                if (getWdef() > 0) {
+                    setWdef((short) (getWdef() + addValue));
+                }
+                break;
+            case incMDD:
+                if (getMdef() > 0) {
+                    setMdef((short) (getMdef() + addValue));
+                }
+                break;
+            case incEVA:
+                if (getAvoid() > 0) {
+                    setAvoid((short) (getAvoid() + addValue));
+                }
+                break;
+            case incACC:
+                if (getAcc() > 0) {
+                    setAcc((short) (getAcc() + addValue));
+                }
+                break;
+            case incSpeed:
+                if (getSpeed() > 0) {
+                    setSpeed((short) (getSpeed() + addValue));
+                }
+                break;
+            case incJump:
+                if (getJump() > 0) {
+                    setJump((short) (getJump() + addValue));
+                }
+                break;
+            case incVicious:
+                if (getVicious() > 0) {
+                    setVicious((short) (getVicious() + addValue));
+                }
+                break;
+            case incSlot:
+                if (getUpgradeSlots() > 0) {
+                    setUpgradeSlots((byte) (getUpgradeSlots() + addValue));
+                }
+                break;
+            default:
+                log.warn("Unsupported StatUpgrade type: {}", statType);
+                break;
+        }
+    }
+
+    /**
+     * starLevel 1-10属性+1，11-20属性=2，21-30属性=3，31-40属性=4，41-50属性=5
+     *
+     * @return
+     */
+    public int calculateTotalAttributeByStarLevel() {
+        int starLevel = getStarLevel();
+        int totalAttribute = 0;
+        // 校验星级合法性（避免负数或超出合理范围的星级）
+        if (starLevel <= 0) {
+            return 0;
+        }
+        // 分段计算属性加成
+        if (starLevel <= 10) {
+            // 1-10级：每级属性+1
+            totalAttribute = starLevel * 1;
+        } else if (starLevel <= 20) {
+            // 11-20级：前10级累计10，11-20级每级+2
+            totalAttribute = 10 * 1 + (starLevel - 10) * 2;
+        } else if (starLevel <= 30) {
+            // 21-30级：前20级累计30（10*1+10*2），21-30级每级+3
+            totalAttribute = 10 * 1 + 10 * 2 + (starLevel - 20) * 3;
+        } else if (starLevel <= 40) {
+            // 31-40级：前30级累计60（10*1+10*2+10*3），31-40级每级+5
+            totalAttribute = 10 * 1 + 10 * 2 + 10 * 3 + (starLevel - 30) * 4;
+        } else if (starLevel <= 50) {
+            // 41-50级：前40级累计110（10*1+10*2+10*3+10*5），41-50级每级+5
+            totalAttribute = 10 * 1 + 10 * 2 + 10 * 3 + 10 * 4 + (starLevel - 40) * 5;
+        } else {
+            // 超出50级的兜底（可根据业务需求调整，比如保持50级的总属性）
+            totalAttribute = 10 * 1 + 10 * 2 + 10 * 3 + 10 * 4 + 10 * 5; // 50级满额160
+        }
+
+        return totalAttribute;
+    }
+
     /**
      * 设置装备升级历史（从字符串反序列化）
      *

@@ -92,7 +92,10 @@ public final class ScrollHandler extends AbstractPacketHandler {
                     return;
                 }
                 if (whiteScroll) {
-                    wscroll = useInventory.findById(ItemId.WHITE_SCROLL); // 查找白色卷轴
+                    wscroll = useInventory.findById(ItemId.WHITE_SCROLL2); // 查找白色卷轴
+                    if (wscroll == null) {
+                        wscroll = useInventory.findById(ItemId.WHITE_SCROLL); // 查找白色卷轴
+                    }
                     if (wscroll == null) {
                         whiteScroll = false; // 如果找不到白色卷轴，则不使用白色卷轴
                     }

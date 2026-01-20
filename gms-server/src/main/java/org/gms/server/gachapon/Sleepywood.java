@@ -47,7 +47,7 @@ public class Sleepywood extends GachaponItems {
 
     @Override
     public int[] getUncommonItems() {
-        return new int[]{2040804, 2040817, 2040805, 2340000, 1082149, 1442018};
+        return new int[]{2040804, 2040817, 2040805, 2340000,2340001, 1082149, 1442018};
     }
 
     @Override

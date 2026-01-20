@@ -66,6 +66,7 @@ function main() {
     propStr += "#b功能说明：#k\r\n";
     propStr += "1.消耗道具，可以重置装备升级后的属性\r\n";
     propStr += "2.需要把重新洗练的装备放在装备栏第一格\r\n";
+    propStr += "#b3.确认洗练后装备将#r#e上锁无法交易#k#n\r\n";
     propStr += "#L999##r(点击后查看洗练属性范围说明)#d#l\r\n\r\n";
     propStr += `\r\n`;
     propStr += "#b每次洗练需要消耗：#k\r\n";
@@ -180,7 +181,7 @@ function showAttrConfirmPage() {
     confirmText += formatStatsWithColors(oldStatsDes) + "\r\n\r\n";
     confirmText += "#r【新洗练属性】#k\r\n";
     confirmText += formatStatsWithColors(newStatsDes) + "\r\n\r\n";
-    confirmText += "#L0##b确认覆盖（使用新的洗练属性）#l\r\n\r\n";
+    confirmText += "#L0##b确认覆盖（使用新的属性，#e#r确认后将上锁无法交易#k#n）#l\r\n\r\n";
     if (checkRequiredItems()) {
         confirmText += "#L2##r重新洗练（当前属性不覆盖，会重新消耗道具）#l\r\n\r\n"; // 新增：重新洗练选项
     }
@@ -197,6 +198,7 @@ function handleConfirmResult(selection) {
         if (newStats && newStats.size() > 0) {
             var client = cm.getPlayer().getClient();
             // 执行洗练逻辑
+            firstEquip.setFlag(1);//上锁
             var isSuccess = firstEquip.replaceUpgradeHistory(client, selectedUpgradeIndex, newStats);
             firstEquip.setUpgradeResetCount(firstEquip.getUpgradeResetCount() + 1);
             if (isSuccess) {

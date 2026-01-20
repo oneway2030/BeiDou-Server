@@ -139,8 +139,8 @@ function action(mode, type, selection) {
         text += "#L2#眼睛#l\t\r\n\r\n";
         text += "#L3#鞋子#l\t\r\n\r\n";
         text += "#L4#帽子#l\t\r\n\r\n";
+        text += "#L5#武器（部分物品未添加出处）#l\t\r\n\r\n";
         text += "\r\n\r\n\t#r以下还未实现#k\t\r\n\r\n";
-        text += "#L5#武器#l\t\r\n\r\n";
         text += "#L6#衣服#l\t\r\n\r\n";
         text += "#L7#披风#l\t\r\n\r\n";
         text += "#L8#戒指#l\t\r\n\r\n";
@@ -177,6 +177,9 @@ function doSelect(selection) {
         case 4:
             选择的制作列表 = 帽子;
             展示物品制作列表();
+            break;
+        case 5:
+            openNpc("装备制作/武器制作");
             break;
         default:
             cm.sendOk("#b瞎么？没看到上面上写的还未实现，你就等吧！");
@@ -298,5 +301,10 @@ function 获取金币显示(meso) {
     } else {
         return `${meso}W\r\n`;
     }
+}
+
+function openNpc(scriptName) {
+    cm.dispose();
+    cm.openNpc(9900001, scriptName);
 }
 

@@ -7,6 +7,7 @@ var i = 0;
 // var icon="#fMap/MapHelper/minimap/arrowright#";
 var icon = "#fUI/UIWindow.img/Quest/icon8/0#";
 const I18nUtil = Java.type('org.gms.util.I18nUtil');
+const LoggerFactory = Java.type('org.slf4j.LoggerFactory');
 
 function start() {
     try {
@@ -52,6 +53,8 @@ function action(mode, type, selection) {
         return;
     }
     if (status === 0) {
+        var log = LoggerFactory.getLogger("main_js");
+        log.warn(`===========================[${cm.getPlayer().getName()}]打开脚本主页，只是记录一下看是否是这里卡顿===========================`);
         var OldTitle = "\t\t\t\t\t#e#k欢迎大佬 #r[" + cm.getPlayer().getName() + "] #k您的到来#n\t\t\t\t\r\n";
         let text = OldTitle;
         text += " \r\n";
@@ -99,18 +102,16 @@ function doSelect(selection) {
     switch (selection) {
         // 脚本移植注意编码改为UTF-8
         case 0://去自由
-            openNpc("装备制作/武器制作");
-            // cm.getPlayer().saveLocationOnWarp();
-            // cm.warp(910000000);
-            // cm.dispose();
+            cm.getPlayer().saveLocationOnWarp();
+            cm.warp(910000000);
+            cm.dispose();
             break;
         case 1://万能传送
             // openNpc("test/装备强化");
             openNpc("万能传送");
             break;
         case 2://随身仓库
-            openNpc("test/升星");
-            // openNpc("随身仓库");
+            openNpc("随身仓库");
             break;
         case 3://便利商店
             cm.openShopNPC(9201099); //便利商店
