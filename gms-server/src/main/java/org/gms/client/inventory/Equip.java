@@ -1196,7 +1196,7 @@ public class Equip extends Item {
             addStarAttributeToAllValidStats(starLevelAttribute);
             return;
         }
-
+        setLevel(oldItem.getLevel());
         // 场景2：升级历史非空 → 遍历升级历史叠加属性（保留原有逻辑）
         for (List<Pair<StatUpgrade, Integer>> pairs : mUpgradeHistoryList) {
             for (Pair<StatUpgrade, Integer> pair : pairs) {

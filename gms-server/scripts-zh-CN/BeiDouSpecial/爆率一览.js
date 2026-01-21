@@ -1,186 +1,258 @@
 /**
  * 功能：展示当前地图存活的怪物种类以及物品爆率
- * 作者：Magical-H (https://github.com/Magical-H)
- * 版本：1.0
+ * 作者：Magical-H (优化版)
+ * 版本：2.0
  * 日期：2024-12-02
+ * 优化点：解决卡死、内存泄漏、渲染过载、性能低下问题
  */
-var MonsterInformationProvider;
-var ItemInformationProvider;
-var QuestInfo;
+// 全局常量（仅初始化一次）
+const MonsterInformationProvider = Java.type('org.gms.server.life.MonsterInformationProvider');
+const ItemInformationProvider = Java.type('org.gms.server.ItemInformationProvider');
+const QuestInfo = Java.type('org.gms.server.quest.Quest');
+// 客户端渲染安全阈值（防止超大列表卡死）
+const SAFE_MOB_LIMIT = 50; // 单地图最多展示50种怪物
+const SAFE_DROP_LIMIT = 100; // 单怪物最多展示100个掉落物
+// 缓存对象（避免重复初始化）
+const cache = {
+    mapObj: null,
+    mobAll: [],
+    mobNormal: [],
+    mobBoss: [],
+    maxNameLength: 0,
+    isInit: false
+};
 
-var MapObj;								 //地图对象
-var List_Mob_All;				   //所有怪物列表
-var List_Mob_Boss;				  //BOSS列表
-var List_Mob;						   //普通怪物列表
-var namelength = 0;
-
-function start(){
+/**
+ * 入口方法 - 增加异常兜底和性能监控
+ */
+function start() {
+    const startTime = Date.now();
     try {
-        if(MapObj == null) {		//首次打开进行初始化。
-            MonsterInformationProvider = Java.type('org.gms.server.life.MonsterInformationProvider');//导入 怪物信息 类
-            ItemInformationProvider = Java.type('org.gms.server.ItemInformationProvider');//导入 物品信息 类
-            QuestInfo = Java.type('org.gms.server.quest.Quest');//导入 任务 类
-            MapObj = cm.getMap();
-            List_Mob_All = MapObj.getAllMonsters(); //获取当前地图存活的怪物数量，由于未找到获取当前地图固定怪物列表方法，故用此方法代替。
-            //将怪物种类去重并按照Boss和普通怪物区分开
-            [List_Mob, List_Mob_Boss] = Object.values(List_Mob_All.reduce((acc, mob) => (acc.ids.has(mob.getId()) || (acc.ids.add(mob.getId()), mob.isBoss() ? acc.bosses : acc.mobs).push(mob), acc), { ids: new Set(), mobs: [], bosses: [] })).slice(-2);
+        // 首次初始化（仅执行一次，避免重复获取地图/怪物数据）
+        if (!cache.isInit) {
+            initCache();
+        }
+        // 性能监控：超过500ms直接终止，避免卡死
+        if (Date.now() - startTime > 500) {
+            cm.sendOkLevel('dispose', '查询超时，请稍后重试', 2);
+            return;
         }
         levelmain();
     } catch (e) {
-        cm.dispose();
-        // 打印错误日志便于调试
-        console.error("爆率一览脚本错误===》:", e);
+        console.error("爆率一览脚本错误===》:", e, e.stack);
+        cm.sendOkLevel('dispose', '查询出错：' + e.message.substring(0, 50), 2);
+        disposeCache(); // 异常时清理缓存
     }
 }
 
-function leveldispose() {
-    cm.dispose();
-}
-
 /**
- * 当部分cm.sendLevel方法没有指定下一个跳转方法时会自动跳入null，也就是这里。
+ * 初始化缓存 - 抽离核心逻辑，避免重复计算
  */
-function levelnull() {
-    cm.dispose();
+function initCache() {
+    cache.mapObj = cm.getMap();
+    if (!cache.mapObj) {
+        throw new Error("获取地图对象失败");
+    }
+    // 获取怪物列表（去重+区分BOSS/普通）
+    const mobSet = new Map(); // 使用Map代替Set+遍历，提升去重效率
+    const allMobs = cache.mapObj.getAllMonsters() || [];
+
+    // 安全阈值：超过50种怪物直接截断，避免渲染过载
+    const safeMobs = allMobs.slice(0, SAFE_MOB_LIMIT);
+
+    safeMobs.forEach(mob => {
+        const mobId = mob.getId();
+        if (!mobSet.has(mobId)) {
+            mobSet.set(mobId, mob);
+        }
+    });
+    // 区分BOSS和普通怪物
+    const mobList = Array.from(mobSet.values());
+    cache.mobBoss = mobList.filter(mob => mob.isBoss());
+    cache.mobNormal = mobList.filter(mob => !mob.isBoss());
+    cache.mobAll = mobList;
+    // 计算最长怪物名称（仅计算一次）
+    cache.maxNameLength = mobList.reduce((max, mob) => {
+        const name = getMobName(mob);
+        return Math.max(max, name.length);
+    }, 0);
+    cache.isInit = true;
 }
 
 /**
- * 这里是第一层对话框，用于展示当前地图存活的怪物种类。
+ * 第一层对话框 - 优化渲染逻辑，避免超长文本
  */
 function levelmain() {
-    if(List_Mob_All.length == 0) {
-        cm.sendOkLevel('dispose', '当前地图没有存活的怪物，请等待怪物刷新后再进行查询。', 2);
-    } else {
-        var Msg_Select = '当前地图#b#e存活#k#n怪物列表一览，点击可查看掉落列表：\r\n'; //怪物选择展示消息
-            Msg_Select += '#d' + '\r\n'.padStart(28,'——') + '#k';
-        if(List_Mob_Boss.length > 0) {
-            Msg_Select += `#e#rBOSS#k#n：${List_Mob_Boss.length} 种\r\n`;
-            Msg_Select += getSelecttext(List_Mob_Boss);
-            if(List_Mob.length > 0) Msg_Select += '#d' + '\r\n'.padStart(28,'——') + '#k';
-        }
-        if(List_Mob.length > 0) {
-            Msg_Select += `普通怪物：${List_Mob.length} 种\r\n`;
-            Msg_Select += getSelecttext(List_Mob);
-        }
-        cm.sendNextSelectLevel('ShowDropList', Msg_Select,2);
+    if (cache.mobAll.length === 0) {
+        cm.sendOkLevel('dispose', '当前地图没有存活的怪物，请等待刷新后查询', 2);
+        return;
     }
+    // 构建选择文本（分段拼接，避免字符串累加性能问题）
+    let msgSelect = [
+        '#b#e当前地图存活怪物列表（共' + cache.mobAll.length + '种）#k#n：',
+        '#d' + '——'.repeat(13) + '#k'
+    ];
+    // 拼接BOSS列表
+    if (cache.mobBoss.length > 0) {
+        msgSelect.push(`#e#rBOSS#k#n：${cache.mobBoss.length} 种`);
+        msgSelect.push(getSelectText(cache.mobBoss));
+        if (cache.mobNormal.length > 0) {
+            msgSelect.push('\r\n#d' + '——'.repeat(13) + '#k\r\n');
+        }
+    }
+    // 拼接普通怪物列表
+    if (cache.mobNormal.length > 0) {
+        msgSelect.push(`普通怪物：${cache.mobNormal.length} 种`);
+        msgSelect.push(getSelectText(cache.mobNormal));
+    }
+    // 限制文本长度（防止客户端渲染超大文本卡死）
+    const finalMsg = msgSelect.join('\r\n').substring(0, 4000);
+    cm.sendNextSelectLevel('ShowDropList', finalMsg, 2);
 }
 
 /**
- * 格式化输出当前地图存在的怪物列表选项。
- * @param moblist
- * @returns {string}
+ * 格式化怪物选择文本 - 优化性能和渲染安全
+ * @param {Array} mobList 怪物列表
+ * @returns {string} 格式化后的文本
  */
-function getSelecttext(moblist) {
-    let size = moblist.reduce((max, obj) => Math.max(max, obj.getName().length), 0);  //取最长怪物名称长度
-    namelength = namelength > size ? namelength : size;
-    return moblist.map(obj => {
-        let id = obj.getId();
-        let select = '#fUI/UIWindow.img/UserList/Friend/icon04# ';
-        let name = !obj.getName() || obj.getName() == 'MISSINGNO' ? `#o${id}#` : obj.getName();     //优先以服务器怪物名称为准，没有的话就显示客户端的
-            name = select + name.padEnd(namelength,'\t');
-        return `#L${id}#${getMobImage(obj)}\r\n#${(obj.isBoss() ? 'r' : 'b') + name}#k\t[ Lv.${getLevelImage(obj.getLevel())} ] #l`
-    }).join('\r\n\r\n') + '\r\n\r\n';
+function getSelectText(mobList) {
+    return mobList.map(mob => {
+        const mobId = mob.getId();
+        const mobName = getMobName(mob);
+        const levelStr = getLevelImage(mob.getLevel());
+        const mobImage = getMobImageSafe(mob); // 安全的怪物图片获取
+        // 固定格式，避免动态计算padding
+        const namePad = mobName.padEnd(cache.maxNameLength, ' ');
+        const color = mob.isBoss() ? 'r' : 'b';
+        return `#L${mobId}#${mobImage}\r\n#${color}#fUI/UIWindow.img/UserList/Friend/icon04# ${namePad}#k\t[ Lv.${levelStr} ] #l`;
+    }).join('\r\n\r\n');
 }
 
 /**
- * 格式化输出指定怪物的掉落物品列表
- * @param mobId
+ * 展示怪物掉落列表 - 核心优化：限制掉落数量、减少重复计算
+ * @param {number} mobId 怪物ID
  */
 function levelShowDropList(mobId) {
-    const mob = List_Mob_All.find(mob => mob.getId() == mobId);		 //根据怪物ID获取已缓存的怪物对象
-    const table = {
-        '物品名称' : 0,
-        '基础掉率' : 0,
-        '你的掉率' : 0,
+    // 从缓存获取怪物（避免重复遍历）
+    const mob = cache.mobAll.find(m => m.getId() === mobId);
+    if (!mob) {
+        cm.sendLastLevel('main', `怪物ID [${mobId}] 不存在`, 2);
+        return;
     }
-    let msgtext = `当前查询的怪物ID [ ${mobId} ] 不存在。`;
-
-    if(mob != null) {
-        let player = cm.getPlayer();
-        let dropall = MonsterInformationProvider.getInstance().retrieveDrop(mobId);										 //根据怪物ID获取掉落物品列表
-        let CountItems = dropall.size();																				//取掉落物品总数量
-        let mobName = !mob.getName() || mob.getName() == 'MISSINGNO' ? `#o${mobId}#` : mob.getName();
-        let stats = mob.getStats();
-        let statsSize = Math.max(...[mob.getMaxHp(), stats.getPADamage(), stats.getMADamage()].map(v => v.toString().length));
-        mobName = `[ #e#b${mobName}#k#n ] `;
-        msgtext = `${getMobImage(mob)}\r\n${mobName}\r\n`;
-        msgtext += `血量：${mob.getMaxHp().toString().padEnd(statsSize,' ')}\t\t蓝量：${mob.getMaxMp()}\r\n`;
-        msgtext += `物攻：${stats.getPADamage().toString().padEnd(statsSize,' ')}\t\t物防：${stats.getPDDamage()}\r\n`;
-        msgtext += `魔攻：${stats.getMADamage().toString().padEnd(statsSize,' ')}\t\t魔防：${stats.getMDDamage()}\r\n`;
-        // msgtext += `　命中率：${stats.getMADamage()}\t\t　闪避率：${stats.getMDDamage()}\r\n`;
-        if(CountItems <= 0) {
-            msgtext += `\r\n\r\n没有掉落。`;
-        } else {
-            msgtext += `\r\n\r\n${'-'.repeat(28)}物品掉落列表一览${'-'.repeat(28)}\r\n\r\n`;
-            // 遍历 table 对象的键，并设置其值为键名的长度
-            Object.keys(table).forEach(key => {table[key] = Math.max(table[key],key.length)});
-            let dropitemlist = {};
-            dropall.filter(drop => drop.itemId > 0).forEach((drop) => {
-                let itemName = ItemInformationProvider.getInstance().getName(drop.itemId);
-                if (itemName != null) {
-                    let itemChance = (drop.chance / 10000).toFixed(4);
-                    // 更新 table 中对应的键值以记录最大长度
-                    table['物品名称'] = Math.max(table['物品名称'], itemName.length);
-                    table['基础掉率'] = Math.max(table['基础掉率'], itemChance.length / 2);
-                    table['你的掉率'] = Math.max(table['你的掉率'], itemChance.length / 2);
-                    // 确保 itemName 在结果对象中是唯一的键
-                    // 如果 itemName 可能重复，可以添加索引或其它唯一标识
-                    dropitemlist[drop.itemId] = {name : itemName , chance : itemChance , questid : drop.questid};
-                }
-            });
-            // 确保所有值都是偶数
-            Object.keys(table).forEach(key => table[key] = Math.ceil(table[key] / 2) * 2);
-            msgtext += '#b' + Object.entries(table).map(([key,val]) => `${key.padEnd(val,'\t')}`).join('\t') + '#k\r\n';
-            msgtext += Object.entries(dropitemlist).map(([itemId, { name, chance ,questid}]) => {
-                    let msg = `#L${itemId}##v${itemId}#\r\n#b#e${name.padEnd(table['物品名称'] + countAllSymbols(name), '\t')}#k#n\t`;
-                    msg += `${(chance + '%').padEnd(table['基础掉率'], '\t')}\t#d${(chance * player.getDropRate() * player.getFamilyDrop() + '%').padEnd(table['你的掉率'], '\t')}#k\r\n`;
-                    msg += questid > 0 ? '#r[任务道具]#k '+QuestInfo.getInstance(questid).getName()+'\r\n' : '';
-                    msg += '#l';
-                    return msg;
-                }
-            ).join('\r\n');
-        }
-    }
-    cm.sendLastLevel('main',msgtext,2); //这里会出现上一项+确定的对话框，如果点击确定则会进入到levelnull的方法里，估计是源码里没做判断。
-}
-
-/**
- * 提取字符串里的符号数量
- * @param str
- * @returns {*|number}
- */
-function countAllSymbols(str) {
-    return Math.ceil(str.match(/[^\u4e00-\u9fff]/g)?.length / 2) || 0;
-}
-
-/**
- * 以下函数在某些特定的情况下可能会导致客户端闪退
- * @param mob
- * @returns {string}
- */
-function getMobImage(mob){
-    let type = [null,'stand','fly']
-        type = type[mob.getStats().getMovetype() + 1];    //-1=未知类型，0=陆地类型，1=飞天类型
-    if(type == null) {
-        return `#fUI/UIWindow.img/Maker/randomRecipe#`;     //没有怪物图片时显示一个问号。
-    } else if (mob.getStats().getImgwidth() > 160 && mob.getStats().getImgheight() > 250) { //如果图片超过指定范围会造成客户端假死，因此这里需要替换成别的图片或者干脆不要。
-        return `#fMap/Obj/Tdungeon.img/mushCatle/npc/0/0#\r\n(形象过大，不能展示)`;
+    // 获取玩家掉落率（仅计算一次）
+    const player = cm.getPlayer();
+    const dropRate = player.getDropRate() * player.getFamilyDrop();
+    // 获取掉落列表（限制数量，避免超大列表卡死）
+    const dropAll = MonsterInformationProvider.getInstance().retrieveDrop(mobId) || [];
+    const safeDrops = dropAll.filter(d => d.itemId > 0).slice(0, SAFE_DROP_LIMIT);
+    // 构建基础信息
+    const mobName = getMobName(mob);
+    const stats = mob.getStats();
+    const hpStr = mob.getMaxHp().toString();
+    const mpStr = mob.getMaxMp().toString();
+    const padLength = Math.max(hpStr.length, stats.getPADamage().toString().length, stats.getMADamage().toString().length);
+    // 拼接基础信息（减少字符串累加）
+    let msgText = [
+        getMobImageSafe(mob),
+        `[ #e#b${mobName}#k#n ]`,
+        `血量：${hpStr.padEnd(padLength)} \t\t 蓝量：${mpStr}`,
+        `物攻：${stats.getPADamage().toString().padEnd(padLength)} \t\t 物防：${stats.getPDDamage()}`,
+        `魔攻：${stats.getMADamage().toString().padEnd(padLength)} \t\t 魔防：${stats.getMDDamage()}`
+    ];
+    // 拼接掉落列表
+    if (safeDrops.length === 0) {
+        msgText.push('\r\n\r\n没有掉落物品');
     } else {
-        //当前怪物ID最多7位数，不足7位数则需要在前面补0
-        return `#fMob/${mob.getId().toString().padStart(7, '0')}.img/${type}/0#`;
+        msgText.push('\r\n\r\n' + '-'.repeat(28) + '物品掉落列表' + '-'.repeat(28));
+        // 表头（固定格式，避免动态计算）
+        msgText.push('#b物品名称\t\t基础掉率\t\t你的掉率#k');
+        // 遍历掉落物
+        safeDrops.forEach(drop => {
+            const itemName = ItemInformationProvider.getInstance().getName(drop.itemId) || `未知物品(${drop.itemId})`;
+            const baseChance = (drop.chance / 10000).toFixed(4) + '%';
+            const userChance = (drop.chance / 10000 * dropRate).toFixed(4) + '%';
+            // 任务道具标注
+            let questNote = '';
+            if (drop.questid > 0) {
+                try {
+                    questNote = '#r[任务道具]#k ' + QuestInfo.getInstance(drop.questid).getName();
+                } catch (e) {
+                    questNote = '#r[任务道具]#k 未知任务';
+                }
+            }
+            msgText.push(`#L${drop.itemId}##v${drop.itemId}# ${itemName.padEnd(20)} \t\t ${baseChance.padEnd(8)} \t\t #d${userChance}#k ${questNote}#l`);
+        });
+    }
+    // 限制文本长度，避免客户端渲染崩溃
+    const finalMsg = msgText.join('\r\n').substring(0, 8000);
+    cm.sendLastLevel('main', finalMsg, 2);
+}
+
+/**
+ * 安全获取怪物图片 - 避免客户端闪退
+ * @param {Object} mob 怪物对象
+ * @returns {string} 图片标签
+ */
+function getMobImageSafe(mob) {
+    try {
+        const moveType = mob.getStats().getMovetype();
+        const type = moveType === 0 ? 'stand' : moveType === 1 ? 'fly' : null;
+        if (!type) {
+            return '#fUI/UIWindow.img/Maker/randomRecipe#';
+        }
+        const width = mob.getStats().getImgwidth();
+        const height = mob.getStats().getImgheight();
+        // 图片尺寸阈值（避免超大图片导致客户端假死）
+        if (width > 160 || height > 250) {
+            return '#fMap/Obj/Tdungeon.img/mushCatle/npc/0/0#\r\n(形象过大，暂不展示)';
+        }
+        const mobIdStr = mob.getId().toString().padStart(7, '0');
+        return `#fMob/${mobIdStr}.img/${type}/0#`;
+    } catch (e) {
+        return '#fUI/UIWindow.img/Maker/randomRecipe#';
     }
 }
 
-function getLevelImage(level,type) {
-    let UI = []
-        UI.push('Basic/LevelNo/');
-        UI.push('Basic/ItemNo/');
-        UI.push('UIWindow/SkillEx/SpNum/');
-        UI.push('UIWindow/VegaSpell/Count/');
-        UI.push('UIWindow/ToolTip/Equip/GrowthEnabled/');
-        type = !type ? 0 : type;
-        type = type > UI.length ? UI.length : type;
-        UI = UI[type];
-    return [...level.toString()].map(str => `#fUI/${UI + str}#`);
+/**
+ * 获取怪物名称 - 兜底处理
+ * @param {Object} mob 怪物对象
+ * @returns {string} 怪物名称
+ */
+function getMobName(mob) {
+    const name = mob.getName();
+    return (!name || name === 'MISSINGNO') ? `#o${mob.getId()}#` : name;
 }
+
+/**
+ * 获取等级图片 - 优化数组操作，避免性能损耗
+ * @param {number} level 等级
+ * @returns {string} 等级图片拼接字符串
+ */
+function getLevelImage(level) {
+    const uiPath = 'UI/Basic/LevelNo/';
+    return level.toString().split('').map(num => `#f${uiPath}${num}#`).join('');
+}
+
+/**
+ * 清理缓存 - 避免内存泄漏
+ */
+function disposeCache() {
+    cache.mapObj = null;
+    cache.mobAll = [];
+    cache.mobNormal = [];
+    cache.mobBoss = [];
+    cache.isInit = false;
+}
+
+// 原方法保留（兼容源码调用）
+function leveldispose() {
+    disposeCache();
+    cm.dispose();
+}
+
+function levelnull() {
+    disposeCache();
+    cm.dispose();
+}
+
+// 移除无用方法（countAllSymbols）- 原逻辑无实际作用且影响性能

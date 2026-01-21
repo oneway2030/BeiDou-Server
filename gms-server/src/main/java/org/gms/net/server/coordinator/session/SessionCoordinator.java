@@ -44,7 +44,7 @@ public class SessionCoordinator {
     private static final Logger log = LoggerFactory.getLogger(SessionCoordinator.class);
     private static final SessionCoordinator instance = new SessionCoordinator();
     // 新增：记录每个用户（IP+HWID）当前登录的账号ID集合
-    private final Map<String, Set<Integer>> userAccountMap = new ConcurrentHashMap<>();
+    public Map<String, Set<Integer>> userAccountMap = new ConcurrentHashMap<>();
 
     public static SessionCoordinator getInstance() {
         return instance;
@@ -189,7 +189,6 @@ public class SessionCoordinator {
         log.info("进行登陆会话逻辑 ip:" + remoteHost + " accountId=" + accountId);
         InitializationResult initResult = sessionInit.initialize(remoteHost);
         if (initResult != InitializationResult.SUCCESS) {
-            log.info("直接登陆的未校验多开 ip:" + remoteHost);
             return initResult.getAntiMulticlientResult();
         }
 
@@ -220,7 +219,7 @@ public class SessionCoordinator {
     public void cacheMultiOpenId(Client client, int accountId) {
         String remoteHost = getSessionRemoteHost(client);
         // 新增：记录当前账号到用户的登录列表中
-        Set<Integer> accountSet = userAccountMap.computeIfAbsent(remoteHost, k -> ConcurrentHashMap.newKeySet());
+        Set<Integer> accountSet = userAccountMap.computeIfAbsent(getRealIp(remoteHost), k -> ConcurrentHashMap.newKeySet());
         // 2. 显式判断：若accountId不在集合中，则添加
         if (!accountSet.contains(accountId)) {
             accountSet.add(accountId);
@@ -231,32 +230,48 @@ public class SessionCoordinator {
      * 校验多开
      */
     public boolean isMultiOpen(String remoteHost) {
-        log.info("白名单校验 isMultiOpen");
         try {
             int maxAllowed = GameConfig.getServerInt("max_accounts_per_user");
+            log.info("白名单校验 最大多开数量=" + maxAllowed);
             if (maxAllowed <= 0) {
                 log.info("白名单校验返回 maxAllowed=" + maxAllowed);
                 return false;
             }
-            String ip = remoteHost.split("-")[0]; // 分割后第一个元素为IP
+            String ip = getRealIp(remoteHost);
             String whiteIp = GameConfig.getServerString("multi_open_whitelist_ip");
             // 步骤2：检查IP是否在白名单中，若在则不校验多开
             if (ip != null && ip.equals(whiteIp)) {
-                log.info("白名单 直接跳过");
+                log.info("在白名单中直接跳过");
                 return false;
             }
-            Set<Integer> existingAccounts = userAccountMap.getOrDefault(remoteHost, Collections.emptySet());
+            Set<Integer> existingAccounts = userAccountMap.getOrDefault(ip, Collections.emptySet());
             if (existingAccounts.size() >= maxAllowed) {
-                log.info("用户多开超过最大限制 ip:" + remoteHost);
+                log.info("用户多开超过最大限制 ip:" + ip + " 用户已开启数量=" + existingAccounts.size());
                 return true;
             } else {
-                log.info("校验多开用户 ip:" + remoteHost + " 已开账号数量=" + existingAccounts.size());
+                log.info("校验多开用户 ip:" + ip + " 已开账号数量=" + existingAccounts.size());
                 log.info("校验多开用户 总账号=" + userAccountMap);
             }
         } catch (Exception e) {
             log.error("Failed to check whether multi-open is enabled", e);
         }
         return false;
+    }
+
+    /**
+     * 从拼接的远程主机字符串中提取真实IP地址
+     *
+     * @param remoteHost 格式示例：192.168.1.1-8080、10.0.0.1、null、""
+     * @return 提取的纯IP地址（空/异常场景返回空字符串，避免NPE）
+     */
+    public String getRealIp(String remoteHost) {
+        if (remoteHost == null || remoteHost.trim().isEmpty()) {
+            return "";
+        }
+        String cleanHost = remoteHost.trim();
+        String[] parts = cleanHost.split("-", 2);
+        String realIp = parts[0].trim();
+        return realIp.isEmpty() ? "" : realIp;
     }
 
     public AntiMulticlientResult attemptGameSession(Client client, int accountId, Hwid hwid) {
@@ -366,11 +381,12 @@ public class SessionCoordinator {
             }
         }
         // 3. 清理用户-账号关联记录（若之前添加了userAccountMap）
-        Set<Integer> userAccounts = userAccountMap.get(remoteHost);
+        String ip = getRealIp(remoteHost);
+        Set<Integer> userAccounts = userAccountMap.get(ip);
         if (userAccounts != null) {
             userAccounts.remove(accountId);
             if (userAccounts.isEmpty()) {
-                userAccountMap.remove(remoteHost); // 为空时移除键，节省内存
+                userAccountMap.remove(ip); // 为空时移除键，节省内存
             }
         }
         if (immediately != null && immediately) {

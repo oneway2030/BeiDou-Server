@@ -23,7 +23,7 @@ var 升星配置 = [
         certainSuccess: 20,//多少次失败后必定成功
         //需要的物品
         needItems: [
-            {id: 4260010, qty: 1, tip: "（还未加出处）"},
+            {id: 4260010, qty: 1, tip: ""},
             {id: meso_id, qty: 1000},
             {id: cash_id, qty: 2000},
             {id: exp_id, qty: 1000},

@@ -70,7 +70,7 @@ function queryDrops(searchString) {
     if (searchResult != null && searchResult.length > 0) {
         cm.sendOk(searchResult);
     } else {
-        cm.sendOk(choice === 0 ? `未找到名称为【${searchString}】的怪物` : `未找到名称为【${searchString}】的物品`);
+        cm.sendOk(choice === 0 ? `未找到名称为【${searchString}】的物品` : `未找到名称为【${searchString}】的怪物`);
     }
     cm.dispose();
 }
