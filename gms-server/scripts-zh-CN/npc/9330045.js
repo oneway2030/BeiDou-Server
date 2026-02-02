@@ -1,129 +1,194 @@
-/* Kedrick
-	Fishking King NPC
-*/
-
 var status = -1;
 var sel;
+const Fishing = Java.type('org.gms.util.packets.Fishing');
 
 function start() {
-    cm.sendYesNo("请问是否想钓鱼？（有BUG目前无法钓鱼）");
+    var text = "\t\t\t\t\t#e#k欢迎来到#r[钓鱼系统]#k系统#n\t\t\t\t\r\n\r\n";
+    text += getFishInfo();
+    text += "#b#L999#钓鱼说明#l\r\n\r\n";
+    text += "#L0#进入钓鱼场#n#l\r\n\r\n";
+    text += "#L1#500万购买钓鱼椅#n#l\r\n\r\n";
+    text += "#L2#兑换公婆戒指#l\r\n\r\n";
+    text += "#L3#鱼的兑换#l\r\n\r\n";
+    text += "#L4#道具兑换#l\r\n\r\n";
+    text += "#L5#查看钓鱼掉落#l\r\n\r\n";
+    cm.sendSimple(text);
 }
 
+/**
+ * 获取钓鱼等级与成功率信息
+ * @returns {string} 格式化的钓鱼信息文本
+ */
+function getFishInfo() {
+    // 1. 获取玩家钓鱼总经验，做容错处理（避免非数字/负数）
+    let fishTotalExp = Number(cm.getPlayer().getFishLevel()) || 0;
+    fishTotalExp = Math.max(fishTotalExp, 0); // 确保经验值非负
+
+    // 2. 核心计算（语义化变量命名，逻辑清晰）
+    const expPerLevel = 1000; // 每级所需经验（常量抽离，便于后续调整）
+    const fishLevel = Math.floor(fishTotalExp / expPerLevel); // 钓鱼等级（取整数）
+    const currentExp = fishTotalExp - (fishLevel * expPerLevel); // 当前等级剩余经验
+    const successRateBonus = fishLevel * 1; // 每级加成1%成功率
+
+    // 3. 格式化返回文本（排版更清晰，语义更明确）
+    return `#b#e钓鱼等级#r${fishLevel}级#b（经验：#r${currentExp}/${expPerLevel}#b）\r\n钓鱼成功率加成#r${successRateBonus}%#l#n\r\n\r\n`;
+}
 
 function action(mode, type, selection) {
+    // 取消/关闭对话处理
     if (mode != 1) {
-        if (mode == 0)
-        cm.sendOk("好吧，以后再来~~"); //这句不能删，会卡住
         cm.dispose();
         return;
     }
+
     status++;
+    // 第一级菜单（选择功能）
     if (status == 0) {
-	cm.sendSimple("你想要做什么？（有BUG目前无法钓鱼）\n\r #b#L0#进入钓鱼场#l \n\r #L1#50万买鱼饵（有bug无法购买）#l \n\r #L2#500万买钓鱼椅#l \n\r #L3#用美味的饵兑换鱼饵（有bug无法购买）#l \n\r #L4#钓鱼指南#l \n\r #L5##i1142146:#（渔王勋章[期：30天]）#l");
-    //cm.sendSimple("你好！我是渔场管理员.\n\r如果你想要进行钓鱼，请购买[钓鱼竿]，30秒钓一次鱼，产出各种好东东，好了介绍这么多，多多搜集兑换丰厚奖励吧！\n\r #b#L0# #v4000411#  进入钓鱼场.#l \n\r #L2##v3011000#  500万金币购买钓鱼椅.#l \n\r #b#L7##v5340000#  500万金币购买钓鱼杆.#l \n\r #b#L1##v5350000# 50w金币购买鱼饵.#l \n\r #L4##v4161001#   钓鱼指南.#l \n\r ");//#L5##v4001200# 小鱼抽奖处.
-      } else if (status == 1) {
-	sel = selection;
-	if (sel == 0) {
-//	    if (cm.haveItem(5340000) || cm.haveItem(5340001)) {
-	    if (cm.haveItem(3011000)) {
-		if (cm.haveItem(3011000)) {
-	//	    cm.saveLocation("FISHING");
-		    cm.getPlayer().saveLocation("MIRROR");//保存当前地图
-		    cm.warp(741000200,0);
-		    cm.dispose();
-		} else {
-		    cm.sendNext("你必须有鱼的椅子以便能钓鱼！");
-		    cm.dispose();
-		}
-	    } else {
-		cm.sendNext("你必须有鱼杆，有钓鱼椅！");
-		cm.dispose();
-	    }
-	} else if (sel == 1) {
-	    cm.sendYesNo("50万购买鱼饵。你想买吗？（有bug无法购买）");
-	} else if (sel == 2) {
-	    if (cm.haveItem(3011000)) {
-		cm.sendNext("你已经有一把钓鱼椅。每个角色只能有1个钓鱼椅。");
-	    } else {
-		if (cm.canHold(3011000) && cm.getMeso() >= 5000000) {
-		    cm.gainMeso(-5000000);
-		    cm.gainItem(3011000, 1);
-		    cm.sendNext("快乐钓鱼~");
-		} else {
-		    cm.sendOk("请检查是否有所需的500W金币或足够的背包空间。");
-		}
-	    }
-	    cm.dispose();
-		} else if (sel == 7) {
-	    if (cm.haveItem(5340000)) {
-		cm.sendNext("你已经有一把钓鱼竿。每个角色只能有1个钓鱼杆。");
-	    } else {
-		if (cm.canHold(5340000) && cm.getMeso() >= 5000000) {
-		    cm.gainMeso(-5000000);
-		    cm.gainItem(5340000, 1);
-		    cm.sendNext("快乐钓鱼~");
-		} else {
-		    cm.sendOk("请检查是否有所需的500W金币或足够的背包空间。");
-		}
-	    }
-	    cm.dispose();
-		} else if (sel == 8) {
-	    if (cm.haveItem(5340001)) {
-		cm.sendNext("你已经有一把高级钓鱼椅。每个角色只能有1个高级钓鱼杆。");
-	    } else {
-		if (cm.canHold(5340001) && cm.getMeso() >= 100000000) {
-		    cm.gainMeso(-100000000);
-		    cm.gainItem(5340001, 1);
-		    cm.sendNext("快乐钓鱼~");
-		} else {
-		    cm.sendOk("请检查是否有所需的1000W金币或足够的背包空间。");
-		}
-	    }
-	    cm.dispose();
-	} else if (sel == 3) {
-	    //if (cm.canHold(2300001,120) && cm.haveItem(5350000,1)) {  //脚本中如果出现了不存在的物品，再用gm指令生成该物品，容易服务端卡死
-		//if (!cm.haveItem(2300001)) {
-		//    cm.gainItem(2300001, 120); // 鱼饵道具有bug无法获得
-		//    cm.gainItem(5350000,-1);
-		//    cm.sendNext("兑换钓鱼的诱饵成功~");
-		      cm.sendNext("鱼饵道具有bug无法获得。");
-		//} else {
-		//    cm.sendNext("你已经有了钓鱼的诱饵。");
-		//}
-	//    } else {
-	//	cm.sendOk("美味的诱饵可以去商场看看，另外请检查是否有足够的背包空间。");
-	//    }
-	    cm.dispose();
-	} else if (sel == 4) {
-	    cm.sendOk("你需要10级以上，有鱼竿、鱼饵，钓椅进入钓鱼湖。能出各种武器必成卷，正向卷，放大镜，游戏币等重要道具！");
-	    cm.dispose();
-	} else if (sel == 5) {
-		//	cm.openNpc(9330045, 3);
-		cm.sendOk("很抱歉因为bug无法获得该奖励。");
-       		 cm.dispose();
-      		  return;
-        } else if (sel == 6) {
-		//	cm.openNpc(9330045, 1);
-		cm.sendOk("很抱歉因为bug无法获得该奖励。");
-       		 cm.dispose();
-      		  return;
-	   // cm.dispose();
-	}
-    } else if (status == 2) {
-	if (sel == 1) {
-	    //if (cm.canHold(2300000,120) && cm.getMeso() >= 500000) {
-		//if (!cm.haveItem(2300001)) {
-		//    cm.gainMeso(-500000);
-		//    cm.gainItem(2300000, 120);
-		//    cm.sendNext("快乐钓鱼~");
-		       cm.sendNext("有bug无法购买。");
-		//} else {
-		//    cm.sendNext("你已经有了钓鱼的诱饵。");
-		//}
-	   // } else {
-	//	cm.sendOk("请检查是否有所需的500000金币或足够的背包空间。");
-	 //   }
-	    cm.dispose();
-	}
+        sel = selection;
+        // 进入钓鱼场逻辑
+        if (sel == 0) {
+            // 检查是否拥有钓鱼椅（核心条件）
+            if (cm.haveItem(3011000)) {
+                // 保存当前地图位置，传送至钓鱼场
+                cm.getPlayer().saveLocation("MIRROR");
+                cm.warp(741000200, 0);
+                cm.dispose();
+            } else {
+                cm.sendNext("你必须拥有钓鱼椅才能进入钓鱼场！");
+                cm.dispose();
+            }
+        }
+        // 购买钓鱼椅逻辑
+        else if (sel == 1) {
+            // 检查是否已拥有钓鱼椅（每个角色限1个）
+            if (cm.haveItem(3011000)) {
+                cm.sendNext("你已经有一把钓鱼椅，每个角色只能拥有1个！");
+                cm.dispose();
+            } else {
+                // 检查金币和背包空间
+                if (cm.canHold(3011000) && cm.getMeso() >= 5000000) {
+                    cm.gainMeso(-5000000); // 扣除500万金币
+                    cm.gainItem(3011000, 1); // 发放钓鱼椅
+                    cm.sendNext("购买成功！快乐钓鱼~");
+                } else {
+                    cm.sendOk("请检查是否有500万金币，或背包是否有足够空间！");
+                }
+                cm.dispose();
+            }
+        } else if (sel == 2) {
+            openNpc("钓鱼/戒指兑换");
+        } else if (sel == 3) {
+            openNpc("钓鱼/鱼的兑换");
+        } else if (sel == 4) {
+            openNpc("钓鱼/道具兑换");
+        } else if (sel == 5) {
+            查看掉落();
+        } else if (sel == 999) {
+            let text = "\t\t\t\t\t#e#k欢迎来到#r[钓鱼说明]#k系统#n\t\t\t\t\r\n\r\n";
+            text += "#r1.钓鱼需要购买钓鱼的专用椅子，点击椅子后进入钓鱼状态\r\n";
+            text += `#b2.需要诱饵才能钓鱼，普通鱼饵${Fishing.COMMON_BAIT_BASE_RATE * 100}%成功率，高级鱼饵${Fishing.ADVANCED_BAIT_BASE_RATE * 100}%成功率\r\n`;
+            text += "#r3.鱼饵在随身商店中购买\r\n";
+            text += `#b4.钓鱼成功后会增加钓鱼等级，每级增加1%的成功率，最高加成${Fishing.MAX_SUCCESS_LEVEL_RATE * 100}%成功率\r\n`;
+            text += "5.在自由或者进入钓鱼场都可以钓鱼\r\n";
+            text += "6.钓鱼失败也能获取5点卷\r\n";
+            cm.sendOk(text);
+            cm.dispose();
+        }
+    }
+}
+
+function openNpc(scriptName) {
+    cm.dispose();
+    cm.openNpc(9900001, scriptName);
+}
+
+
+// 定义掉落类型映射（关联概率+格式化展示）
+const dropTypes = [
+    {
+        type: 1,
+        name: "#r普通#k",
+        rate: Fishing.ITEM_RATE_COMMON,
+        items: Fishing.getInstance().getItemsByType(1, null)
+    },
+    {
+        type: 2,
+        name: "#r罕见#k",
+        rate: Fishing.ITEM_RATE_UNCOMMON,
+        items: Fishing.getInstance().getItemsByType(2, null)
+    },
+    {type: 3, name: "#r稀有#k", rate: Fishing.ITEM_RATE_RARE, items: Fishing.getInstance().getItemsByType(3, null)},
+    {
+        type: 4,
+        name: "#r超稀有#k",
+        rate: Fishing.ITEM_RATE_SUPER_RARE,
+        items: Fishing.getInstance().getItemsByType(4, null)
+    },
+    {
+        type: 5,
+        name: "#r传奇#k",
+        rate: Fishing.ITEM_RATE_LEGENDARY,
+        items: Fishing.getInstance().getItemsByType(5, null)
+    },
+    {
+        type: 6,
+        name: "#r神话#k",
+        rate: Fishing.ITEM_RATE_MYTHIC,
+        items: Fishing.getInstance().getItemsByType(6, null)
+    }
+];
+
+function 查看掉落() {
+    // 1. 初始化标题文本
+    let text = "\t\t\t\t\t#e#k欢迎来到#r[钓鱼掉落]#k系统#n\t\t\t\t\r\n\r\n";
+    // 遍历拼接掉落信息（含概率）
+    dropTypes.forEach((dropType) => {
+        // 拼接「稀有度 + 概率百分比」
+        text += `【${dropType.name}】#b掉落概率：${toPercentage(dropType.rate)}#k\r\n`;
+
+        // 空数据处理
+        if (!dropType.items || dropType.items.length === 0) {
+            text += "  无掉落物品\r\n\r\n";
+            return;
+        }
+
+        // 遍历物品
+        dropType.items.forEach((itemId) => {
+            text += `#v${itemId}##z${itemId}#`;
+        });
+        text += "\r\n";
+    });
+
+    // 发送文本
+    cm.sendOk(text);
+    cm.dispose();
+}
+
+function toPercentage(rate) {
+    // 基础转换：小数 → 百分比数值（如0.0001 → 0.01，0.001 → 0.1，0.01 → 1）
+    const percent = rate * 100;
+
+    // 1. 万分之级别（< 0.1%）：转中文“万分之X”
+    if (percent < 0.1) {
+        // 万分比数值 = rate * 10000（如0.0001 → 1，0.0005 → 5，0.00099 → 9.9）
+        const perTenThousand = rate * 10000;
+        // 优化显示：整数无小数位，非整数保留1位
+        const formattedNum = perTenThousand % 1 === 0 ? perTenThousand : perTenThousand.toFixed(1);
+        return `万分之${formattedNum}`;
+    }
+    // 2. 千分之级别（0.1% ≤ 数值 < 1%）：转中文“千分之X”
+    else if (percent < 1) {
+        // 千分比数值 = rate * 1000（如0.001 → 1，0.0055 → 5.5，0.00999 → 9.99）
+        const perThousand = rate * 1000;
+        // 优化显示：整数无小数位，非整数保留1位
+        const formattedNum = perThousand % 1 === 0 ? perThousand : perThousand.toFixed(1);
+        return `千分之${formattedNum}`;
+    }
+    // 3. 百分级别（≥ 1%）：保持%格式，根据数值适配小数位
+    else {
+        const perHundred = rate * 100;
+        // 优化显示：整数保留0位小数，非整数保留2位（适配88.87%这类场景）
+        const formattedNum = perHundred % 1 === 0 ? perHundred : perHundred.toFixed(2);
+        return `${formattedNum}%`;
     }
 }

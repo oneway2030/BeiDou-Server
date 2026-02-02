@@ -30,9 +30,11 @@ import org.gms.client.BuddyList.BuddyOperation;
 import org.gms.client.BuddylistEntry;
 import org.gms.client.Character;
 import org.gms.client.Family;
-import org.gms.config.GameConfig;
+import org.gms.client.inventory.InventoryType;
+import org.gms.client.inventory.manipulator.InventoryManipulator;
 import org.gms.config.GameConfig;
 import org.gms.constants.game.GameConstants;
+import org.gms.constants.id.ItemId;
 import org.gms.dao.entity.PlayernpcsFieldDO;
 import org.gms.dao.mapper.PlayernpcsFieldMapper;
 import org.gms.manager.ServerManager;
@@ -2053,42 +2055,9 @@ public class World {
         }
     }
 
-    public boolean registerFisherPlayer(Character chr, int baitLevel) {
-        synchronized (fishingAttempters) {
-            if (fishingAttempters.containsKey(chr)) {
-                return false;
-            }
-
-            fishingAttempters.put(chr, baitLevel);
-            return true;
-        }
-    }
-
-    public int unregisterFisherPlayer(Character chr) {
-        Integer baitLevel = fishingAttempters.remove(chr);
-        if (baitLevel != null) {
-            return baitLevel;
-        } else {
-            return 0;
-        }
-    }
-
+    // 核心方法实现
     public void runCheckFishingSchedule() {
-        double[] fishingLikelihoods = Fishing.fetchFishingLikelihood();
-        double yearLikelihood = fishingLikelihoods[0], timeLikelihood = fishingLikelihoods[1];
-
-        if (!fishingAttempters.isEmpty()) {
-            List<Character> fishingAttemptersList;
-
-            synchronized (fishingAttempters) {
-                fishingAttemptersList = new ArrayList<>(fishingAttempters.keySet());
-            }
-
-            for (Character chr : fishingAttemptersList) {
-                int baitLevel = unregisterFisherPlayer(chr);
-                Fishing.doFishing(chr, baitLevel, yearLikelihood, timeLikelihood);
-            }
-        }
+        Fishing.getInstance().doAllFishing();
     }
 
     public void runPartySearchUpdateSchedule() {

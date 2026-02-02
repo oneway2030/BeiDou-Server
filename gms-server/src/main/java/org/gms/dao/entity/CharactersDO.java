@@ -202,4 +202,7 @@ public class CharactersDO implements Serializable {
 
     private Long jailexpire;
 
+    @Column("fishLevel")
+    private Integer fishLevel;
+
 }

@@ -241,7 +241,7 @@ public class MapId {
     private static final int PEACEFUL_SHIP = 541010110;
 
     public static boolean isFishingArea(int mapId) {
-        return mapId == ON_THE_WAY_TO_THE_HARBOR || mapId == PIER_ON_THE_BEACH || mapId == PEACEFUL_SHIP;
+        return mapId == 910000000 || mapId == ON_THE_WAY_TO_THE_HARBOR || mapId == PIER_ON_THE_BEACH || mapId == PEACEFUL_SHIP || mapId == 741000200 ;
     }
 
     // Wedding

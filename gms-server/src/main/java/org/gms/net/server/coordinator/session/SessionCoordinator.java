@@ -187,15 +187,14 @@ public class SessionCoordinator {
 //        }
         String remoteHost = getSessionRemoteHost(client);
         log.info("进行登陆会话逻辑 ip:" + remoteHost + " accountId=" + accountId);
-        InitializationResult initResult = sessionInit.initialize(remoteHost);
-        if (initResult != InitializationResult.SUCCESS) {
-            return initResult.getAntiMulticlientResult();
-        }
-
         try {
             //校验多开
             if (accountId != 1 && isMultiOpen(remoteHost)) {
                 return AntiMulticlientResult.REMOTE_REACHED_LIMIT; // 超过限制，拒绝登录
+            }
+            InitializationResult initResult = sessionInit.initialize(remoteHost);
+            if (initResult != InitializationResult.SUCCESS) {
+                return initResult.getAntiMulticlientResult();
             }
 //            else if (!loginStorage.registerLogin(accountId)) {
 //                return AntiMulticlientResult.MANY_ACCOUNT_ATTEMPTS;

@@ -367,7 +367,7 @@ public class CommandsExecutor {
         addCommand("pmob", 4, PmobCommand.class);
         addCommand("pmobremove", 4, PmobRemoveCommand.class);
         addCommand("warptolife", 4, WarpToLifeCommand.class);
-
+        addCommand("fishdrop", 4, FishDropCommand.class);
         commandsNameDesc.add(levelCommandsCursor);
     }
 

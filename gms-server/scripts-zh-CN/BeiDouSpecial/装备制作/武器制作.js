@@ -1299,8 +1299,10 @@ function 制作物品() {
                 // 检查普通物品
                 if (index > 0 && (need.id >= 1300000 && need.id < 1800000)) {
                     材料item = player.getInventory(InventoryType.EQUIP).getItem(1);
-                    lackItems.push(`武器材料必须放在第一格`);
-                    canExchange = false;
+                    if (材料item.getItemId() !== need.id) {
+                        lackItems.push(`武器材料必须放在第一格`);
+                        canExchange = false;
+                    }
                 } else if (cm.getItemQuantity(need.id) < need.qty) {
                     lackItems.push(`#t${need.id}#（缺少：${need.qty - cm.getItemQuantity(need.id)}）`);
                     canExchange = false;

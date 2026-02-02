@@ -63,19 +63,23 @@ function doSelect(selection) {
 
 var 枫叶奖励 = 4032133;
 var 枫叶数量 = 5;
-var 奖励_KEY = "补偿奖励_v5"
+var 奖励_KEY = "补偿奖励_v6"
 var meso_id = 9999999;
 var cash_id = 9999998;
-let 节日str = "元旦&跨年";
+let 节日str = "春节";
 
 var rewards = [
-    {id: cash_id, qty: 20000},//点卷
+    {id: cash_id, qty: 50000},//点卷
     {id: meso_id, qty: 3000},
-    {id: 4032133, qty: 10},//红色钻石
-    {id: 2029005, qty: 4},//三倍经验
-    {id: 2029002, qty: 4},//双倍爆率
-    {id: 2049115, qty: 6},//正向
-    {id: 2340000, qty: 6},//祝福
+    {id: 4032133, qty: 20},//红色钻石
+    {id: 4032133, qty: 20},//红色钻石
+    {id: 4260010, qty: 50},//低级强化宝石
+    {id: 4260009, qty: 10},//中级强化宝石
+    {id: 4039020, qty: 30},//金蛋
+    {id: 2029005, qty: 5},//三倍经验
+    {id: 2029002, qty: 10},//双倍爆率
+    {id: 2049116, qty: 20},//正向
+    {id: 2340001, qty: 30},//祝福
 ];
 // const InventoryManipulator = Java.type('org.gms.client.inventory.manipulator.InventoryManipulator');
 // const ItemConstants = Java.type('org.gms.constants.inventory.ItemConstants');
@@ -109,7 +113,7 @@ function 发放奖励() {
             cm.gainItem(reward.id, qty);
         }
     });
-    sendEquipment(1702920, 3 * 24 * 60);
+    sendEquipment(1702920, 30 * 24 * 60);
     cm.saveOrUpdateAccountExtendValue(奖励_KEY, "1");
     cm.sendOk("恭喜你领取成功");
     cm.getPlayer().sendAllWordNoticeNew(3, "节日礼物", `恭喜玩家【${cm.getPlayer().getName()}】领取【${节日str}】礼物! 祝大家节日快来，玩的开心~~`);
@@ -149,8 +153,8 @@ function sendEquipment(fashionItemId, time) {
         30,
         500,
         500,
-        30,
-        60,
+        50,
+        100,
         0,
         0,
         0,

@@ -42,10 +42,9 @@ import org.gms.server.maps.MapleMap;
 import org.gms.util.PacketCreator;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * @author Matze
@@ -526,6 +525,75 @@ public class InventoryManipulator {
         }
     }
 
+    /**
+     * 检查已装备栏是否存在指定类型的戒指
+     */
+    private static boolean hasEquippedTargetRing(Inventory eqpdInv, Predicate<? super Equip> predicate) {
+        boolean hasCoupleRing = eqpdInv.list().stream()
+                .filter(item -> item instanceof Equip) // 过滤装备类物品
+                .map(item -> (Equip) item)
+                .anyMatch(predicate);
+
+        return hasCoupleRing;
+    }
+
+    private static boolean isGpRing(Inventory eqpdInv, int targetItemId) {
+        if (ItemId.isGpRing(targetItemId)) {
+            // 遍历戒指槽位（根据MapleStory槽位定义，戒指槽通常是slot 10、11、12等，需确认你司服务器的槽位编号）
+            int[] ringSlots = {-12, -13, -15, -16};
+            for (int slot : ringSlots) {
+                Item item = eqpdInv.getItem((short) slot);
+                if (item == null) {
+                    continue;
+                }
+                int equippedItemId = item.getItemId();
+                if (ItemId.isGpRing(equippedItemId)) {
+                    return true;
+                }
+
+            }
+        }
+        return false;
+    }
+
+    private static boolean isGWKJRing(Inventory eqpdInv, int targetItemId) {
+        if (ItemId.isGWKJRing(targetItemId)) {
+            // 遍历戒指槽位（根据MapleStory槽位定义，戒指槽通常是slot 10、11、12等，需确认你司服务器的槽位编号）
+            int[] ringSlots = {-12, -13, -15, -16};
+            for (int slot : ringSlots) {
+                Item item = eqpdInv.getItem((short) slot);
+                if (item == null) {
+                    continue;
+                }
+                int equippedItemId = item.getItemId();
+                if (ItemId.isGWKJRing(equippedItemId)) {
+                    return true;
+                }
+
+            }
+        }
+        return false;
+    }
+
+    private static boolean isUniqueCoupleRing(Inventory eqpdInv, int targetItemId, int filterId) {
+        if (filterId == targetItemId) {
+            // 遍历戒指槽位（根据MapleStory槽位定义，戒指槽通常是slot 10、11、12等，需确认你司服务器的槽位编号）
+            int[] ringSlots = {-12, -13, -15, -16};
+            for (int slot : ringSlots) {
+                Item item = eqpdInv.getItem((short) slot);
+                if (item == null) {
+                    continue;
+                }
+                int equippedItemId = item.getItemId();
+                if (equippedItemId == filterId) {
+                    return true;
+                }
+
+            }
+        }
+        return false;
+    }
+
     /*
     穿上装备判断
      */
@@ -535,16 +603,44 @@ public class InventoryManipulator {
         Character chr = c.getPlayer();
         Inventory eqpInv = chr.getInventory(InventoryType.EQUIP);
         Inventory eqpdInv = chr.getInventory(InventoryType.EQUIPPED);
-
         Equip source = (Equip) eqpInv.getItem(src);
-        int itemGender = ItemId.getGender(source.getItemId());
-        //装备超过自身的转生等级不能装备
+        int itemId = source.getItemId();
+        int itemGender = ItemId.getGender(itemId);
+        //TODO 装备超过自身的转生等级不能装备
         int maxLevel = source.getEquipmentMaxLevelUp(c);
         if (source.getItemLevel() > maxLevel) {
             c.sendPacket(PacketCreator.enableActions());
             chr.dropMessage(1, I18nUtil.getMessage("InventoryManipulator.equip.message2", maxLevel + 1));
             return;
         }
+        // TODO 戒指判断开始
+        if (isGpRing(eqpdInv, itemId)) {
+            c.sendPacket(PacketCreator.enableActions());
+            chr.dropMessage(1, I18nUtil.getMessage("InventoryManipulator.equip.message3"));
+            return;
+        }
+        if (isGWKJRing(eqpdInv, itemId)) {
+            c.sendPacket(PacketCreator.enableActions());
+            chr.dropMessage(1, I18nUtil.getMessage("InventoryManipulator.equip.message3"));
+            return;
+        }
+        if (isUniqueCoupleRing(eqpdInv, itemId,ItemId.COUPLE_RING_1)) {
+            c.sendPacket(PacketCreator.enableActions());
+            chr.dropMessage(1, I18nUtil.getMessage("InventoryManipulator.equip.message3"));
+            return;
+        }
+        if (isUniqueCoupleRing(eqpdInv, itemId,ItemId.COUPLE_RING_2)) {
+            c.sendPacket(PacketCreator.enableActions());
+            chr.dropMessage(1, I18nUtil.getMessage("InventoryManipulator.equip.message3"));
+            return;
+
+        }
+        if (isUniqueCoupleRing(eqpdInv, itemId,ItemId.COUPLE_RING_3)) {
+            c.sendPacket(PacketCreator.enableActions());
+            chr.dropMessage(1, I18nUtil.getMessage("InventoryManipulator.equip.message3"));
+            return;
+        }
+        // TODO 戒指判断结束
         //控制台参数为true时进行校验判断
         if (GameConfig.getServerBoolean("use_equipment_gender_limit") && itemGender != 2 && itemGender != chr.getGender()) {  //判断装备是否要求角色性别
             c.sendPacket(PacketCreator.enableActions());

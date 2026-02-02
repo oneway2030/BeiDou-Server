@@ -1,25 +1,3 @@
-/* 
- This file is part of the OdinMS Maple Story Server
- Copyright (C) 2008 Patrick Huy <patrick.huy@frz.cc>
- Matthias Butz <matze@odinms.de>
- Jan Christian Meyer <vimes@odinms.de>
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU Affero General Public License as
- published by the Free Software Foundation version 3 as published by
- the Free Software Foundation. You may not use, modify or distribute
- this program under any otheer version of the GNU Affero General Public
- License.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; witout even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU Affero General Public License for more details.
-
-
- You should have received a copy of the GNU Affero General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package org.gms.client;
 
 import lombok.Getter;
@@ -85,6 +63,7 @@ import org.gms.server.partyquest.PartyQuest;
 import org.gms.server.quest.Quest;
 import org.gms.service.*;
 import org.gms.util.*;
+import org.gms.util.packets.Fishing;
 import org.gms.util.packets.WeddingPackets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -490,7 +469,9 @@ public class Character extends AbstractCharacterObject {
     private int qstMaxLevel;//骑士团最高等级
 
     private int rebornsCount = -1;//重生次数
-
+    @Setter
+    @Getter
+    private int fishLevel = -1;
     /**
      * 最后攻击时间
      * 用来校验攻击速度是否过快
@@ -5666,10 +5647,17 @@ public class Character extends AbstractCharacterObject {
     }
 
     public boolean attemptCatchFish(int baitLevel) {
+        boolean canFish = canFish() && Fishing.getInstance().registerFisherPlayer(this);
+        if (canFish) {
+            dropMessage(5, "开始钓鱼！");
+        }
+        return canFish;
+    }
+
+    public boolean canFish() {
         return GameConfig.getServerBoolean("use_fishing_system") && MapId.isFishingArea(mapId) &&
-                this.getPosition().getY() > 0 &&
-                ItemConstants.isFishingChair(chair.get()) &&
-                this.getWorldServer().registerFisherPlayer(this, baitLevel);
+//                this.getPosition().getY() > 0 &&
+                ItemConstants.isFishingChair(chair.get());
     }
 
     public void leaveMap() {
@@ -6252,7 +6240,6 @@ public class Character extends AbstractCharacterObject {
             ret.skinColor = SkinColor.getById(rs.getInt("skincolor"));
             ret.face = rs.getInt("face");
             ret.hair = rs.getInt("hair");
-
             // skipping pets, probably unneeded here
 
             ret.level = rs.getInt("level");
@@ -6278,7 +6265,7 @@ public class Character extends AbstractCharacterObject {
             ret.rankMove = rs.getInt("rankMove");
             ret.jobRank = rs.getInt("jobRank");
             ret.jobRankMove = rs.getInt("jobRankMove");
-
+            ret.fishLevel = rs.getInt("fishLevel");
             if (equipped != null) {  // players can have no equipped items at all, ofc
                 Inventory inv = ret.inventory[InventoryType.EQUIPPED.ordinal()];
                 for (Item item : equipped) {
@@ -6332,7 +6319,7 @@ public class Character extends AbstractCharacterObject {
         ret.rankMove = this.getRankMove();
         ret.jobRank = this.getJobRank();
         ret.jobRankMove = this.getJobRankMove();
-
+        ret.fishLevel = this.getFishLevel();
         return ret;
     }
 
@@ -6357,7 +6344,6 @@ public class Character extends AbstractCharacterObject {
         Character chr = new Character();
         chr.setClient(client);
         chr.setId(charactersDO.getId());
-
         chr.setName(charactersDO.getName());
         chr.setLevel(charactersDO.getLevel());
         chr.setFame(charactersDO.getFame());
@@ -6375,6 +6361,7 @@ public class Character extends AbstractCharacterObject {
         chr.setHpMpApUsed(charactersDO.getHpMpUsed());
         chr.setHasMerchant(charactersDO.getHasmerchant());
         chr.setRemainingAp(charactersDO.getAp());
+        chr.setFishLevel(charactersDO.getFishLevel());
         int[] remainingSps = new int[10];
         Arrays.fill(remainingSps, 0);
         if (!RequireUtil.isEmpty(charactersDO.getSp())) {
@@ -6621,6 +6608,7 @@ public class Character extends AbstractCharacterObject {
         cdo.setUseslots((int) chr.getSlots(1));
         cdo.setSetupslots((int) chr.getSlots(2));
         cdo.setEtcslots((int) chr.getSlots(3));
+        cdo.setFishLevel(chr.getFishLevel());
         // todo 未完成
         return cdo;
     }
@@ -6794,11 +6782,11 @@ public class Character extends AbstractCharacterObject {
         enableActions();
     }
 
-    private void unsitChairInternal() {
+    public void unsitChairInternal() {
         int chairid = chair.get();
         if (chairid >= 0) {
             if (ItemConstants.isFishingChair(chairid)) {
-                this.getWorldServer().unregisterFisherPlayer(this);
+                Fishing.getInstance().unregisterFisherPlayer(this);
             }
 
             setChair(-1);
@@ -6818,6 +6806,7 @@ public class Character extends AbstractCharacterObject {
                 if (chair.get() < 0) {
                     setChair(itemId);
                     getMap().broadcastMessage(this, PacketCreator.showChair(this.getId(), itemId), false);
+                    attemptCatchFish(1);
                 }
                 enableActions();
             } else if (itemId >= 0) {    // sit on map chair
@@ -7372,7 +7361,7 @@ public class Character extends AbstractCharacterObject {
 
             try {
                 // Character info
-                try (PreparedStatement ps = con.prepareStatement("INSERT INTO characters (str, dex, luk, `int`, gm, skincolor, gender, job, hair, face, map, meso, spawnpoint, accountid, name, world, hp, mp, maxhp, maxmp, level, ap, sp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+                try (PreparedStatement ps = con.prepareStatement("INSERT INTO characters (str, dex, luk, `int`, gm, skincolor, gender, job, hair, face, map, meso, spawnpoint, accountid, name, world, hp, mp, maxhp, maxmp, level, ap, sp, fishLevel) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
                     ps.setInt(1, attrStr);
                     ps.setInt(2, attrDex);
                     ps.setInt(3, attrLuk);
@@ -7395,7 +7384,6 @@ public class Character extends AbstractCharacterObject {
                     ps.setInt(20, maxMp);
                     ps.setInt(21, level);
                     ps.setInt(22, remainingAp);
-
                     StringBuilder sps = new StringBuilder();
                     for (int j : remainingSp) {
                         sps.append(j);
@@ -7403,7 +7391,7 @@ public class Character extends AbstractCharacterObject {
                     }
                     String sp = sps.toString();
                     ps.setString(23, sp.substring(0, sp.length() - 1));
-
+                    ps.setInt(24, fishLevel > 0 ? fishLevel : 1);
                     int updateRows = ps.executeUpdate();
                     if (updateRows < 1) {
                         log.error("Error trying to insert chr {}", name);
@@ -7526,7 +7514,7 @@ public class Character extends AbstractCharacterObject {
             con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
 
             try {
-                try (PreparedStatement ps = con.prepareStatement("UPDATE characters SET level = ?, fame = ?, str = ?, dex = ?, luk = ?, `int` = ?, exp = ?, gachaexp = ?, hp = ?, mp = ?, maxhp = ?, maxmp = ?, sp = ?, ap = ?, gm = ?, skincolor = ?, gender = ?, job = ?, hair = ?, face = ?, map = ?, meso = ?, hpMpUsed = ?, spawnpoint = ?, party = ?, buddyCapacity = ?, messengerid = ?, messengerposition = ?, mountlevel = ?, mountexp = ?, mounttiredness= ?, equipslots = ?, useslots = ?, setupslots = ?, etcslots = ?,  monsterbookcover = ?, vanquisherStage = ?, dojoPoints = ?, lastDojoStage = ?, finishedDojoTutorial = ?, vanquisherKills = ?, matchcardwins = ?, matchcardlosses = ?, matchcardties = ?, omokwins = ?, omoklosses = ?, omokties = ?, dataString = ?, fquest = ?, jailexpire = ?, partnerId = ?, marriageItemId = ?, lastExpGainTime = ?, ariantPoints = ?, partySearch = ? WHERE id = ?", Statement.RETURN_GENERATED_KEYS)) {
+                try (PreparedStatement ps = con.prepareStatement("UPDATE characters SET level = ?, fame = ?, str = ?, dex = ?, luk = ?, `int` = ?, exp = ?, gachaexp = ?, hp = ?, mp = ?, maxhp = ?, maxmp = ?, sp = ?, ap = ?, gm = ?, skincolor = ?, gender = ?, job = ?, hair = ?, face = ?, map = ?, meso = ?, hpMpUsed = ?, spawnpoint = ?, party = ?, buddyCapacity = ?, messengerid = ?, messengerposition = ?, mountlevel = ?, mountexp = ?, mounttiredness= ?, equipslots = ?, useslots = ?, setupslots = ?, etcslots = ?,  monsterbookcover = ?, vanquisherStage = ?, dojoPoints = ?, lastDojoStage = ?, finishedDojoTutorial = ?, vanquisherKills = ?, matchcardwins = ?, matchcardlosses = ?, matchcardties = ?, omokwins = ?, omoklosses = ?, omokties = ?, dataString = ?, fquest = ?, jailexpire = ?, partnerId = ?, marriageItemId = ?, lastExpGainTime = ?, ariantPoints = ?, partySearch = ?, fishLevel = ? WHERE id = ?", Statement.RETURN_GENERATED_KEYS)) {
                     ps.setInt(1, level);    // thanks CanIGetaPR for noticing an unnecessary "level" limitation when persisting DB data
                     ps.setInt(2, fame);
 
@@ -7640,7 +7628,8 @@ public class Character extends AbstractCharacterObject {
                     ps.setTimestamp(53, new Timestamp(lastExpGainTime));
                     ps.setInt(54, ariantPoints);
                     ps.setBoolean(55, canRecvPartySearchInvite);
-                    ps.setInt(56, id);
+                    ps.setInt(56, fishLevel);
+                    ps.setInt(57, id);
 
                     int updateRows = ps.executeUpdate();
                     if (updateRows < 1) {
@@ -10082,6 +10071,10 @@ public class Character extends AbstractCharacterObject {
             }
             Server.getInstance().broadcastMessage(getWorld(), PacketCreator.serverNotice(msgType, getClient().getChannel(), msg));
         }
+    }
+
+    public int getExpNeededForNextLevel() {
+        return ExpTable.getExpNeededForLevel(getLevel(), getRebornsCount());
     }
 
 }

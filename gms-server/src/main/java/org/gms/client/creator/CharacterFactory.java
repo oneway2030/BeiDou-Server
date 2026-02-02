@@ -59,6 +59,7 @@ public abstract class CharacterFactory {
         newCharacter.setLevel(recipe.getLevel());
         newCharacter.setJob(recipe.getJob());
         newCharacter.setMapId(recipe.getMap());
+        newCharacter.setFishLevel(1);
 
         Inventory equipped = newCharacter.getInventory(InventoryType.EQUIPPED);
         ItemInformationProvider ii = ItemInformationProvider.getInstance();

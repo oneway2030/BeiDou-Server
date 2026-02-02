@@ -21,6 +21,35 @@ public class ItemId {
     public static final int ROARING_TIGER_MESSENGER = 5390006;
     //北斗快捷菜单
     public static final int SHORTCUT_MENU = 2029001;
+    // 在 ItemId.java 中新增
+    // 公婆戒指区间
+    public static final int GP_RING_MIN = 1112446;
+    public static final int GP_RING_MAX = 1112495;
+    // 唯一装备的单个戒指ID
+    public static final int COUPLE_RING_1 = 1113084; //黑龙
+    public static final int COUPLE_RING_2 = 1114306; //混沌
+    public static final int COUPLE_RING_3 = 1113231; //ss级大师宝石
+    // 怪物卡戒和重启戒指区间
+    public static final int GWKJ_RING_RANGE1_MIN = 1112880;
+    public static final int GWKJ_RING_RANGE1_MAX = 1112889;
+    public static final int GWKJ_RING_RANGE2_MIN = 1114307;
+    public static final int GWKJ_RING_RANGE2_MAX = 1114311;
+
+    // 工具方法：判断是否为公婆戒指
+    public static boolean isGpRing(int itemId) {
+        return itemId >= GP_RING_MIN && itemId <= GP_RING_MAX;
+    }
+
+    // 工具方法：判断是否为怪物卡戒
+    public static boolean isGWKJRing(int itemId) {
+        return (itemId >= GWKJ_RING_RANGE1_MIN && itemId <= GWKJ_RING_RANGE1_MAX)
+                || (itemId >= GWKJ_RING_RANGE2_MIN && itemId <= GWKJ_RING_RANGE2_MAX);
+    }
+
+    // 判断是否为需要唯一装备的单个戒指
+    public static boolean isUniqueCoupleRing(int itemId) {
+        return itemId == COUPLE_RING_1 || itemId == COUPLE_RING_2 || itemId == COUPLE_RING_3;
+    }
 
     public static boolean isExpIncrease(int itemId) {
         return itemId >= 2022450 && itemId <= 2022452;
@@ -62,7 +91,7 @@ public class ItemId {
     // Chair
     public static final int RELAXER = 3010000;
     private static final int CHAIR_MIN = RELAXER;
-    private static final int CHAIR_MAX = FISHING_CHAIR;
+    private static final int CHAIR_MAX = 3019999;
 
     public static boolean isChair(int itemId) {
         return itemId >= CHAIR_MIN && itemId <= CHAIR_MAX;

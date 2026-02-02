@@ -929,6 +929,16 @@ public class Equip extends Item {
      * @param c 触发升级的客户端
      */
     public void gainLevel(Client c) {
+        // 这里缺一个校验
+        if (mUpgradeHistoryList != null) {
+            int size = mUpgradeHistoryList.size();
+            if (size > 0 && size != getItemLevel() - 1) {
+                itemLevel = (byte) (size + 1);
+                c.getPlayer().equipChanged();
+                c.getPlayer().forceUpdateItem(this); // 强制更新装备状态
+                return;
+            }
+        }
         List<Pair<StatUpgrade, Integer>> stats = getNewStats(); // 初始化属性升级列表
         itemLevel++; // 提升装备等级
         //记录装备升级信息
@@ -1196,7 +1206,7 @@ public class Equip extends Item {
             addStarAttributeToAllValidStats(starLevelAttribute);
             return;
         }
-        setLevel(oldItem.getLevel());
+        setItemLevel(oldItem.getItemLevel());
         // 场景2：升级历史非空 → 遍历升级历史叠加属性（保留原有逻辑）
         for (List<Pair<StatUpgrade, Integer>> pairs : mUpgradeHistoryList) {
             for (Pair<StatUpgrade, Integer> pair : pairs) {

@@ -1,32 +1,9 @@
-/*
-	This file is part of the OdinMS Maple Story Server
-    Copyright (C) 2008 Patrick Huy <patrick.huy@frz.cc>
-		       Matthias Butz <matze@odinms.de>
-		       Jan Christian Meyer <vimes@odinms.de>
-    Copyleft (L) 2016 - 2019 RonanLana (HeavenMS)
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation version 3 as published by
-    the Free Software Foundation. You may not use, modify or distribute
-    this program under any other version of the GNU Affero General Public
-    License.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-/*
-* @Author: Moogra, XxOsirisxX, Ronan
-* @NPC:    2091005
-* @Name:   So Gong
-* @Map(s): Dojo Hall
-*/
-
+/**
+ * 每次获取143点
+ * @type {boolean}
+ */
 var disabled = false;
-var belts = Array(1132000, 1132001, 1132002, 1132003, 1132004);
+var belts = Array(1132000, 1132112, 1132113, 1132114, 1132115);
 var belt_level = Array(25, 35, 45, 60, 75);
 var belt_on_inventory;
 var belt_points;

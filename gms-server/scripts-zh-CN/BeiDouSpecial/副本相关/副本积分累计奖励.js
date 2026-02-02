@@ -1,17 +1,19 @@
 // 目标兑换道具集合（[道具ID, 所需累计积分，描述]）
 var itemSet = Array(
-    Array(1142538, 50, ""),// 补充描述，便于展示
-    Array(1142539, 100, ""),// 若无需描述，保留空字符串即可
-    Array(1142540, 150, ""),
-    Array(1142541, 200, ""),
-    Array(1142790, 300, ""),
-    Array(1142789, 400, ""),
-    Array(1142788, 500, ""),
+    Array(1142700, 50, ""),//   10
+    Array(1142701, 100, ""),//  20
+    Array(1142702, 150, ""),//  40
+    Array(1142703, 200, ""),//  60
+    Array(1142704, 300, ""),//  80
+    Array(1142705, 400, ""),//  120
+    Array(1142706, 500, ""),//   200
 );
-
+const InventoryType = Java.type('org.gms.client.inventory.InventoryType');
+const InventoryManipulator = Java.type('org.gms.client.inventory.manipulator.InventoryManipulator');
 var status = 0;
-var 累计奖励基础key = "副本积分累计奖励_";
+var 累计奖励基础key = "副本积分累计奖励v1_";
 var index; // 选中的道具在itemSet中的索引
+let targetItem = null;      // 材料装备
 
 function start() {
     action(1, 0, 0);
@@ -100,13 +102,43 @@ function doSelect() {
         cm.dispose();
         return;
     }
+    const player = cm.getPlayer();
+    if (index > 0) {
+        var needItemId = itemSet[index - 1][0];
+        targetItem = player.getInventory(InventoryType.EQUIP).getItem(1);
+        if (!targetItem || targetItem.getItemId() !== needItemId) {
+            cm.sendOk(`需要把勋章#v${needItemId}#[#z${needItemId}#]放在第一格`);
+            cm.dispose();
+            return;
+        }
+    }
     if (!cm.canHold(itemId, 1)) {
         cm.sendOk("背包空间不足，无法领取奖励！");
         cm.dispose();
         return;
     }
     //发放道具
-    cm.gainItem(itemId, 1);
+    const newItem = cm.gainItem(itemId, 1);
+    if (!newItem) {
+        cm.sendOk("制作失败：无法生成目标物品！");
+        cm.dispose();
+        return;
+    }
+    newItem.setFlag(1); // 上锁
+    // 武器属性继承逻辑
+    if (targetItem) {
+        newItem.replaceData(targetItem);
+        // 移除原材料装备
+        InventoryManipulator.removeFromSlot(
+            player.getClient(),
+            InventoryType.EQUIP,
+            targetItem.getPosition(),
+            1,
+            false
+        );
+    }
+    player.forceUpdateItem(newItem); // 强制更新装备状态
+    // 制作成功提示+广播
     保存领取信息(itemId);
     cm.sendOk(`恭喜领取道具：#b#t${itemId}#`);
     cm.getPlayer().sendAllWordNoticeNew(3, "副本兑换", `恭喜肝神【${cm.getPlayer().getName()}】领取累计副本奖励【${cm.getPlayer().getItemName(itemId)}】!`);

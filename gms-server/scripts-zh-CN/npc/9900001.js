@@ -54,7 +54,6 @@ function action(mode, type, selection) {
     }
     if (status === 0) {
         var log = LoggerFactory.getLogger("main_js");
-        log.warn(`===========================[${cm.getPlayer().getName()}]打开脚本主页，只是记录一下看是否是这里卡顿===========================`);
         var OldTitle = "\t\t\t\t\t#e#k欢迎大佬 #r[" + cm.getPlayer().getName() + "] #k您的到来#n\t\t\t\t\r\n";
         let text = OldTitle;
         text += " \r\n";
