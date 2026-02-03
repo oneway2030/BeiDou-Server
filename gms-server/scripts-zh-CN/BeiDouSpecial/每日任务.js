@@ -212,7 +212,7 @@ function completeTask() {
             if (totalCompleteCount >= 额外奖励次数) {
                 发放道具();
                 //发放6000声望
-                cm.getPlayer().getFamilyEntry().gainReputation(声望, true);
+                // cm.getPlayer().getFamilyEntry().gainReputation(声望, true);
                 extraRewardText = `- 额外奖励：\r\n`;
                 奖励道具集合.forEach(item => {
                     extraRewardText += `  #v${item.id}##t${item.id}# x ${item.qty}\r\n`;

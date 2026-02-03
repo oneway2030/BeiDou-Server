@@ -33,6 +33,7 @@ function action(mode, type, selection) {
         let text = ""; // 空行优化格式
         text += "#b请选择你要兑换的累计奖励：\r\n";
         text += "#b当前累计副本积分：#r" + cm.getPqTotalPoints() + "#k\r\n";
+        text += "#b从小肝怡情开始可继承上一个勋章的红钻洗练和星级强化#r#k\r\n";
         // 遍历itemSet，生成兑换选项列表
         for (var i = 0; i < itemSet.length; i++) {
             var itemInfo = itemSet[i];
