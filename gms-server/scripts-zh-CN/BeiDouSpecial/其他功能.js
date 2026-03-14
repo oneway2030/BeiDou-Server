@@ -63,21 +63,21 @@ function doSelect(selection) {
 
 var 枫叶奖励 = 4032133;
 var 枫叶数量 = 5;
-var 奖励_KEY = "补偿奖励_v6"
+var 奖励_KEY = "补偿奖励_v7"
 var meso_id = 9999999;
 var cash_id = 9999998;
-let 节日str = "春节";
+let 节日str = "回馈老玩家";
 
 var rewards = [
     {id: cash_id, qty: 50000},//点卷
-    {id: meso_id, qty: 3000},
+    {id: meso_id, qty: 8000},
     {id: 4032133, qty: 20},//红色钻石
     {id: 4032133, qty: 20},//红色钻石
     {id: 4260010, qty: 50},//低级强化宝石
     {id: 4260009, qty: 10},//中级强化宝石
     {id: 4039020, qty: 30},//金蛋
-    {id: 2029005, qty: 5},//三倍经验
-    {id: 2029002, qty: 10},//双倍爆率
+    {id: 2029005, qty: 10},//三倍经验
+    {id: 2029002, qty: 15},//双倍爆率
     {id: 2049116, qty: 20},//正向
     {id: 2340001, qty: 30},//祝福
 ];
@@ -113,7 +113,7 @@ function 发放奖励() {
             cm.gainItem(reward.id, qty);
         }
     });
-    sendEquipment(1702920, 30 * 24 * 60);
+    sendEquipment(1702920, -1);
     cm.saveOrUpdateAccountExtendValue(奖励_KEY, "1");
     cm.sendOk("恭喜你领取成功");
     cm.getPlayer().sendAllWordNoticeNew(3, "节日礼物", `恭喜玩家【${cm.getPlayer().getName()}】领取【${节日str}】礼物! 祝大家节日快来，玩的开心~~`);
@@ -149,18 +149,18 @@ function sendEquipment(fashionItemId, time) {
     cm.getPlayer().gainEquip(fashionItemId,
         30,
         30,
-        100,
+        80,
         30,
-        500,
-        500,
-        50,
-        100,
+        200,
+        200,
+        30,
+        80,
         0,
         0,
         0,
         0,
         0,
-        50,
+        20,
         0,
         0,
         time
