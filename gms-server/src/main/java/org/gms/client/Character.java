@@ -2970,42 +2970,58 @@ public class Character extends AbstractCharacterObject {
         updateSingleStat(Stat.EXP, exp.addAndGet(gain));
     }
 
-    private synchronized void gainExpInternal(long gain, int equip, int party, boolean show, boolean inChat, boolean white) {   // need of method synchonization here detected thanks to MedicOP
+    private synchronized void gainExpInternal(long gain, int equip, int party, boolean show, boolean inChat, boolean white) {
         long total = Math.max(gain + equip + party, -exp.get());
 
-        if (level < getMaxLevel() && (allowExpGain || this.getEventInstance() != null)) {
+        // 允许满级后继续获得经验，但不会升级
+        if (level <= getMaxLevel() && (allowExpGain || this.getEventInstance() != null)) {
             long leftover = 0;
             long nextExp = exp.get() + total;
-
+            int needExp = ExpTable.getExpNeededForLevel(level, getRebornsCount());
+            if (nextExp > needExp && level >= 250) {
+                nextExp = needExp;
+                total = nextExp - exp.get();
+                if (total <= 0) {
+                    total = 0;
+                }
+            }
+            // 处理经验值溢出
             if (nextExp > (long) Integer.MAX_VALUE) {
+                // 如果当前经验已经达到上限，不再累加
+                if (exp.get() >= Integer.MAX_VALUE) {
+                    lastExpGainTime = System.currentTimeMillis();
+                    return;
+                }
                 total = Integer.MAX_VALUE - exp.get();
                 leftover = nextExp - Integer.MAX_VALUE;
             }
-            updateSingleStat(Stat.EXP, exp.addAndGet((int) total));
-            totalExpGained += total;
-            if (show) {
-                announceExpGain(gain, equip, party, inChat, white);
+            if (total > 0) {
+                updateSingleStat(Stat.EXP, exp.addAndGet((int) total));
+                totalExpGained += total;
+                if (show) {
+                    announceExpGain(gain, equip, party, inChat, white);
+                }
             }
-            while (exp.get() >= ExpTable.getExpNeededForLevel(level, getRebornsCount())) {
-                levelUp(true);
+            // 只有未达到最高等级时才执行升级逻辑
+            if (level < getMaxLevel()) {
+                while (exp.get() >= ExpTable.getExpNeededForLevel(level, getRebornsCount())) {
+                    levelUp(true);
 
-                String msg = I18nUtil.getMessage("Character.levelUp.globalNotice", getName(), getMap().getMapName(), getLevel());
-                if (GameConfig.getServerBoolean("use_announce_global_level_up") && !isGM()) {
-                    for (Character player : getWorldServer().getPlayerStorage().getAllCharacters()) {
-                        // 如果玩家在商城，将会以弹窗的形式发送，一堆弹窗会把玩家逼疯！
-                        if (player.getCashShop().isOpened()) {
-                            continue;
+                    String msg = I18nUtil.getMessage("Character.levelUp.globalNotice", getName(), getMap().getMapName(), getLevel());
+                    if (GameConfig.getServerBoolean("use_announce_global_level_up") && !isGM()) {
+                        for (Character player : getWorldServer().getPlayerStorage().getAllCharacters()) {
+                            if (player.getCashShop().isOpened()) {
+                                continue;
+                            }
+                            player.dropMessage(6, msg);
                         }
-                        player.dropMessage(6, msg);
+                        log.info(msg);
                     }
-                    log.info(msg);
+                    if (level == getMaxLevel()) {
+                        break;
+                    }
+                    if (GameConfig.getServerBoolean("use_level_up_protect")) break;
                 }
-                if (level == getMaxLevel()) {
-                    setExp(0);
-                    updateSingleStat(Stat.EXP, 0);
-                    break;
-                }
-                if (GameConfig.getServerBoolean("use_level_up_protect")) break;
             }
 
             if (leftover > 0) {

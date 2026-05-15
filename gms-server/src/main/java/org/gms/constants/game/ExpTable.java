@@ -41,12 +41,12 @@ public final class ExpTable {
     public static int getExpNeededForLevel(int level, int rebornsCount) {
         // 如果 level 大于等于数组长度，Math.min 会返回 array.length - 1（即最后一个元素的索引）
         // 如果 level 为负数，数组会抛出 ArrayIndexOutOfBoundsException，这通常是非法输入，应该避免
-        if (rebornsCount <= 0) {
-            int safeIndex = Math.min(level, exp.length - 1);
-            return exp[safeIndex];
-        } else {
+        if (rebornsCount > 0 && level > 200) {
             //一次转生后固定21E升一级
             return 2100000000;
+        } else {
+            int safeIndex = Math.min(level, exp.length - 1);
+            return exp[safeIndex];
         }
         //        return level > 200 ? 2000000000 : exp[level];
     }

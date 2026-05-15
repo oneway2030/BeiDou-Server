@@ -62,7 +62,7 @@ function action(mode, type, selection) {
         if ((jobId == 0 || jobId == 1000 || jobId == 2000) && !cm.getPlayer().isGM() && 获取更换职业次数() == 1) {
             text += "#L999#新人福利#n#l\r\n\r\n\r\n";
             text += "\t#b(一转后开启传送功能)\r\n";
-            text += "#L2#" + icon + "#随身仓库#l\t#L3#便利商店#l\t#L4#一键出售#l\r\n";
+            text += "#L1#" + icon + "#r万能传送#l\t#L2#随身仓库#l\t#L3#便利商店#l\t#L4#一键出售#l\r\n";
             text += " \r\n";
         } else {
             text += "\t\t\t\t\t#L0 ##b自由市场#n#l\t\t #L999#新人福利#n#l\r\n";

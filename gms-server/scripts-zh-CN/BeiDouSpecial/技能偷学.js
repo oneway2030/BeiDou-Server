@@ -20,6 +20,7 @@ var 技能 = [
     [2221006, 30, "链环闪电", 1],
     [2121006, 30, "连环爆破", 1],
     [3121002, 30, "火眼晶晶", 3],
+    [1320006, 30, "恶龙附身（仅战士能学）", 2],
 ];
 
 function start() {
@@ -87,7 +88,9 @@ function action(mode, type, selection) {
         cm.dispose();
     }
 }
-
+function 是战士(jobId) {
+    return jobId==112||jobId==122||jobId==132
+}
 /**
  * 学习指定索引的技能
  * @param {number} index - 技能数组索引
@@ -97,7 +100,12 @@ function 学习技能(index) {
     const [skillId, maxLevel, skillName, requiredPoints] = 技能[index];
     const isStolen = isSkillAlreadyStolen(skillId);
     let message = "";
-
+    var jobId = cm.getPlayer().getJob().getId();
+    if(skillId==1320006&&!是战士(jobId)){
+        cm.sendOk(`该技能仅限战士偷学`);
+        cm.dispose();
+        return;
+    }
     // 未偷学过的技能需要检查点数
     if (!isStolen) {
         const currentPoints = getStealKillCount();

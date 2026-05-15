@@ -22,9 +22,7 @@
 	Extra NPC info.
  */
 
-var cost;
-var ptcost = 1;  //普通职业消耗枫叶
-var qscost = 1; //骑士团消耗枫叶
+var cost = 10;
 
 var relevel;
 var relevela = 120;  //普通职业更换职业所需等级
@@ -110,7 +108,7 @@ var 职业2 = Array(
 //	Array("战神", 2100, 120, 2111));
     Array("战神", 2100, 10, 2000));
 var title = "\t\t\t\t\t#e#k欢迎来到#r[更换职业]#k系统#n\t\t\t\t\r\n";
-var itemId = 4000313;
+var itemId = 4039020;
 
 
 function start() {
@@ -132,28 +130,26 @@ function action(mode, type, selection) {
             status--;
 
         if (status == 0) {
-            cost = ptcost;    //默认是普通职业
+            var 变更次数=获取更换职业次数();
+            cost = cost + (变更次数 * 10);    //默认是普通职业
+            cost = cost > 100 ? 100 : cost
             relevel = relevela;
-            if (Math.floor(cm.getJobId() / 1000) == 1) {  //判断为骑士团职业
-                cost = qscost;
-                relevel = relevelb;
-            }
-            var level = cm.getLevel();
-            var job = cm.getJobId();
             var text = title;
             text += "\r\n";
             text += "#r变更职业要求：#k\r\n";
             text += "1.等级大于等于" + relevel + "级\r\n"
-            text += `2.消耗#v${itemId}##t${itemId}# × ${cost}\r\n\r\n`;
+            text += `2.消耗#v${itemId}##t${itemId}# × ${cost}(#r当前已转换${变更次数}次#d)\r\n\r\n`;
 
             text += "#r变更职业后：#k\r\n";
             text += "#k1.等级回到#r#e " + returnLevel + " #n级\r\n";
-            text += "#b2.技能将清空#n#k\r\n"
+            text += "#b2.技能将清空，包括偷学技能，#r(返还偷学技能点)#n#k\r\n"
             text += "#k3.返还已使用的#b红色魔石#k和#b蓝色魔石#n#k\r\n"
             text += "#k2.回到1级菜单将不可用.需要一转后才可以使用全部功能\r\n"
             text += "#k3.骑士团和战童最好自己先去一转地图后在变更职业\r\n"
             text += "#k4.温馨提示最好再准备一把0级武器#k\r\n";
-            text += "#b5.更换职业后可以使用快速转职功能转职,更换次数越多转职消耗越大#k\r\n";
+            text += "#b5.更换职业后可以使用快速转职功能转职#k\r\n";
+            text += "#r6.更换次数越多，下次更换职业消耗越大(金蛋每次增加10个)#k\r\n";
+            text += "#k7.更换后属性点将会全额返还，包括涅槃后增加的#k\r\n";
             text += "#r(请谨慎变更职业)\r\n\r\n";
             text += "#r请选择您要变更的职业：\r\n";
             for (var i = 0; i < 职业.length; i++) {
@@ -162,7 +158,7 @@ function action(mode, type, selection) {
             cm.sendSimple(text)
         } else if (status == 1) {
             var level = cm.getLevel();
-            if (level < relevel || !cm.haveItem(4000313, cost)) {
+            if (level < relevel || !cm.haveItem(itemId, cost)) {
                 cm.sendOk("不满足变更职业条件，无法变更\r\n");
                 cm.dispose();
                 return;
@@ -183,13 +179,13 @@ function action(mode, type, selection) {
             text += "\r\n\r\n";
             cm.sendYesNo(text);
         } else if (status == 2) { //再次检查物品是否足够，避免玩家中途将物品丢出去从而不消耗物品
-            if (cm.haveItem(4000313, cost)) {
+            if (cm.haveItem(itemId, cost)) {
                 var hpFlag = hpCount > 0 ? cm.canHold(HP_ITEM_ID, hpCount) : true;
                 var mpFlag = mpCount > 0 ? cm.canHold(MP_ITEM_ID, mpCount) : true;
 
                 if (hpFlag && mpFlag) {
                     //cm.gainMeso(-cost);
-                    cm.gainItem(4000313, -cost);
+                    cm.gainItem(itemId, -cost);
                     换职业(职业[selecta][1]);
                 } else {
                     cm.sendOk("背包空间不足，需要的材料不足");
@@ -210,8 +206,13 @@ function action(mode, type, selection) {
     }
 }
 
+// 偷学技能配置（与技能偷学.js保持一致）
+var 偷学技能点key = "偷学技能点";
+var 已偷学的技能key = "已偷学的技能";
+
 function 换职业(jobId) {
     var player = cm.getChar();
+    var rebornsCount = player.getRebornsCount();
     // 重置技能
     try {
         var skillList = player.getSkills();
@@ -228,6 +229,10 @@ function 换职业(jobId) {
         cm.dispose();
         return;
     }
+    // 清空偷学技能并返还技能点
+    cm.saveOrUpdateCharacterExtendValue(偷学技能点key, String(rebornsCount));
+    // 清空已偷学技能记录
+    cm.saveOrUpdateCharacterExtendValue(已偷学的技能key, "");
     // 重置属性点
     try {
         player.setStr(4); // 初始力量

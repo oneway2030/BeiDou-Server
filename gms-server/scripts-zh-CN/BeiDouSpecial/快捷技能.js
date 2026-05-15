@@ -15,7 +15,13 @@ function start() {
     action(1, 0, 0);
 }
 
+function 获取更换职业次数() {
+    let count = cm.getAccountExtendValue("更换职业次数");
+    return Number(count) || 0; // 处理未签到过的情况
+}
+
 function action(mode, type, selection) {
+    var count = 获取更换职业次数();
     if (CheckStatus(mode)) {
         if (status == 0) {
             let text = Title;
@@ -30,6 +36,12 @@ function action(mode, type, selection) {
             text += " \r\n";
             text += " \r\n";
             text += "#L2#删除二段跳#n#l\r\n";
+            if (count > 0) {
+                text += " \r\n";
+                text += " #s1007# #L3##r锻造#n#l\r\n";
+                text += " \r\n";
+                text += " #s1005# #L4##r英雄回声#n#l\r\n";
+            }
             cm.sendSimple(text);
         } else if (status == 1) {
             doSelect(selection)
@@ -49,10 +61,16 @@ function doSelect(selection) {
             getKill(4111006)
             break;
         case 2://删除二段跳
-            cm.teachSkill(2101002, 0, 20, -1,true);
-            cm.teachSkill(4111006, 0, 20, -1,true);
+            cm.teachSkill(2101002, 0, 20, -1, true);
+            cm.teachSkill(4111006, 0, 20, -1, true);
             cm.sendOk("已将技能瞬移和二段跳重置到0级,可以加技能点了,如需使用技能请重新学习！");
             cm.dispose();
+            break;
+        case 3://锻造
+            getKill(1007)
+            break;
+        case 4://回声
+            getKill(1005)
             break;
         default:
             cm.dispose();
