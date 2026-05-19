@@ -92,18 +92,49 @@ var 升星配置 = [
 ];
 
 var 升级装备白名单 = [
-    {
-        id: 1113075, //装备id
-        maxStarLevel: 10, //最高星际
-    },
-    {
-        id: 1112889, //装备id
-        maxStarLevel: 10, //最高星际
-    },
-    {
-        id: 1004637, //装备id
-        maxStarLevel: 20, //最高星际
-    }
+    { id: 1113075, maxStarLevel: 10 },
+    { id: 1112889, maxStarLevel: 10 },
+    { id: 1004637, maxStarLevel: 20 },
+    // 耳环（装备制作）
+    { id: 1032060, maxStarLevel: 10 },
+    { id: 1032061, maxStarLevel: 10 },
+    { id: 1032101, maxStarLevel: 20 },
+    { id: 1032205, maxStarLevel: 20 },
+    { id: 1032206, maxStarLevel: 20 },
+    { id: 1032207, maxStarLevel: 30 },
+    { id: 1032208, maxStarLevel: 30 },
+    { id: 1032209, maxStarLevel: 40 },
+    { id: 1032219, maxStarLevel: 50 },
+    // 眼睛（装备制作）
+    { id: 1022118, maxStarLevel: 10 },
+    { id: 1022123, maxStarLevel: 10 },
+    { id: 1022129, maxStarLevel: 20 },
+    { id: 1022195, maxStarLevel: 30 },
+    // 腰带（装备制作）
+    { id: 1132296, maxStarLevel: 20 },
+    { id: 1132211, maxStarLevel: 20 },
+    { id: 1132212, maxStarLevel: 30 },
+    { id: 1132213, maxStarLevel: 30 },
+    { id: 1132214, maxStarLevel: 40 },
+    { id: 1132215, maxStarLevel: 50 },
+    // 披风·赫里希安精锐
+    { id: 1102471, maxStarLevel: 20 },
+    { id: 1102472, maxStarLevel: 20 },
+    { id: 1102473, maxStarLevel: 20 },
+    { id: 1102474, maxStarLevel: 20 },
+    { id: 1102475, maxStarLevel: 20 },
+    // 披风·诺巴
+    { id: 1102476, maxStarLevel: 30 },
+    { id: 1102477, maxStarLevel: 30 },
+    { id: 1102478, maxStarLevel: 30 },
+    { id: 1102479, maxStarLevel: 30 },
+    { id: 1102480, maxStarLevel: 30 },
+    // 披风·暴君
+    { id: 1102481, maxStarLevel: 50 },
+    { id: 1102482, maxStarLevel: 50 },
+    { id: 1102483, maxStarLevel: 50 },
+    { id: 1102484, maxStarLevel: 50 },
+    { id: 1102485, maxStarLevel: 50 },
 ];
 
 function start() {
@@ -160,7 +191,8 @@ function 升星确认界面() {
         confirmText += `#b2.放心大胆的强化，强化可以转移（暂未上线）\r\n`;
         confirmText += `#b3.武器都可以升星，普通武器最高10星\r\n`;
         confirmText += `#b4.手套都可以升星，普通手套最高10星\r\n`;
-        confirmText += `#b5.其他可以强化升星装备列表如下：\r\n`;
+        confirmText += `#b5.装备制作耳环/眼睛/腰带/披风可升星（最高星见列表）\r\n`;
+        confirmText += `#b6.其他可强化升星装备列表如下：\r\n`;
         升级装备白名单.forEach((item, index) => {
             // 拼接目标物品信息
             confirmText += `#v${item.id}#  #r#z${item.id}##b（最高${item.maxStarLevel}星）#k\r\n`;

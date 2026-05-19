@@ -20,13 +20,47 @@ var goldScale = 10000;
 var broadcastDefaultType = 1;
 let selectedIndex = -1;       // 选中的索引
 let 需要并被继承的装备 = null;      // 材料装备
+var 披风选系列中 = false;     // 披风：先选系列再选具体配方
+var 披风制作多一步 = false;   // 披风多一级菜单，确认制作与执行制作各延后一档
 //4251200 4251201 4251202
 
+/**
+ * 须放装备栏第一格、制作后 replaceData 继承星级/道具等级/洗练历史的材料装备 ID。
+ * 新增配方时只需在对应部位数组追加 id（与 needItems 里带「继承」提示的材料一致）。
+ */
+var 继承装备材料 = {
+    帽子: [1004637],
+    耳环: [1032060, 1032061, 1032101, 1032205, 1032206, 1032207, 1032208, 1032209],
+    眼睛: [1022118, 1022123, 1022129],
+    鞋子: [1072239, 1072732, 1072737],
+    腰带: [1132115, 1132296, 1132211, 1132212, 1132213, 1132214],
+    披风: [
+        1102471, 1102472, 1102473, 1102474, 1102475, // 诺巴材料：赫里希安精锐
+        1102476, 1102477, 1102478, 1102479, 1102480  // 暴君材料：诺巴
+    ]
+};
+
+var _继承装备材料索引 = null;
+
+function buildInheritEquipIdIndex() {
+    var index = {};
+    for (var category in 继承装备材料) {
+        if (!继承装备材料.hasOwnProperty(category)) {
+            continue;
+        }
+        var ids = 继承装备材料[category];
+        for (var i = 0; i < ids.length; i++) {
+            index[ids[i]] = true;
+        }
+    }
+    return index;
+}
+
 function isNeedEquip(id) {
-    return id == 1004637 || id == 1112494 || //头盔
-        id == 1032060 || id == 1032061 || id == 1032101 ||//耳环
-        id == 1022118 || id == 1022123 || id == 1022129 ||//眼睛
-        id == 1072344 || id == 1072732 || id == 1072737 || id == 1072743;//鞋子
+    if (_继承装备材料索引 === null) {
+        _继承装备材料索引 = buildInheritEquipIdIndex();
+    }
+    return !!_继承装备材料索引[id];
 }
 
 var 耳环 = [
@@ -59,6 +93,67 @@ var 耳环 = [
             {id: 1032061, qty: 1, tip: "(继承该装备洗练和星级)"},
             {id: meso_id, qty: 3000},
             {id: cash_id, qty: 30000},
+        ]
+    },
+    //神话耳环链（金币/点券在闪耀阿尔泰基础上逐级翻倍）
+    {
+        id: 1032205,
+        tipType: 3,
+        needItems: [
+            {id: 4001198, qty: 5, tip: "（毒物森林副本获取）"},
+            {id: 1032101, qty: 1, tip: "(继承该装备洗练和星级)"},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
+        ]
+    },
+    {
+        id: 1032206,
+        tipType: 3,
+        needItems: [
+            {id: 4001198, qty: 6, tip: "（毒物森林副本获取）"},
+            {id: 1032205, qty: 1, tip: "(继承该装备洗练和星级)"},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
+        ]
+    },
+    {
+        id: 1032207,
+        tipType: 3,
+        needItems: [
+            {id: 4001198, qty: 7, tip: "（毒物森林副本获取）"},
+            {id: 1032206, qty: 1, tip: "(继承该装备洗练和星级)"},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
+        ]
+    },
+    {
+        id: 1032208,
+        tipType: 3,
+        needItems: [
+            {id: 4001198, qty: 8, tip: "（毒物森林副本获取）"},
+            {id: 1032207, qty: 1, tip: "(继承该装备洗练和星级)"},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
+        ]
+    },
+    {
+        id: 1032209,
+        tipType: 3,
+        needItems: [
+            {id: 4001198, qty: 9, tip: "（毒物森林副本获取）"},
+            {id: 1032208, qty: 1, tip: "(继承该装备洗练和星级)"},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
+        ]
+    },
+    {
+        id: 1032219,
+        tipType: 3,
+        needItems: [
+            {id: 4001198, qty: 10, tip: "（毒物森林副本获取）"},
+            {id: 1032209, qty: 1, tip: "(继承该装备洗练和星级)"},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
         ]
     },
 ];
@@ -95,6 +190,16 @@ var 眼睛 = [
             {id: cash_id, qty: 50000},
         ]
     },
+    {
+        id: 1022195,
+        tipType: 3,
+        needItems: [
+            {id: 4001246, qty: 20, tip: "（玩具副本获取）"},
+            {id: 1022129, qty: 1, tip: "(继承该装备洗练和星级)"},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
+        ]
+    },
 ];
 
 var 鞋子 = [
@@ -124,8 +229,8 @@ var 鞋子 = [
         needItems: [
             {id: 4039015, qty: 1, tip: "（杜纳斯产出）"},
             {id: 1072239, qty: 1, tip: "(继承该装备洗练和星级)"},
-            {id: meso_id, qty: 10000},
-            {id: cash_id, qty: 50000},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
         ]
     },
     {
@@ -134,8 +239,8 @@ var 鞋子 = [
         needItems: [
             {id: 4039016, qty: 1, tip: "（努克斯产出）"},
             {id: 1072732, qty: 1, tip: "(继承该装备洗练和星级)"},
-            {id: meso_id, qty: 20000},
-            {id: cash_id, qty: 50000},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
         ]
     },
     {
@@ -144,8 +249,363 @@ var 鞋子 = [
         needItems: [
             {id: 4039017, qty: 1, tip: "（欧比啦产出）"},
             {id: 1072737, qty: 1, tip: "(继承该装备洗练和星级)"},
-            {id: meso_id, qty: 30000},
-            {id: cash_id, qty: 50000},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
+        ]
+    },
+];
+
+/**
+ * 腰带：愤怒的扎昆 → 强韧意志（黄/绿/蓝/红/黑）。黑贺腰带须道场等方式获得，不可在此制作。
+ * 需继承的上一级腰带放在装备栏第一格。
+ */
+var 腰带 = [
+    {
+        id: 1132296,
+        tipType: 3,
+        needItems: [
+            {id: 1132115, qty: 1, tip: "(继承该装备洗练和星级)"},
+            {id: 4001083, qty: 1, tip: "（扎昆的象征）"},
+            {id: 1003439, qty: 1, tip: "（粉色扎昆头盔）"},
+            {id: 4001198, qty: 1, tip: "（毒物森林副本获取）"},
+            {id: 4001246, qty: 1, tip: "（玩具副本获取）"},
+            {id: 4032266, qty: 1, tip: "（海盗副本获取）"},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
+        ]
+    },
+    {
+        id: 1132211,
+        tipType: 3,
+        needItems: [
+            {id: 1132296, qty: 1, tip: "(继承该装备洗练和星级)"},
+            {id: 4001198, qty: 2, tip: "（毒物森林副本获取）"},
+            {id: 4001246, qty: 2, tip: "（玩具副本获取）"},
+            {id: 4032266, qty: 2, tip: "（海盗副本获取）"},
+            {id: 4021009, qty: 10, tip: "（星石）"},
+            {id: 4011007, qty: 10, tip: "（月石）"},
+            {id: 4011008, qty: 10, tip: "（锂）"},
+            {id: 1132009, qty: 1, tip: "（紫色曲奇腰带）"},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
+        ]
+    },
+    {
+        id: 1132212,
+        tipType: 3,
+        needItems: [
+            {id: 1132211, qty: 1, tip: "(继承该装备洗练和星级)"},
+            {id: 4001198, qty: 3, tip: "（毒物森林副本获取）"},
+            {id: 4001246, qty: 3, tip: "（玩具副本获取）"},
+            {id: 4032266, qty: 3, tip: "（海盗副本获取）"},
+            {id: 4021009, qty: 20, tip: "（星石）"},
+            {id: 4011007, qty: 20, tip: "（月石）"},
+            {id: 4011008, qty: 20, tip: "（锂）"},
+            {id: 1132007, qty: 1, tip: "（蓝色曲奇腰带）"},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
+        ]
+    },
+    {
+        id: 1132213,
+        tipType: 3,
+        needItems: [
+            {id: 1132212, qty: 1, tip: "(继承该装备洗练和星级)"},
+            {id: 4001198, qty: 4, tip: "（毒物森林副本获取）"},
+            {id: 4001246, qty: 4, tip: "（玩具副本获取）"},
+            {id: 4032266, qty: 4, tip: "（海盗副本获取）"},
+            {id: 4021009, qty: 30, tip: "（星石）"},
+            {id: 4011007, qty: 30, tip: "（月石）"},
+            {id: 4011008, qty: 30, tip: "（锂）"},
+            {id: 4250000, qty: 30, tip: "（下等钻石）"},
+            {id: 4250100, qty: 30, tip: "（下等蓝宝石）"},
+            {id: 4250200, qty: 30, tip: "（下等石榴石）"},
+            {id: 4250300, qty: 30, tip: "（下等蛋白石）"},
+            {id: 4250400, qty: 30, tip: "（下等紫水晶）"},
+            {id: 4250500, qty: 30, tip: "（下等海蓝宝石）"},
+            {id: 4250600, qty: 30, tip: "（下等黄晶）"},
+            {id: 4250700, qty: 30, tip: "（下等祖母绿）"},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
+        ]
+    },
+    {
+        id: 1132214,
+        tipType: 3,
+        needItems: [
+            {id: 1132213, qty: 1, tip: "(继承该装备洗练和星级)"},
+            {id: 4001198, qty: 5, tip: "（毒物森林副本获取）"},
+            {id: 4001246, qty: 5, tip: "（玩具副本获取）"},
+            {id: 4032266, qty: 5, tip: "（海盗副本获取）"},
+            {id: 4021009, qty: 40, tip: "（星石）"},
+            {id: 4011007, qty: 40, tip: "（月石）"},
+            {id: 4011008, qty: 40, tip: "（锂）"},
+            {id: 4250001, qty: 5, tip: "（中等钻石）"},
+            {id: 4250101, qty: 5, tip: "（中等蓝宝石）"},
+            {id: 4250201, qty: 5, tip: "（中等石榴石）"},
+            {id: 4250301, qty: 5, tip: "（中等蛋白石）"},
+            {id: 4250401, qty: 5, tip: "（中等紫水晶）"},
+            {id: 4250501, qty: 5, tip: "（中等海蓝宝石）"},
+            {id: 4250601, qty: 5, tip: "（中等黄晶）"},
+            {id: 4250701, qty: 5, tip: "（中等祖母绿）"},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
+        ]
+    },
+    {
+        id: 1132215,
+        tipType: 3,
+        needItems: [
+            {id: 1132214, qty: 1, tip: "(继承该装备洗练和星级)"},
+            {id: 4001198, qty: 6, tip: "（毒物森林副本获取）"},
+            {id: 4001246, qty: 6, tip: "（玩具副本获取）"},
+            {id: 4032266, qty: 6, tip: "（海盗副本获取）"},
+            {id: 4021009, qty: 50, tip: "（星石）"},
+            {id: 4011007, qty: 50, tip: "（月石）"},
+            {id: 4011008, qty: 50, tip: "（锂）"},
+            {id: 4260000, qty: 50, tip: "（下等怪物结晶C）"},
+            {id: 4260001, qty: 50, tip: "（下等怪物结晶B）"},
+            {id: 4260002, qty: 50, tip: "（下等怪物结晶A）"},
+            {id: 4260003, qty: 50, tip: "（中等怪物结晶C）"},
+            {id: 4260004, qty: 50, tip: "（中等怪物结晶B）"},
+            {id: 4260005, qty: 50, tip: "（中等怪物结晶A）"},
+            {id: 4260006, qty: 50, tip: "（高等怪物结晶C）"},
+            {id: 4260007, qty: 50, tip: "（高等怪物结晶B）"},
+            {id: 4260008, qty: 50, tip: "（高等怪物结晶A）"},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
+        ]
+    },
+];
+
+/**
+ * 披风三系列：精锐 / 诺巴 / 暴君。每系列内 5 职业平行；
+ * 诺巴、暴君须继承同职业上一系列披风（装备栏第一格）。
+ */
+var 披风_赫里希安精锐 = [
+    // 赫里希安精锐（系列首阶，无需继承披风）
+    {
+        id: 1102471,
+        tipType: 3,
+        needItems: [
+            {id: 1102871, qty: 1, tip: "(愤怒的扎昆披风)"},
+            {id: 4031901, qty: 50, tip: "(帕普拉特斯之发)"},
+            {id: 4000141, qty: 10, tip: "(大老板的手提灯)"},
+            {id: 4000384, qty: 10, tip: "(黑色精华)"},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
+        ]
+    },
+    {
+        id: 1102472,
+        tipType: 3,
+        needItems: [
+            {id: 1102871, qty: 1, tip: "（愤怒的扎昆披风）"},
+            {id: 4031901, qty: 50, tip: "(帕普拉特斯之发)"},
+            {id: 4000141, qty: 10, tip: "(大老板的手提灯)"},
+            {id: 4000384, qty: 10, tip: "(黑色精华)"},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
+        ]
+    },
+    {
+        id: 1102473,
+        tipType: 3,
+        needItems: [
+            {id: 1102871, qty: 1, tip: "（愤怒的扎昆披风）"},
+            {id: 4031901, qty: 50, tip: "(帕普拉特斯之发)"},
+            {id: 4000141, qty: 10, tip: "(大老板的手提灯)"},
+            {id: 4000384, qty: 10, tip: "(黑色精华)"},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
+        ]
+    },
+    {
+        id: 1102474,
+        tipType: 3,
+        needItems: [
+            {id: 1102871, qty: 1, tip: "（愤怒的扎昆披风）"},
+            {id: 4031901, qty: 50, tip: "(帕普拉特斯之发)"},
+            {id: 4000141, qty: 10, tip: "(大老板的手提灯)"},
+            {id: 4000384, qty: 10, tip: "(黑色精华)"},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
+        ]
+    },
+    {
+        id: 1102475,
+        tipType: 3,
+        needItems: [
+            {id: 1102871, qty: 1, tip: "（愤怒的扎昆披风）"},
+            {id: 4031901, qty: 50, tip: "(帕普拉特斯之发)"},
+            {id: 4000141, qty: 10, tip: "(大老板的手提灯)"},
+            {id: 4000384, qty: 10, tip: "(黑色精华)"},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
+        ]
+    },
+];
+
+var 披风_诺巴 = [
+    // 诺巴（继承同职业赫里希安精锐）
+    {
+        id: 1102476,
+        tipType: 3,
+        needItems: [
+            {id: 1102471, qty: 1, tip: "(继承该装备洗练和星级)"},
+            {id: 4001101, qty: 200, tip: "（月妙的年糕）"},
+            {id: 4000175, qty: 10, tip: "（皮亚奴斯模型）"},
+            {id: 1002926, qty: 1, tip: "（暴力熊帽）"},
+            {id: 4001241, qty: 1, tip: "（暴力熊足）"},
+            {id: 4001261, qty: 50, tip: "（蝙蝠魔的皮碎片）"},
+            {id: 2040728, qty: 50, tip: "（蝙蝠魔的鞋子力量卷轴30%）"},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
+        ]
+    },
+    {
+        id: 1102477,
+        tipType: 3,
+        needItems: [
+            {id: 1102472, qty: 1, tip: "(继承该装备洗练和星级)"},
+            {id: 4001101, qty: 200, tip: "（月妙的年糕）"},
+            {id: 4000175, qty: 10, tip: "（皮亚奴斯模型）"},
+            {id: 1002926, qty: 1, tip: "（暴力熊帽）"},
+            {id: 4001241, qty: 1, tip: "（暴力熊足）"},
+            {id: 4001261, qty: 50, tip: "（蝙蝠魔的皮碎片）"},
+            {id: 2040729, qty: 50, tip: "（蝙蝠魔的鞋子智力卷轴30%）"},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
+        ]
+    },
+    {
+        id: 1102478,
+        tipType: 3,
+        needItems: [
+            {id: 1102473, qty: 1, tip: "(继承该装备洗练和星级)"},
+            {id: 4001101, qty: 200, tip: "（月妙的年糕）"},
+            {id: 4000175, qty: 10, tip: "（皮亚奴斯模型）"},
+            {id: 1002926, qty: 1, tip: "（暴力熊帽）"},
+            {id: 4001241, qty: 1, tip: "（暴力熊足）"},
+            {id: 4001261, qty: 50, tip: "（蝙蝠魔的皮碎片）"},
+            {id: 2040731, qty: 50, tip: "（蝙蝠魔的鞋子敏捷卷轴30%）"},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
+        ]
+    },
+    {
+        id: 1102479,
+        tipType: 3,
+        needItems: [
+            {id: 1102474, qty: 1, tip: "(继承该装备洗练和星级)"},
+            {id: 4001101, qty: 200, tip: "（月妙的年糕）"},
+            {id: 4000175, qty: 10, tip: "（皮亚奴斯模型）"},
+            {id: 1002926, qty: 1, tip: "（暴力熊帽）"},
+            {id: 4001241, qty: 1, tip: "（暴力熊足）"},
+            {id: 4001261, qty: 50, tip: "（蝙蝠魔的皮碎片）"},
+            {id: 2040730, qty: 50, tip: "（蝙蝠魔的鞋子幸运卷轴30%）"},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
+        ]
+    },
+    {
+        id: 1102480,
+        tipType: 3,
+        needItems: [
+            {id: 1102475, qty: 1, tip: "(继承该装备洗练和星级)"},
+            {id: 4001101, qty: 200, tip: "（月妙的年糕）"},
+            {id: 4000175, qty: 10, tip: "（皮亚奴斯模型）"},
+            {id: 1002926, qty: 1, tip: "（暴力熊帽）"},
+            {id: 4001241, qty: 1, tip: "（暴力熊足）"},
+            {id: 4001261, qty: 50, tip: "（蝙蝠魔的皮碎片）"},
+            {id: 2040728, qty: 25, tip: "（蝙蝠魔的鞋子力量卷轴30%）"},
+            {id: 2040731, qty: 25, tip: "（蝙蝠魔的鞋子敏捷卷轴30%）"},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
+        ]
+    },
+];
+
+var 披风_暴君 = [
+    // 暴君（继承同职业诺巴）
+    {
+        id: 1102481,
+        tipType: 3,
+        needItems: [
+            {id: 1102476, qty: 1, tip: "(继承该装备洗练和星级)"},
+            {id: 4031438, qty: 1, tip: "（老海盗的航海日记）"},
+            {id: 4031437, qty: 1, tip: "（老海盗的箱子钥匙）"},
+            {id: 4001158, qty: 1, tip: "（女神的羽毛）"},
+            {id: 4001159, qty: 1, tip: "（蒙特鸠珠子）"},
+            {id: 4001160, qty: 1, tip: "（卡帕莱特珠子）"},
+            {id: 4001094, qty: 10, tip: "（九灵龙的蛋）"},
+            {id: 4251201, qty: 1, tip: "（中等五彩水晶）"},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
+        ]
+    },
+    {
+        id: 1102482,
+        tipType: 3,
+        needItems: [
+            {id: 1102477, qty: 1, tip: "(继承该装备洗练和星级)"},
+            {id: 4031438, qty: 1, tip: "（老海盗的航海日记）"},
+            {id: 4031437, qty: 1, tip: "（老海盗的箱子钥匙）"},
+            {id: 4001158, qty: 1, tip: "（女神的羽毛）"},
+            {id: 4001159, qty: 1, tip: "（蒙特鸠珠子）"},
+            {id: 4001160, qty: 1, tip: "（卡帕莱特珠子）"},
+            {id: 4001094, qty: 10, tip: "（九灵龙的蛋）"},
+            {id: 4251201, qty: 1, tip: "（中等五彩水晶）"},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
+        ]
+    },
+    {
+        id: 1102483,
+        tipType: 3,
+        needItems: [
+            {id: 1102478, qty: 1, tip: "(继承该装备洗练和星级)"},
+            {id: 4031438, qty: 1, tip: "（老海盗的航海日记）"},
+            {id: 4031437, qty: 1, tip: "（老海盗的箱子钥匙）"},
+            {id: 4001158, qty: 1, tip: "（女神的羽毛）"},
+            {id: 4001159, qty: 1, tip: "（蒙特鸠珠子）"},
+            {id: 4001160, qty: 1, tip: "（卡帕莱特珠子）"},
+            {id: 4001094, qty: 10, tip: "（九灵龙的蛋）"},
+            {id: 4251201, qty: 1, tip: "（中等五彩水晶）"},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
+        ]
+    },
+    {
+        id: 1102484,
+        tipType: 3,
+        needItems: [
+            {id: 1102479, qty: 1, tip: "(继承该装备洗练和星级)"},
+            {id: 4031438, qty: 1, tip: "（老海盗的航海日记）"},
+            {id: 4031437, qty: 1, tip: "（老海盗的箱子钥匙）"},
+            {id: 4001158, qty: 1, tip: "（女神的羽毛）"},
+            {id: 4001159, qty: 1, tip: "（蒙特鸠珠子）"},
+            {id: 4001160, qty: 1, tip: "（卡帕莱特珠子）"},
+            {id: 4001094, qty: 10, tip: "（九灵龙的蛋）"},
+            {id: 4251201, qty: 1, tip: "（中等五彩水晶）"},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
+        ]
+    },
+    {
+        id: 1102485,
+        tipType: 3,
+        needItems: [
+            {id: 1102480, qty: 1, tip: "(继承该装备洗练和星级)"},
+            {id: 4031438, qty: 1, tip: "（老海盗的航海日记）"},
+            {id: 4031437, qty: 1, tip: "（老海盗的箱子钥匙）"},
+            {id: 4001158, qty: 1, tip: "（女神的羽毛）"},
+            {id: 4001159, qty: 1, tip: "（蒙特鸠珠子）"},
+            {id: 4001160, qty: 1, tip: "（卡帕莱特珠子）"},
+            {id: 4001094, qty: 10, tip: "（九灵龙的蛋）"},
+            {id: 4251201, qty: 1, tip: "（中等五彩水晶）"},
+            {id: meso_id, qty: 6000},
+            {id: cash_id, qty: 60000},
         ]
     },
 ];
@@ -182,6 +642,10 @@ var 帽子 = [
 ];
 
 function start() {
+    披风选系列中 = false;
+    披风制作多一步 = false;
+    制作目标 = null;
+    需要并被继承的装备 = null;
     action(1, 0, 0)
 }
 
@@ -200,17 +664,46 @@ function action(mode, type, selection) {
         text += "#L3#鞋子#l\t\r\n\r\n";
         text += "#L4#帽子#l\t\r\n\r\n";
         text += "#L5#武器#l\t\r\n\r\n";
-        text += "\r\n\r\n\t#r以下还未实现#k\t\r\n\r\n";
-        text += "#L7#披风#l\t\r\n\r\n";
-        text += "#L8#手套#l\t\r\n\r\n";
         text += "#L9#腰带#l\t\r\n\r\n";
+        text += "#L7#披风#l\t\r\n\r\n";
+        text += "#L11##r合成属性恢复#k#l\t（未继承星级/洗练时使用）\r\n\r\n";
+        text += "\r\n\r\n\t#r以下还未实现#k\t\r\n\r\n";
+        text += "#L8#手套#l\t\r\n\r\n";
         text += "#L10#项链#l\t\r\n\r\n";
         cm.sendSimple(text);
     } else if (status === 1) {
         doSelect(selection);
     } else if (status === 2) {
+        if (披风选系列中) {
+            披风选系列中 = false;
+            switch (selection) {
+                case 0:
+                    选择的制作列表 = 披风_赫里希安精锐;
+                    break;
+                case 1:
+                    选择的制作列表 = 披风_诺巴;
+                    break;
+                case 2:
+                    选择的制作列表 = 披风_暴君;
+                    break;
+                default:
+                    cm.sendOk("无效的选择");
+                    cm.dispose();
+                    return;
+            }
+            披风制作多一步 = true;
+            展示物品制作列表();
+            return;
+        }
         确认制作(selection);
     } else if (status === 3) {
+        if (披风制作多一步) {
+            披风制作多一步 = false;
+            确认制作(selection);
+            return;
+        }
+        doCraftItem();
+    } else if (status === 4) {
         doCraftItem();
     } else {
         cm.dispose();
@@ -238,6 +731,17 @@ function doSelect(selection) {
         case 5:
             openNpc("装备制作/武器制作");
             break;
+        case 7:
+            披风选系列中 = true;
+            展示披风系列菜单();
+            break;
+        case 9:
+            选择的制作列表 = 腰带;
+            展示物品制作列表();
+            break;
+        case 11:
+            openNpc("装备制作/装备制作补偿");
+            break;
         default:
             cm.sendOk("#b瞎么？没看到上面上写的还未实现，你就等吧！");
             cm.dispose();
@@ -245,12 +749,20 @@ function doSelect(selection) {
 }
 
 
+function 展示披风系列菜单() {
+    let text = OldTitle + "\r\n请选择披风系列：\r\n\r\n";
+    text += "#L0##b赫里希安精锐#k#l\t（战士/法师/弓/飞侠/海盗）\r\n\r\n";
+    text += "#L1##b诺巴#k#l\t（须继承同职业精锐披风）\r\n\r\n";
+    text += "#L2##b暴君#k#l\t（须继承同职业诺巴披风）\r\n\r\n";
+    cm.sendSimple(text);
+}
+
 function 展示物品制作列表() {
     //展示物品
     let text = OldTitle + "\r\n请选择要制作的物品：\r\n\r\n";
     选择的制作列表.forEach((item, index) => {
         // 拼接目标物品信息
-        text += `#L${index}##b制作#v${item.id}#  #r#z${item.id}##k\r\n`;
+        text += `#L${index}##b制作#v${item.id}# #z${item.id}##k\r\n`;
         text += "\r\n";
     });
     cm.sendSimple(text);
@@ -267,7 +779,7 @@ function 确认制作(index) {
         return;
     }
     // 构建确认信息
-    let confirmText = `确定要制作 #i${targetItem.id}# #r#t${targetItem.id}# #k吗？\r\n#b所需材料：#k\r\n`;
+    let confirmText = `确定要制作 #v${targetItem.id}# #r#z${targetItem.id}# #k吗？\r\n#b所需材料：#k\r\n`;
     targetItem.needItems.forEach(need => {
         if (need.id === meso_id) {
             confirmText += `\r\n${金币_icon} x ${获取金币显示(need.qty)}\r\n`; // 使用金币图标
@@ -402,7 +914,7 @@ function doCraftItem() {
     } else {
         // 调试模式：仅获取武器材料，不扣除
         制作目标.needItems.forEach(need => {
-            if (selectedIndex > 0 && isNeedEquip(need.id)) {
+            if (isNeedEquip(need.id)) {
                 需要并被继承的装备 = player.getInventory(InventoryType.EQUIP).getItem(1);
             }
         });
@@ -424,6 +936,7 @@ function doCraftItem() {
 
 const InventoryType = Java.type('org.gms.client.inventory.InventoryType');
 const InventoryManipulator = Java.type('org.gms.client.inventory.manipulator.InventoryManipulator');
+const CraftLog = Java.type('org.slf4j.LoggerFactory').getLogger('BeiDouCraft');
 
 function 获取新装备并继承属性(targetId, needItem) {
     const player = cm.getPlayer();
@@ -434,10 +947,9 @@ function 获取新装备并继承属性(targetId, needItem) {
         return;
     }
     newItem.setFlag(1); // 上锁
-    // 武器属性继承逻辑
+    const inherited = !!needItem;
     if (needItem) {
         newItem.replaceData(needItem);
-        // 移除原材料装备
         InventoryManipulator.removeFromSlot(
             player.getClient(),
             InventoryType.EQUIP,
@@ -446,7 +958,14 @@ function 获取新装备并继承属性(targetId, needItem) {
             false
         );
     }
-    player.forceUpdateItem(newItem); // 强制更新装备状态
+    player.forceUpdateItem(newItem);
+    const histSize = newItem.getUpgradeHistoryDes ? newItem.getUpgradeHistoryDes().size() : -1;
+    CraftLog.info("[装备制作] charId={} name={} targetItemId={} inherit={} sourceItemId={} starLevel={} itemLevel={} upgradeHistoryRows={}",
+        player.getId(), player.getName(), targetId, inherited,
+        inherited ? needItem.getItemId() : 0,
+        newItem.getStarLevel ? newItem.getStarLevel() : 0,
+        newItem.getItemLevel ? newItem.getItemLevel() : 0,
+        histSize);
 }
 
 /**
@@ -475,7 +994,7 @@ function checkAllMaterials(player, lackItems) {
             }
         } else {
             // 检查普通物品/武器材料
-            if (selectedIndex > 0 && isNeedEquip(need.id)) {
+            if (isNeedEquip(need.id)) {
                 需要并被继承的装备 = player.getInventory(InventoryType.EQUIP).getItem(1);
                 if (!需要并被继承的装备 || 需要并被继承的装备.getItemId() !== need.id) {
                     lackItems.push(`#t${need.id}#必须放在装备栏第一格`);
@@ -509,7 +1028,7 @@ function deductAllMaterials(player) {
             player.getCashShop().gainCash(1, -need.qty);
         } else {
             // 扣除普通物品（武器材料在属性继承时移除，此处无需处理）
-            if (!(selectedIndex > 0 && isNeedEquip(need.id))) {
+            if (!isNeedEquip(need.id)) {
                 cm.gainItem(need.id, -need.qty);
             }
         }
