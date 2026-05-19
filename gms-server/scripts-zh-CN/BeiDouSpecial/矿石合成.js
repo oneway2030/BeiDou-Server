@@ -37,7 +37,7 @@ function action(mode, type, selection) {
     // 直接从选择冶炼类型开始，跳过初始确认
     if (status == 0) {
         var selStr = "我喜欢你的作风！我们现在就开工吧。你想要冶炼哪种母矿？ #b";
-        var options = ["精炼矿石", "精炼宝石", "精炼水晶矿石", "精炼稀有宝石", "制作材料", "高级矿石合成"];
+        var options = ["精炼矿石", "精炼宝石", "精炼水晶矿石", "精炼稀有宝石", "制作材料", "高级矿石合成", "高等宝石合成"];
         for (var i = 0; i < options.length; i++) {
             selStr += "\r\n#L" + i + "# " + options[i] + "#l \r\n";
         }
@@ -87,6 +87,9 @@ function action(mode, type, selection) {
         } else if (selectedType == 5) { //Crystal refine
             cm.dispose();
             cm.openNpc(9900001, "高等宝石兑换");
+        } else if (selectedType == 6) { //各种宝石
+            cm.dispose();
+            cm.openNpc(9900001, "高等宝石兑换2");
         }
     } else if (status == 2 && mode == 1) {
         selectedItem = selection;
