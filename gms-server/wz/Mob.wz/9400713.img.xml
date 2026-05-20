@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<imgdir name="9400713.img">
+<imgdir name="9400713.img" indent="2" media="NONE">
   <imgdir name="info">
     <int name="bodyAttack" value="1"/>
     <int name="level" value="10"/>
@@ -20,7 +20,7 @@
     <int name="removeAfter" value="10"/>
   </imgdir>
   <imgdir name="move">
-    <canvas name="0" width="4" height="4">
+    <canvas name="0" format="1" scale="0">
       <vector name="origin" x="-1" y="32"/>
       <vector name="lt" x="-34" y="-47"/>
       <vector name="rb" x="34" y="0"/>
@@ -28,7 +28,7 @@
     </canvas>
   </imgdir>
   <imgdir name="stand">
-    <canvas name="0" width="4" height="4">
+    <canvas name="0" format="1" scale="0">
       <vector name="origin" x="-1" y="32"/>
       <vector name="lt" x="-34" y="-47"/>
       <vector name="rb" x="34" y="0"/>
@@ -36,7 +36,7 @@
     </canvas>
   </imgdir>
   <imgdir name="hit1">
-    <canvas name="0" width="4" height="4">
+    <canvas name="0" format="1" scale="0">
       <vector name="origin" x="-1" y="32"/>
       <vector name="lt" x="-34" y="-47"/>
       <vector name="rb" x="34" y="0"/>
@@ -44,7 +44,7 @@
     </canvas>
   </imgdir>
   <imgdir name="die1">
-    <canvas name="0" width="4" height="4">
+    <canvas name="0" format="1" scale="0">
       <vector name="origin" x="-1" y="32"/>
       <vector name="lt" x="-34" y="-47"/>
       <vector name="rb" x="34" y="0"/>

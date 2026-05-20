@@ -129,7 +129,7 @@ public class ItemInformationProvider {
     protected Map<Integer, Boolean> noCancelMouseCache = new HashMap<>();
     protected Map<Integer, Integer> mobCrystalMakerCache = new HashMap<>();
     protected Map<Integer, Pair<String, Integer>> statUpgradeMakerCache = new HashMap<>();
-    protected Map<Integer, MakerItemFactory.MakerItemCreateEntry> makerItemCache = new HashMap<>();
+    protected Map<Integer, MakerItemCreateEntry> makerItemCache = new HashMap<>();
     protected Map<Integer, Integer> makerCatalystCache = new HashMap<>();
     protected Map<Integer, Map<String, Integer>> skillUpgradeCache = new HashMap<>();
     protected Map<Integer, Data> skillUpgradeInfoCache = new HashMap<>();
@@ -1108,7 +1108,7 @@ public class ItemInformationProvider {
             Map<String, Integer> stats = this.getEquipStats(scrollId);
 
             // 检查装备是否有升级插槽或是否是清洁卷轴，或者当前玩家是GM
-            if (((nEquip.getUpgradeSlots() > 0 || ItemConstants.isCleanSlate(scrollId))) || assertGM) {
+            if (((nEquip.getUpgradeSlots() > 0 || ItemConstants.isCleanSlate(scrollId) || ItemConstants.isLiangyiScroll(scrollId))) || assertGM) {
                 // 获取卷轴的成功概率
                 double prop = (double) stats.get("success");
 
@@ -1151,6 +1151,9 @@ public class ItemInformationProvider {
                                 nEquip.setUpgradeSlots((byte) (nEquip.getUpgradeSlots() + 1)); // 增加升级插槽数量
                             }
                             break;
+                        case ItemId.LIANGYI_SCROLL:
+                            nEquip.setUpgradeSlots((byte) (nEquip.getUpgradeSlots() + 1)); // 无条件增加可升级次数
+                            break;
                         case ItemId.CHAOS_SCROll_60:
                         case ItemId.LIAR_TREE_SAP:
                         case ItemId.MAPLE_SYRUP:
@@ -1165,8 +1168,8 @@ public class ItemInformationProvider {
                             break;
                     }
 
-                    // 如果不是清洁卷轴，则处理升级插槽和等级
-                    if (!ItemConstants.isCleanSlate(scrollId)) {
+                    // 如果不是清洁卷轴/良医卷轴，则处理升级插槽和等级
+                    if (!ItemConstants.isCleanSlate(scrollId) && !ItemConstants.isLiangyiScroll(scrollId)) {
                         if (!assertGM && !ItemConstants.isModifierScroll(scrollId)) {   // 处理修饰卷轴不消耗插槽的问题
                             nEquip.setUpgradeSlots((byte) (nEquip.getUpgradeSlots() - 1)); // 减少一个升级插槽
                         }
@@ -1174,7 +1177,9 @@ public class ItemInformationProvider {
                     }
                 } else {
                     // 卷轴使用失败的情况
-                    if (!GameConfig.getServerBoolean("use_perfect_scrolling") && !usingWhiteScroll && !ItemConstants.isCleanSlate(scrollId) && !assertGM && !ItemConstants.isModifierScroll(scrollId)) {
+                    if (!GameConfig.getServerBoolean("use_perfect_scrolling") && !usingWhiteScroll
+                            && !ItemConstants.isCleanSlate(scrollId) && !ItemConstants.isLiangyiScroll(scrollId)
+                            && !assertGM && !ItemConstants.isModifierScroll(scrollId)) {
                         nEquip.setUpgradeSlots((byte) (nEquip.getUpgradeSlots() - 1)); // 减少一个升级插槽
                     }
                     if (Randomizer.nextInt(100) < stats.get("cursed")) {

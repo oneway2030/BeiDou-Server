@@ -81,7 +81,9 @@ public final class ScrollHandler extends AbstractPacketHandler {
                 if (ItemConstants.isCleanSlate(scroll.getItemId()) && !ii.canUseCleanSlate(toScroll)) {
                     announceCannotScroll(c, legendarySpirit); // 如果清洁卷轴不能用于该装备，通知客户端无法使用
                     return;
-                } else if (!ItemConstants.isModifierScroll(scroll.getItemId()) && toScroll.getUpgradeSlots() < 1) {
+                } else if (!ItemConstants.isModifierScroll(scroll.getItemId())
+                        && !ItemConstants.isLiangyiScroll(scroll.getItemId())
+                        && toScroll.getUpgradeSlots() < 1) {
                     announceCannotScroll(c, legendarySpirit); // 如果不是修饰卷轴且没有升级插槽，通知客户端无法使用
                     return;
                 }
@@ -101,7 +103,9 @@ public final class ScrollHandler extends AbstractPacketHandler {
                     }
                 }
 
-                if (!ItemConstants.isChaosScroll(scroll.getItemId()) && !ItemConstants.isCleanSlate(scroll.getItemId())) {
+                if (!ItemConstants.isChaosScroll(scroll.getItemId())
+                        && !ItemConstants.isCleanSlate(scroll.getItemId())
+                        && !ItemConstants.isLiangyiScroll(scroll.getItemId())) {
                     if (!canScroll(scroll.getItemId(), toScroll.getItemId())) {
                         announceCannotScroll(c, legendarySpirit); // 如果卷轴不能用于该装备，通知客户端无法使用
                         return;
@@ -109,11 +113,14 @@ public final class ScrollHandler extends AbstractPacketHandler {
                 }
 
                 Equip scrolled = (Equip) ii.scrollEquipWithId(toScroll, scroll.getItemId(), whiteScroll, 0, chr.isGM()); // 使用卷轴升级装备
-                ScrollResult scrollSuccess = Equip.ScrollResult.FAIL; // 默认设置为失败
+                ScrollResult scrollSuccess = ScrollResult.FAIL; // 默认设置为失败
                 if (scrolled == null) {
-                    scrollSuccess = Equip.ScrollResult.CURSE; // 卷轴诅咒装备
-                } else if (scrolled.getLevel() > oldLevel || (ItemConstants.isCleanSlate(scroll.getItemId()) && scrolled.getUpgradeSlots() == oldSlots + 1) || ItemConstants.isFlagModifier(scroll.getItemId(), scrolled.getFlag())) {
-                    scrollSuccess = Equip.ScrollResult.SUCCESS; // 卷轴成功升级装备
+                    scrollSuccess = ScrollResult.CURSE; // 卷轴诅咒装备
+                } else if (scrolled.getLevel() > oldLevel
+                        || ((ItemConstants.isCleanSlate(scroll.getItemId()) || ItemConstants.isLiangyiScroll(scroll.getItemId()))
+                        && scrolled.getUpgradeSlots() == oldSlots + 1)
+                        || ItemConstants.isFlagModifier(scroll.getItemId(), scrolled.getFlag())) {
+                    scrollSuccess = ScrollResult.SUCCESS; // 卷轴成功升级装备
                 }
 
                 useInventory.lockInventory(); // 锁定使用栏库存
@@ -138,7 +145,7 @@ public final class ScrollHandler extends AbstractPacketHandler {
                 }
 
                 final List<ModifyInventory> mods = new ArrayList<>(); // 创建修改库存的操作列表
-                if (scrollSuccess == Equip.ScrollResult.CURSE) {
+                if (scrollSuccess == ScrollResult.CURSE) {
                     if (!ItemId.isWeddingRing(toScroll.getItemId())) {
                         mods.add(new ModifyInventory(3, toScroll)); // 标记装备被移除
                         if (equipSlot < 0) {
@@ -163,7 +170,7 @@ public final class ScrollHandler extends AbstractPacketHandler {
                         }
                     } else {
                         scrolled = toScroll;
-                        scrollSuccess = Equip.ScrollResult.FAIL;
+                        scrollSuccess = ScrollResult.FAIL;
 
                         mods.add(new ModifyInventory(3, scrolled)); // 标记装备被移除
                         mods.add(new ModifyInventory(0, scrolled)); // 标记装备被添加回库存
@@ -174,7 +181,7 @@ public final class ScrollHandler extends AbstractPacketHandler {
                 }
                 c.sendPacket(PacketCreator.modifyInventory(true, mods)); // 发送修改库存的封包
                 chr.getMap().broadcastMessage(PacketCreator.getScrollEffect(chr.getId(), scrollSuccess, legendarySpirit, whiteScroll)); // 广播卷轴效果
-                if (equipSlot < 0 && (scrollSuccess == Equip.ScrollResult.SUCCESS || scrollSuccess == Equip.ScrollResult.CURSE)) {
+                if (equipSlot < 0 && (scrollSuccess == ScrollResult.SUCCESS || scrollSuccess == ScrollResult.CURSE)) {
                     chr.equipChanged(); // 通知客户端装备发生变化
                 }
             } finally {

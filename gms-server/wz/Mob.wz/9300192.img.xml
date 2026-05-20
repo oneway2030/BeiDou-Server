@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<imgdir name="9300192.img">
+<imgdir name="9300192.img" indent="2" media="NONE">
   <imgdir name="info">
     <int name="bodyAttack" value="1"/>
     <int name="level" value="56"/>
@@ -15,6 +15,7 @@
     <int name="exp" value="4800"/>
     <int name="undead" value="0"/>
     <int name="pushed" value="1500"/>
+    <string name="elemAttr" value="I2F2L2H2S2"/>
     <float name="fs" value="10.0"/>
     <int name="summonType" value="1"/>
     <string name="link" value="9300012"/>
@@ -28,7 +29,7 @@
       </imgdir>
     </imgdir>
     <imgdir name="default">
-      <canvas name="0" width="197" height="210">
+      <canvas name="0" format="1" scale="0">
         <vector name="origin" x="98" y="105"/>
         <int name="z" value="0"/>
       </canvas>

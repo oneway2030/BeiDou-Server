@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<imgdir name="9400280.img">
+<imgdir name="9400280.img" indent="2" media="NONE">
   <imgdir name="info">
     <int name="level" value="160"/>
     <int name="bodyAttack" value="1"/>
@@ -24,11 +24,10 @@
     <int name="hideName" value="1"/>
     <int name="summonType" value="1"/>
     <int name="mobType" value="0"/>
-    <imgdir name="effectiveSkill">
-    </imgdir>
+    <imgdir name="effectiveSkill"/>
   </imgdir>
   <imgdir name="stand">
-    <canvas name="0" width="4" height="4">
+    <canvas name="0" format="2" scale="0">
       <vector name="origin" x="2" y="2"/>
       <vector name="lt" x="62" y="-869"/>
       <vector name="rb" x="67" y="-846"/>
@@ -43,7 +42,7 @@
     </canvas>
   </imgdir>
   <imgdir name="hit1">
-    <canvas name="0" width="4" height="4">
+    <canvas name="0" format="2" scale="0">
       <vector name="origin" x="2" y="2"/>
       <vector name="lt" x="-208" y="-16"/>
       <vector name="rb" x="208" y="3"/>
@@ -52,7 +51,7 @@
     </canvas>
   </imgdir>
   <imgdir name="die1">
-    <canvas name="0" width="4" height="4">
+    <canvas name="0" format="2" scale="0">
       <vector name="origin" x="2" y="2"/>
       <vector name="head" x="0" y="0"/>
       <string name="delay" value="600"/>

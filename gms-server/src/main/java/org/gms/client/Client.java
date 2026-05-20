@@ -102,6 +102,8 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class Client extends ChannelInboundHandlerAdapter {
     private static final Logger log = LoggerFactory.getLogger(Client.class);
+    /** 空闲检测发出 ping 后，等待客户端 pong 的秒数（原 15 秒） */
+    private static final int IDLE_PONG_WAIT_SECONDS = 30;
 
     public static final int LOGIN_NOTLOGGEDIN = 0;
     public static final int LOGIN_SERVER_TRANSITION = 1;
@@ -857,7 +859,7 @@ public class Client extends ChannelInboundHandlerAdapter {
             // using sql currenttime here could potentially break the login, thanks Arnah for pointing this out
 
             ps.setInt(1, newState);
-            ps.setTimestamp(2, new java.sql.Timestamp(Server.getInstance().getCurrentTime()));
+            ps.setTimestamp(2, new Timestamp(Server.getInstance().getCurrentTime()));
             ps.setInt(3, getAccID());
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -1213,7 +1215,7 @@ public class Client extends ChannelInboundHandlerAdapter {
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }
-        }, SECONDS.toMillis(15));
+        }, SECONDS.toMillis(IDLE_PONG_WAIT_SECONDS));
     }
 
     public Set<String> getMacs() {

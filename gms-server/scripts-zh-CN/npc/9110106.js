@@ -133,7 +133,7 @@ function action(mode, type, selection) {
                        monsters = 1;
                    }
                    if (selection == 2) {
-                       var selStr = "你真的要去打BOSS吗？告诉你哦！进去了会掉线！信不信由你！#b";
+                       var selStr = "选择要前往的枫城 BOSS 地图。#b";
                        for (var i = 0; i < bossmaps.length; i++) {
 				selStr += "\r\n#L" + i + "#" + bossmaps[i][2] + "";
                        }

@@ -188,6 +188,8 @@ public class ItemId {
     public static final int CLEAN_SLATE_3 = 2049001;
     public static final int CLEAN_SLATE_5 = 2049002;
     public static final int CLEAN_SLATE_20 = 2049003;
+    /** 良医卷轴：成功+1可升级次数，70%成功率，失败50%诅咒 */
+    public static final int LIANGYI_SCROLL = 2049920;
     public static final int RING_STR_100_SCROLL = 2041100;
     public static final int DRAGON_STONE_SCROLL = 2041200;
     public static final int BELT_STR_100_SCROLL = 2041300;

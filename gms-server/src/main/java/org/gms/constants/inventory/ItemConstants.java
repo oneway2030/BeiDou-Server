@@ -144,6 +144,10 @@ public final class ItemConstants {
         return scrollId > 2048999 && scrollId < 2049004;
     }
 
+    public static boolean isLiangyiScroll(int scrollId) {
+        return scrollId == ItemId.LIANGYI_SCROLL;
+    }
+
     public static boolean isModifierScroll(int scrollId) {
         return scrollId == ItemId.SPIKES_SCROLL || scrollId == ItemId.COLD_PROTECTION_SCROLl;
     }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<imgdir name="9500322.img">
+<imgdir name="9500322.img" indent="2" media="NONE">
   <imgdir name="info">
     <int name="bodyAttack" value="1"/>
     <int name="level" value="10"/>
@@ -26,14 +26,14 @@
     <int name="mbookID" value="9500317"/>
   </imgdir>
   <imgdir name="stand">
-    <canvas name="0" width="103" height="124">
+    <canvas name="0" format="1" scale="0">
       <vector name="origin" x="55" y="124"/>
       <vector name="head" x="-12" y="-86"/>
       <int name="delay" value="180000"/>
     </canvas>
   </imgdir>
   <imgdir name="die1">
-    <canvas name="0" width="103" height="124">
+    <canvas name="0" format="1" scale="0">
       <vector name="origin" x="55" y="124"/>
       <vector name="head" x="-12" y="-86"/>
       <int name="delay" value="2000"/>
