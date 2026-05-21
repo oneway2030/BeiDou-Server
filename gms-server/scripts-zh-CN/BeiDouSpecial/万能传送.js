@@ -21,8 +21,15 @@ var bossmaps2 = Array(
     Array(802000110, 380000, "努克斯                            #r（消耗38万金币）#b"),
     Array(802000700, 380000, "再生都纳斯                    #r（消耗38万金币）#b"),
     Array(802000800, 380000, "欧碧拉                            #r（消耗38万金币）#b"),
+    Array(211070100, 500000, "班·雷昂                            #r（消耗50万金币，每日3次）#b"),
+    Array(703011000, 500000, "钻机                  #r（消耗50万金币，每日3次）#b"),
 );
 
+var DAILY_BOSS_LIMIT = 300;
+var DAILY_BOSS_BY_MAP = {
+    211070100: { countKey: "BOSS每日_班雷昂", name: "班·雷昂" },
+    703011000: { countKey: "BOSS每日_钻机", name: "钻机" }
+};
 //------------------------------------------------------------------------
 var bossmaps1 = Array(
     Array(104000400, 100000, "红蜗牛王                        #r（消耗10万金币）#b"),
@@ -140,6 +147,7 @@ var townmaps = Array(
     Array(130000000, 1000, "圣地#r                      （消耗1千金币）#b"),
     Array(110000000, 1000, "黄金海岸#r              （消耗1千金币）#b"),
     Array(600000000, 2000, "新叶城#r                  （消耗2千金币）#b"),
+    Array(211060000, 5000, "狮子王之城入口#r      （消耗5千金币）#b"),
     Array(682000000, 5000, "闹鬼宅邸外部#r      （消耗5千金币）#b"),
     Array(540010000, 5000, "新加坡机场#r          （消耗5千金币）#b"),
     Array(541000000, 5000, "新加坡码头#r          （消耗5千金币）#b"),
@@ -289,30 +297,96 @@ function level4() {
 
 
 //----------------------------------------------------------------------------------
+function getDailyBossAttempts(key) {
+    var v = cm.getAccountExtendValue(key, true);
+    if (v == null || v === "") {
+        return 0;
+    }
+    return parseInt(v, 10) || 0;
+}
+
+function getDailyBossConfig(mapId) {
+    return DAILY_BOSS_BY_MAP[mapId];
+}
+
 function levelBoss2(selection) {
-    cm.gainMeso(-bossmaps2[selection][1]);
+    var cost = bossmaps2[selection][1];
+    var mapId = bossmaps2[selection][0];
+    
+    // 检查金币是否足够
+    if (cm.getPlayer().getMeso() < cost) {
+        cm.sendOk("您的金币不足，无法传送！需要 " + cost + " 金币。");
+        cm.dispose();
+        return;
+    }
+    
+    var cfg = getDailyBossConfig(mapId);
+    if (cfg != null) {
+        var used = getDailyBossAttempts(cfg.countKey);
+        if (used >= DAILY_BOSS_LIMIT) {
+            cm.sendOk("#e" + cfg.name + "#n 今日挑战次数已用完（" + DAILY_BOSS_LIMIT + "/" + DAILY_BOSS_LIMIT + "），请明天再来。");
+            cm.dispose();
+            return;
+        }
+        cm.saveOrUpdateAccountExtendValue(cfg.countKey, String(used + 1), true);
+    }
+    
+    cm.gainMeso(-cost);
     cm.getPlayer().saveLocationOnWarp();
-    cm.warp(bossmaps2[selection][0]);
+    var portal = getBoss2WarpPortal(mapId);
+    if (portal >= 0) {
+        cm.warp(mapId, portal);
+    } else {
+        cm.warp(mapId);
+    }
     cm.dispose();
+}
+
+function getBoss2WarpPortal(mapId) {
+    if (mapId === 703011000) {
+        return 1;
+    }
+    if (mapId === 211070100) {
+        return 0;
+    }
+    return -1;
 }
 
 
 function levelBoss1(selection) {
-    cm.gainMeso(-bossmaps1[selection][1]);
+    var cost = bossmaps1[selection][1];
+    if (cm.getPlayer().getMeso() < cost) {
+        cm.sendOk("您的金币不足，无法传送！需要 " + cost + " 金币。");
+        cm.dispose();
+        return;
+    }
+    cm.gainMeso(-cost);
     cm.getPlayer().saveLocationOnWarp();
     cm.warp(bossmaps1[selection][0]);
     cm.dispose();
 }
 
 function levelLevelUp(selection) {
-    cm.gainMeso(-monstermaps[selection][1]);
+    var cost = monstermaps[selection][1];
+    if (cm.getPlayer().getMeso() < cost) {
+        cm.sendOk("您的金币不足，无法传送！需要 " + cost + " 金币。");
+        cm.dispose();
+        return;
+    }
+    cm.gainMeso(-cost);
     cm.getPlayer().saveLocationOnWarp();
     cm.warp(monstermaps[selection][0]);
     cm.dispose();
 }
 
 function levelTown(selection) {
-    cm.gainMeso(-townmaps[selection][1]);
+    var cost = townmaps[selection][1];
+    if (cm.getPlayer().getMeso() < cost) {
+        cm.sendOk("您的金币不足，无法传送！需要 " + cost + " 金币。");
+        cm.dispose();
+        return;
+    }
+    cm.gainMeso(-cost);
     cm.getPlayer().saveLocationOnWarp();
     cm.warp(townmaps[selection][0]);
     cm.dispose();
@@ -322,8 +396,14 @@ function levelFuben(selection) {
     if (selection === 999) {
         副本产出说明();
     } else {
-        let portal = fubenmaps[selection][3]
-        cm.gainMeso(-fubenmaps[selection][1]);
+        let portal = fubenmaps[selection][3];
+        var cost = fubenmaps[selection][1];
+        if (cm.getPlayer().getMeso() < cost) {
+            cm.sendOk("您的金币不足，无法传送！需要 " + cost + " 金币。");
+            cm.dispose();
+            return;
+        }
+        cm.gainMeso(-cost);
         cm.getPlayer().saveLocationOnWarp();
         if (portal > 0) {
             cm.warp(fubenmaps[selection][0], portal);
