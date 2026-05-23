@@ -29,8 +29,8 @@ function act() {
     rm.getEventInstance().clearPQ();
 
     rm.getEventInstance().setProperty("statusStg8", "1");
-    eim.giveEventPlayersExp(3500);
-    eim.showClearEffect(true);
+    rm.getEventInstance().giveEventPlayersExp(3500);
+    rm.getEventInstance().showClearEffect(true);
 
     rm.getEventInstance().startEventTimer(5 * 60000); //bonus time
 }

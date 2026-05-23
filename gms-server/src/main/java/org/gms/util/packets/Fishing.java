@@ -21,7 +21,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 /**
  * 钓鱼系统
  * 1. 无鱼饵禁止钓鱼
@@ -96,8 +97,10 @@ public class Fishing {
     // ========== 缓存与状态 ==========
     // 物品缓存：key=物品类型(1=普通,2=罕见,3=稀有,4=超稀有,5=传奇,6=神话)
     private static final Map<Integer, int[]> ITEM_CACHE = new ConcurrentHashMap<>();
-    // 钓鱼玩家列表（弱引用避免内存泄漏）
-    private final List<WeakReference<Character>> fishingCharacter = Collections.synchronizedList(new ArrayList<>());
+    // 物品名称缓存：避免重复查询
+    private static final Map<Integer, String> ITEM_NAME_CACHE = new ConcurrentHashMap<>();
+    // 钓鱼玩家列表（使用CopyOnWriteArrayList提高并发性能，弱引用避免内存泄漏）
+    private final List<WeakReference<Character>> fishingCharacter = new CopyOnWriteArrayList<>();
     // 单例实例
     private static volatile Fishing instance = null;
 
@@ -185,6 +188,17 @@ public class Fishing {
         return items == null ? new int[0] : items;
     }
 
+    // ========== 物品名称缓存 ==========
+    /**
+     * 获取物品名称（带缓存，避免重复查询）
+     */
+    private String getCachedItemName(int itemId) {
+        return ITEM_NAME_CACHE.computeIfAbsent(itemId, id -> {
+            String name = ItemInformationProvider.getInstance().getName(id);
+            return name == null ? "未知物品" : name;
+        });
+    }
+
     // ========== 玩家注册/注销 ==========
     public boolean registerFisherPlayer(Character chr) {
         // 先校验玩家有效性，再判断鱼饵
@@ -199,32 +213,28 @@ public class Fishing {
             return false;
         }
 
-        synchronized (fishingCharacter) {
-            boolean isRegistered = fishingCharacter.stream()
-                    .map(WeakReference::get)
-                    .filter(Objects::nonNull)
-                    .anyMatch(c -> c.equals(chr));
+        boolean isRegistered = fishingCharacter.stream()
+                .map(WeakReference::get)
+                .filter(Objects::nonNull)
+                .anyMatch(c -> c.equals(chr));
 
-            if (isRegistered) {
-                log.debug("玩家{}已注册钓鱼，无需重复注册", chr.getName());
-                return false;
-            }
-            fishingCharacter.add(new WeakReference<>(chr));
-            log.info("玩家{}成功注册钓鱼", chr.getName());
-            return true;
+        if (isRegistered) {
+            log.debug("玩家{}已注册钓鱼，无需重复注册", chr.getName());
+            return false;
         }
+        fishingCharacter.add(new WeakReference<>(chr));
+        log.info("玩家{}成功注册钓鱼", chr.getName());
+        return true;
     }
 
     public void unregisterFisherPlayer(Character chr) {
-        synchronized (fishingCharacter) {
-            Iterator<WeakReference<Character>> iterator = fishingCharacter.iterator();
-            while (iterator.hasNext()) {
-                WeakReference<Character> ref = iterator.next();
-                Character c = ref.get();
-                if (c == null || c.equals(chr)) {
-                    iterator.remove();
+        Iterator<WeakReference<Character>> iterator = fishingCharacter.iterator();
+        while (iterator.hasNext()) {
+            WeakReference<Character> ref = iterator.next();
+            Character c = ref.get();
+            if (c == null || c.equals(chr)) {
+                iterator.remove();
 //                    log.info("玩家{}已从钓鱼列表注销", chr == null ? "null" : chr.getName());
-                }
             }
         }
     }
@@ -262,7 +272,7 @@ public class Fishing {
             chr.dropMessage(5, "最终成功率: " + String.format("%.1f", finalRate * 100) + "%");
         }
 
-        boolean success = Math.random() < finalRate;
+        boolean success = ThreadLocalRandom.current().nextDouble() < finalRate;
 //        log.debug("玩家{}钓鱼成功率计算：基础{}% + 加成{}% = {}%，最终结果：{}",
 //                chr.getName(), baseRate * 100, levelBonus * 100, finalRate * 100, success ? "成功" : "失败");
         return success;
@@ -270,21 +280,14 @@ public class Fishing {
 
     // ========== 经验计算（独立封装） ==========
     private int calculateExpReward(Character chr) {
-        // 1. 获取升级所需经验
-        long expNeeded = chr.getExpNeededForNextLevel();
-        // 2. 兜底处理
-        expNeeded = Math.max(expNeeded, EXP_NEEDED_DEFAULT);
-        // 3. 计算基础经验（升级经验×1/2000）
+        // 1. 获取升级所需经验（兜底处理）
+        long expNeeded = Math.max(chr.getExpNeededForNextLevel(), EXP_NEEDED_DEFAULT);
+        // 2. 计算基础经验 = 升级经验 × 1/2000
         double baseExp = expNeeded * EXP_SCALE_RATIO;
-        // 4. 生成0.8~1.0的随机系数
-        double randomRate = EXP_RANDOM_MIN + Math.random() * (EXP_RANDOM_MAX - EXP_RANDOM_MIN);
-        // 5. 最终经验（至少1点）
-        int expAward = NumberTool.doubleToInt(baseExp * randomRate);
-        expAward = Math.max(1, expAward);
-
-//        log.debug("玩家{}经验奖励计算：升级所需{} × 1/2000 × 随机系数{} = {}",
-//                chr.getName(), expNeeded, String.format("%.2f", randomRate), expAward);
-        return expAward;
+        // 3. 生成 0.8~1.0 的随机系数
+        double randomRate = EXP_RANDOM_MIN + ThreadLocalRandom.current().nextDouble() * (EXP_RANDOM_MAX - EXP_RANDOM_MIN);
+        // 4. 最终经验（至少 1 点）
+        return Math.max(1, NumberTool.doubleToInt(baseExp * randomRate));
     }
 
     // ========== 奖励获取（核心修改：适配6挡位概率） ==========
@@ -295,14 +298,14 @@ public class Fishing {
      */
     public int getRandomRewardType() {
         // 第一步：40%概率返回经验标识，60%概率获取物品类型
-        double rewardRandom = Math.random();
+        double rewardRandom = ThreadLocalRandom.current().nextDouble();
         if (rewardRandom < REWARD_EXP_RATE) {
             log.debug("随机奖励结果：经验（概率{}%）", REWARD_EXP_RATE * 100);
             return ITEM_TYPE_EXP;
         }
 
         // 第二步：60%概率按6挡位随机获取物品类型
-        double itemRandom = Math.random();
+        double itemRandom = ThreadLocalRandom.current().nextDouble();
         int itemType;
 
         // 按概率从低到高判断（神话→传奇→超稀有→稀有→罕见→普通）
@@ -332,18 +335,17 @@ public class Fishing {
         }
 
         List<Character> validFishers = new ArrayList<>();
-        synchronized (fishingCharacter) {
-            Iterator<WeakReference<Character>> iterator = fishingCharacter.iterator();
-            while (iterator.hasNext()) {
-                WeakReference<Character> ref = iterator.next();
-                Character chr = ref.get();
-                if (chr == null || !isValidFisherPlayer(chr)) {
-                    iterator.remove();
-                    log.warn("清理无效钓鱼玩家：{}", chr == null ? "null" : chr.getName());
-                    continue;
-                }
-                validFishers.add(chr);
+        // CopyOnWriteArrayList本身线程安全，无需额外同步
+        Iterator<WeakReference<Character>> iterator = fishingCharacter.iterator();
+        while (iterator.hasNext()) {
+            WeakReference<Character> ref = iterator.next();
+            Character chr = ref.get();
+            if (chr == null || !isValidFisherPlayer(chr)) {
+                iterator.remove();
+                log.info("清理无效钓鱼玩家：{}", chr == null ? "null" : chr.getName());
+                continue;
             }
+            validFishers.add(chr);
         }
         for (Character chr : validFishers) {
             doFishing(chr);
@@ -416,12 +418,11 @@ public class Fishing {
                 int rewardId = DEFAULT_REWARD_ITEM_ID;
                 int[] itemArray = getItemsByType(rewardType, null);
                 if (itemArray != null && itemArray.length > 0) {
-                    rewardId = itemArray[(int) (itemArray.length * Math.random())];
+                    rewardId = itemArray[(int) (itemArray.length * ThreadLocalRandom.current().nextDouble())];
                 }
 
-                // 获取物品名称（做空值处理）
-                String itemName = ItemInformationProvider.getInstance().getName(rewardId);
-                itemName = itemName == null ? "未知物品" : itemName;
+                // 获取物品名称（使用缓存避免重复查询）
+                String itemName = getCachedItemName(rewardId);
                 rewardContent = itemName;
 
                 // 发放物品（校验PlayerInteraction）
