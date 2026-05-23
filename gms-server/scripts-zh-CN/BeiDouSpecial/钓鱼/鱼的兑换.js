@@ -60,7 +60,7 @@ function action(mode, type, selection) {
         bdd += "    需要材料:#v " + req + "\r\n\r\n";
         bdd += "单个物品需要材料个数:#r " + co + "个\r\n\r\n\r\n";
         bdd += "请输入购买个数\r\n";
-        cm.sendGetNumber(bdd, 1, 1, 100)
+        cm.sendGetNumber(bdd, 1, 1, 9999)
         //cm.sendYesNo(bdd);
     } else if (status == 3) {
         qty = (selection > 0) ? selection : (selection < 0 ? -selection : 1);
