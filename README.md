@@ -311,6 +311,364 @@ public class Guild {
 - **宠物背包**：宠物物品存储
 - **宠物功能**：自动拾取、自动回复等
 
+### 7. 游戏数据模块（物品 / 怪物 / BOSS）
+
+本节详细分析游戏数据模块的逻辑结构、资源匹配机制和新增内容的正确流程。
+
+#### 7.1 核心概念：WZ 资源文件
+
+游戏的所有静态数据（物品属性、怪物属性、地图配置、NPC配置等）都存储在 **WZ 资源文件**中。WZ 文件以 XML 格式存放，服务端通过 `DataProviderFactory` 读取。
+
+**WZ 文件根目录：**`gms-server/wz/`，包含以下子目录：
+
+| WZ 目录 | 内容 | 说明 |
+|---|---|---|
+| `Mob.wz/` | 怪物数据 | 每个怪物一个 `{mobId}.img.xml` 文件 |
+| `Item.wz/` | 消耗品等物品 | 按类别分：Cash/Consume/Etc/Install/Pet/Special |
+| `Character.wz/` | 装备数据 | 每个装备一个文件，按类别分：Weapon/Coat/Pants/Hat/Glove/Shoes/Cape/Accessory/Ring/Shield/Face/Hair/Longcoat/Dragon 等 |
+| `String.wz/` | 名称/描述字符串 | `Mob.img`、`Npc.img`、`Eqp.img`、`Consume.img`、`Etc.img` 等 |
+| `Map.wz/` | 地图数据 | 包含怪物刷新点 `life` 节点 |
+| `Skill.wz/` | 技能数据 | 角色和怪物技能 |
+| `Npc.wz/` | NPC 图形和数据 | NPC 外观和对话 |
+| `UI.wz/` | UI 数据 | 包含 BOSS 血条配置 `UIWindow.img/MobGage/Mob` |
+| `Quest.wz/` | 任务数据 | 任务条件和奖励 |
+| `Effect.wz/` | 特效数据 | 技能特效、物品特效 |
+| `Sound.wz/` | 音效数据 | 背景音乐和音效 |
+| `Etc.wz/` | 其他配置 | Tips 等辅助数据 |
+| `Reactor.wz/` | 反应堆数据 | 地图交互对象 |
+
+**多语言支持：** 服务端优先读取 `wz-{language}/` 目录（如 `wz-zh-CN/`），若不存在则回退到 `wz/`。通过 `WZFiles` 枚举的 `getFile()` 方法实现（见 `WZFiles.java`）。
+
+#### 7.2 物品系统逻辑结构
+
+##### 物品 ID 规则
+
+物品 ID 的**前缀数字**决定了物品类型：
+
+| ID 前缀 | 类型 | InventoryType | WZ 数据目录 |
+|---|---|---|---|
+| `1xx` | 装备（Equip） | EQUIP(1) / EQUIPPED(5) | `Character.wz/` |
+| `2xx` | 消耗品（Use） | USE(2) | `Item.wz/Consume/` |
+| `3xx` | 设置道具（Setup） | SETUP(3) | `Item.wz/Install/` |
+| `4xx` | 其他（Etc） | ETC(4) | `Item.wz/Etc/` |
+| `5xx` | 商城道具（Cash） | CASH(5) | `Item.wz/Cash/` |
+
+##### 核心 Java 类
+
+| 类 | 路径 | 职责 |
+|---|---|---|
+| `Item` | `client/inventory/Item.java` | 所有物品基类：`id, position, quantity, cashId, petid, flag, expiration` |
+| `Equip` | `client/inventory/Equip.java` | 装备类（继承 Item）：`str, dex, _int, luk, hp, mp, watk, matk, wdef, mdef, acc, avoid, speed, jump` 等 |
+| `Pet` | `client/inventory/Pet.java` | 宠物类（继承 Item） |
+| `Inventory` | `client/inventory/Inventory.java` | 背包容器，管理一组物品 |
+| `InventoryType` | `client/inventory/InventoryType.java` | 枚举：EQUIP, USE, SETUP, ETC, CASH, EQUIPPED |
+| `ItemConstants` | `constants/inventory/ItemConstants.java` | 物品类型判断工具（`isEquipment`, `isThrowingStar`, `isPotion` 等） |
+| `ItemInformationProvider` | `server/ItemInformationProvider.java` | **核心加载器**，从 WZ 读取所有物品属性，30+ 个缓存 Map |
+| `ItemFactory` | `client/inventory/ItemFactory.java` | 物品持久化，从数据库加载/保存物品 |
+| `InventoryManipulator` | `client/inventory/manipulator/InventoryManipulator.java` | 物品增删改操作 |
+| `EquipUtils` | `client/inventory/EquipUtils.java` | 装备属性操作工具类 |
+
+##### 物品数据加载流程
+
+```
+1. ItemInformationProvider.getInstance() 单例初始化
+   ├── 创建 itemData  = DataProviderFactory(WZFiles.ITEM)     → Item.wz/
+   ├── 创建 equipData = DataProviderFactory(WZFiles.CHARACTER) → Character.wz/
+   ├── 创建 stringData = DataProviderFactory(WZFiles.STRING)   → String.wz/
+   └── 创建 etcData   = DataProviderFactory(WZFiles.ETC)      → Etc.wz/
+
+2. getItemData(itemId) 被调用
+   ├── 根据 ID 前缀判断类型（1xx→装备, 2xx→消耗品...）
+   ├── 在对应 WZ 目录中查找 {itemId}.img.xml
+   └── 返回 Data 对象（懒加载 + 缓存）
+
+3. 数据库层（运行时数据）
+   ├── ItemFactory.INVENTORY(1)    → 角色背包
+   ├── ItemFactory.STORAGE(2)      → 仓库
+   ├── ItemFactory.CASH_EXPLORER(3-5) → 商城背包
+   └── ItemFactory.MERCHANT(6)     → 雇佣商人
+```
+
+##### 装备 WZ 数据结构示例
+
+装备文件 `Character.wz/Weapon/{equipId}.img.xml` 中的 `info` 节点包含：
+- `reqSTR, reqDEX, reqINT, reqLUK` — 属性需求
+- `reqJob` — 职业需求（0=无限制）
+- `reqLevel` — 等级需求
+- `incSTR, incDEX, incINT, incLUK` — 属性加成
+- `incPAD, incMAD` — 物理/魔法攻击力
+- `incPDD, incMDD` — 物理/魔法防御力
+- `incACC, incEVA` — 命中/闪避
+- `incSpeed, incJump` — 速度/跳跃
+- `slots` — 可升级次数
+- `desc` — 物品描述
+
+#### 7.3 怪物系统逻辑结构
+
+##### 核心 Java 类
+
+| 类 | 路径 | 职责 |
+|---|---|---|
+| `Monster` | `server/life/Monster.java` | 怪物运行时实例：HP/MP、aggro 控制器、状态效果、技能使用 |
+| `MonsterStats` | `server/life/MonsterStats.java` | 怪物静态属性：`hp, mp, exp, level, boss, PADamage, PDDamage, MADamage, MDDamage, name, skills, revives, movetype` 等 |
+| `LifeFactory` | `server/life/LifeFactory.java` | **核心加载器**，从 `Mob.wz` 和 `String.wz` 读取数据 |
+| `MonsterInformationProvider` | `server/life/MonsterInformationProvider.java` | 怪物掉落、攻击动画、技能动画信息的缓存管理 |
+| `MobSkillFactory` | `server/life/MobSkillFactory.java` | 怪物技能工厂 |
+| `MobSkill` | `server/life/MobSkill.java` | 怪物技能实例 |
+| `MobAttackInfo` | `server/life/MobAttackInfo.java` | 怪物攻击信息 |
+| `SpawnPoint` | `server/life/SpawnPoint.java` | 刷新点管理，控制怪物重生时间间隔 |
+| `MonsterDropEntry` | `server/life/MonsterDropEntry.java` | 怪物掉落条目：`itemId, chance, Minimum, Maximum, questid` |
+| `Element` / `ElementalEffectiveness` | `server/life/Element.java` | 元素属性和克制关系 |
+| `MobId` | `constants/id/MobId.java` | **怪物 ID 常量定义**（Zakum、Horntail 等） |
+
+##### 怪物 WZ 数据结构
+
+文件路径：`wz/Mob.wz/{mobId}.img.xml`，结构如下：
+
+```xml
+<imgdir name="{mobId}.img">
+  <imgdir name="info">           <!-- 核心属性 -->
+    <int name="maxHP" value="..."/>
+    <int name="maxMP" value="..."/>
+    <int name="exp" value="..."/>
+    <int name="level" value="..."/>
+    <int name="boss" value="1"/>          <!-- 1=BOSS, 0=普通怪 -->
+    <int name="PADamage" value="..."/>    <!-- 物理攻击力 -->
+    <int name="PDDamage" value="..."/>    <!-- 物理防御力 -->
+    <int name="MADamage" value="..."/>    <!-- 魔法攻击力 -->
+    <int name="MDDamage" value="..."/>    <!-- 魔法防御力 -->
+    <int name="acc" value="..."/>         <!-- 命中 -->
+    <int name="eva" value="..."/>         <!-- 闪避 -->
+    <int name="speed" value="..."/>       <!-- 移动速度 -->
+    <string name="elemAttr" value="S1"/>  <!-- 元素属性 -->
+    <int name="hpTagColor" value="..."/>  <!-- BOSS 血条颜色 -->
+    <int name="hpTagBgcolor" value="..."/> <!-- BOSS 血条背景色 -->
+    <int name="undead" value="0"/>        <!-- 是否不死系 -->
+    <int name="explosiveReward" value="0"/> <!-- 爆装备 -->
+    <int name="publicReward" value="0"/>  <!-- 自由拾取 -->
+    <imgdir name="revive">               <!-- 死亡后复活的怪物ID列表（多阶段BOSS用） -->
+      <int value="8800001"/>
+    </imgdir>
+    <imgdir name="skill">                <!-- 怪物技能配置 -->
+      <imgdir name="0">
+        <int name="skill" value="..."/>
+        <int name="level" value="..."/>
+        <int name="effect" value="..."/>
+        <int name="cooltime" value="..."/>
+      </imgdir>
+    </imgdir>
+    <imgdir name="ban">                  <!-- 传送信息 -->
+      <string name="banMsg" value="..."/>
+      <imgdir name="banMap">
+        <imgdir name="0">
+          <int name="field" value="..."/>
+          <string name="portal" value="..."/>
+        </imgdir>
+      </imgdir>
+    </imgdir>
+  </imgdir>
+  <imgdir name="attack1">...</imgdir>  <!-- 攻击动画 -->
+  <imgdir name="attack2">...</imgdir>
+  <imgdir name="stand">...</imgdir>    <!-- 站立动画 -->
+  <imgdir name="move">...</imgdir>     <!-- 移动动画 -->
+  <imgdir name="hit1">...</imgdir>     <!-- 受击动画 -->
+  <imgdir name="die1">...</imgdir>     <!-- 死亡动画 -->
+  <imgdir name="fly">...</imgdir>      <!-- 飞行怪物的飞行动画 -->
+  <imgdir name="skill1">...</imgdir>   <!-- 技能动画 -->
+</imgdir>
+```
+
+##### 怪物名称
+
+怪物名称存储在 `wz/String.wz/Mob.img.xml` 中，通过 ID 查找：
+```xml
+<imgdir name="Mob.img">
+  <imgdir name="1110100">         <!-- 怪物ID -->
+    <string name="name" value="绿蘑菇"/>
+  </imgdir>
+  <imgdir name="8800000">         <!-- Zakum -->
+    <string name="name" value="扎昆"/>
+  </imgdir>
+</imgdir>
+```
+
+##### 怪物数据加载流程
+
+```
+1. LifeFactory.getMonster(mid) 被调用
+   ├── 从 DataProviderFactory(WZFiles.MOB) 获取 Mob.wz 数据
+   ├── 读取 Mob.wz/{mid}.img.xml → getMonsterStats(mid)
+   │   ├── 解析 info 节点 → MonsterStats 对象
+   │   ├── 读取 String.wz/Mob.img/{mid}/name → 怪物名称
+   │   ├── 解析 attack1/attack2/... → MobAttackInfoHolder 列表
+   │   ├── 解析 skill 节点 → MobSkillId 集合
+   │   ├── 解析 revive 节点 → 复活怪物ID列表
+   │   ├── 解析 elemAttr → 元素克制关系
+   │   └── 计算各动画帧总延迟 → animationTimes Map
+   ├── 缓存 MonsterStats 到 monsterStats Map
+   └── 创建 Monster 实例返回
+
+2. 掉落数据（数据库）
+   ├── MonsterInformationProvider 从 drop_data 表读取
+   │   SELECT * FROM drop_data WHERE dropperid = ?
+   ├── 全局掉落从 drop_data_global 表读取
+   └── 缓存在 drops / globaldrops Map 中
+
+3. 地图刷新
+   ├── MapFactory.loadLifeFromWz() → 从 Map.wz 的 life 节点读取
+   │   每个怪物有: id, type("m"), cy, f, fh, rx0, rx1, x, y, hide, mobTime, team
+   ├── 也可从数据库 plife 表加载 → loadLifeFromDb()
+   └── SpawnPoint 管理重生逻辑
+```
+
+#### 7.4 BOSS 系统逻辑结构
+
+BOSS 与普通怪物**没有独立的子类**，而是通过 `MonsterStats.boss` 标志来区分。以下是 BOSS 的特殊处理：
+
+##### BOSS 标识和特殊逻辑
+
+| 功能 | 说明 | 代码位置 |
+|---|---|---|
+| BOSS 标识 | WZ `info/boss` 字段，`boss=1` | `MonsterStats.isBoss()` |
+| BOSS 血条 | `isBoss() && hpbarBosses.contains(mid)` 时显示 | `Monster.hasBossHPBar()` |
+| 血条配置 | 从 `UI.wz/UIWindow.img/MobGage/Mob` 读取 BOSS ID 列表 | `LifeFactory.getHpBarBosses()` |
+| 刷新倍率 | BOSS 不受 `mob_respawn_rate` 影响，始终为 1 | `MapFactory.loadLifeRaw()` |
+| 家族声望 | BOSS 击杀给予更多声望（`family_rep_per_boss_kill`） | - |
+| BOSS 日志 | 击杀记录在 `BosslogDaily` 和 `BosslogWeekly` 数据库表 | - |
+
+##### 多阶段 BOSS 机制
+
+以 **Zakum（扎昆）** 为例：
+- `MobId.ZAKUM_1/2/3`（8800000-8800002）— 三个阶段
+- `MobId.ZAKUM_ARM_1-8`（8800003-8800010）— 八条手臂
+- 死亡后通过 WZ 的 `info/revive` 字段自动召唤下一阶段
+
+**Horntail（暗黑独角兽）** 同理：
+- 8 个身体部位（头、手、翅膀、腿、尾巴等）
+- 8 个死亡状态（`DEAD_HORNTAIL_MIN/MAX`）
+- 1 个主体
+
+##### BOSS 事件脚本
+
+BOSS 副本通过事件脚本控制，位于 `gms-server/scripts/event/`：
+- `ZakumBattle.js` / `ZakumPQ.js` — 扎昆战斗和前置
+- `HorntailBattle.js` / `HorntailPQ.js` — 暗黑独角兽
+- `PinkBeanBattle.js` — 粉红怪
+- `AreaBoss*.js` — 区域 BOSS 刷新器（Kimera, Mano, Faust 等约 15 种）
+- `BossRushPQ.js` — BOSS Rush 副本
+
+#### 7.5 资源匹配机制：客户端与服务端如何对应
+
+服务端和客户端使用**相同的 WZ 文件**（或至少相同 ID 的数据结构），通过 **ID-based matching** 实现匹配：
+
+```
+客户端 WZ 文件 ←→ 服务端 WZ 文件 (相同 ID)
+                  ↓
+         服务端 Provider 层读取
+                  ↓
+         Java 对象 (Monster / Item / NPC / Map)
+                  ↓
+         数据库 (inventoryitems / drop_data 等)
+```
+
+**匹配关系对照表：**
+
+| 资源类型 | 服务端 ID 来源 | WZ 文件 | String 文件 |
+|---|---|---|---|
+| 物品 | `Item.getItemId()` | `Item.wz/{category}/{itemId}.img` 或 `Character.wz/{category}/{itemId}.img` | `String.wz/Consume.img`、`String.wz/Eqp.img` 等 |
+| 怪物 | `Monster.getId()` | `Mob.wz/{mobId}.img` | `String.wz/Mob.img/{mobId}/name` |
+| 地图 | `MapleMap.getId()` | `Map.wz/{mapId}.img` | `String.wz/Map.img` |
+| NPC | `NPC.getId()` | `Npc.wz/{npcId}.img` | `String.wz/Npc.img/{npcId}/name` |
+| 技能 | `Skill.getId()` | `Skill.wz/{skillId}.img` | `String.wz/Skill.img` |
+
+**关键点：**
+- 服务端通过 `DataProviderFactory` 读取 WZ XML 文件
+- 客户端直接使用编译后的 WZ 文件
+- `String.wz` 提供的名称/描述在服务端用于搜索、日志等，客户端也使用它来显示
+- BOSS 的血条显示由 `UI.wz/UIWindow.img/MobGage/Mob` 中的 BOSS ID 列表控制，服务端和客户端共享此列表
+- **不需要修改 Java 代码** — 所有数据都通过 WZ 文件和数据库驱动
+
+#### 7.6 新增内容的正确流程
+
+##### 新增普通怪物
+
+1. **创建 WZ 数据文件**（必须）
+   - 在 `gms-server/wz/Mob.wz/` 中创建 `{newMobId}.img.xml`
+   - 包含 `info` 节点：`maxHP, maxMP, exp, level, boss(=0), PADamage, PDDamage, MADamage, MDDamage, elemAttr` 等
+   - 包含动画节点：`stand, move, hit1, die1, attack1` 等
+
+2. **添加怪物名称**（必须）
+   - 在 `gms-server/wz/String.wz/Mob.img.xml` 中添加怪物名称
+
+3. **配置掉落数据**（必须）
+   - 在数据库 `drop_data` 表中添加掉落配置：
+     ```sql
+     INSERT INTO drop_data (dropperid, itemid, chance, minimum_quantity, maximum_quantity, questid)
+     VALUES ({mobId}, {itemId}, {chance}, {minQty}, {maxQty}, {questId});
+     ```
+
+4. **配置地图刷新点**（按需）
+   - 方式一：在 `Map.wz` 的对应地图 XML 的 `life` 节点中添加怪物刷新点
+   - 方式二：在数据库 `plife` 表中添加记录
+
+##### 新增 BOSS
+
+在新增普通怪物的基础上，额外需要：
+
+5. **设置 BOSS 标识**
+   - WZ `info` 节点中设置 `boss` = 1
+
+6. **配置 BOSS 血条**（推荐）
+   - 在 `gms-server/wz/UI.wz/UIWindow.img/MobGage/Mob` 中添加 BOSS ID
+   - 在 `info` 中设置 `hpTagColor` 和 `hpTagBgcolor`（血条颜色）
+
+7. **添加 MobId 常量**（推荐）
+   - 在 `gms-server/src/main/java/org/gms/constants/id/MobId.java` 中添加 BOSS ID 常量
+
+8. **创建 BOSS 事件脚本**（如需副本机制）
+   - 在 `gms-server/scripts/event/` 中创建事件脚本（如 `NewBossBattle.js`）
+
+9. **配置多阶段复活**（如需）
+   - 在 WZ 的 `info/revive` 节点中设置死亡后召唤的怪物 ID 列表
+
+##### 新增消耗品
+
+1. **创建 WZ 数据文件**
+   - 在 `gms-server/wz/Item.wz/Consume/` 中创建 XML 文件
+
+2. **添加物品名称和描述**
+   - 在 `gms-server/wz/String.wz/Consume.img.xml` 中添加名称和描述
+
+3. **配置掉落/商店**（按需）
+   - 在数据库 `drop_data` 或 `shop` 表中配置
+
+##### 新增装备
+
+1. **创建 WZ 数据文件**
+   - 在 `gms-server/wz/Character.wz/{category}/` 中创建 `{equipId}.img.xml`
+   - 装备类别目录：`Weapon/`, `Coat/`, `Pants/`, `Hat/`, `Glove/`, `Shoes/`, `Cape/`, `Accessory/`, `Ring/`, `Shield/`, `Face/`, `Hair/`, `Longcoat/`, `Dragon/`
+
+2. **装备 WZ 数据必须包含完整属性**
+   - `info` 节点下需包含：`reqSTR, reqDEX, reqINT, reqLUK, reqJob, reqLevel, incSTR, incDEX, incINT, incLUK, incPAD, incMAD, incPDD, incMDD, incACC, incEVA, incSpeed, incJump, slots, desc` 等
+
+3. **添加装备名称和描述**
+   - 在 `gms-server/wz/String.wz/Eqp.img.xml` 中添加
+
+##### 修改文件汇总表
+
+| 操作 | 必须修改的文件/位置 |
+|---|---|
+| 新增怪物 | `wz/Mob.wz/{id}.img.xml`, `wz/String.wz/Mob.img.xml`, 数据库 `drop_data` |
+| 新增 BOSS | 同上 + `MobId.java`, `wz/UI.wz/UIWindow.img/MobGage/Mob`, 事件脚本 |
+| 新增消耗品 | `wz/Item.wz/Consume/{id}.img.xml`, `wz/String.wz/Consume.img.xml` |
+| 新增装备 | `wz/Character.wz/{category}/{id}.img.xml`, `wz/String.wz/Eqp.img.xml` |
+| 新增怪物掉落 | 数据库 `drop_data` 表 |
+| 新增全局掉落 | 数据库 `drop_data_global` 表 |
+| 修改怪物属性 | `wz/Mob.wz/{id}.img.xml` 的 `info` 节点 |
+| 修改物品属性 | `wz/Item.wz` 或 `wz/Character.wz` 对应文件 |
+
+> **注意：** 大多数新增内容不需要修改 Java 代码。`LifeFactory`、`ItemInformationProvider`、`MonsterInformationProvider` 会自动读取新的 WZ 数据和数据库记录。只有在需要新的 Java 逻辑（如特殊 BOSS 行为、新的物品效果类型）时才需要修改 Java 代码。
+
 ## 技术特点
 
 ### 1. 高性能架构
