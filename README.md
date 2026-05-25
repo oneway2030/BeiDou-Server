@@ -893,6 +893,190 @@ public class DualBladeCreator extends CharacterFactory {
 
 > **注意：** 添加新职业是一个复杂的过程，需要修改多个文件。建议在开发分支上进行，充分测试后再合并到主分支。
 
+### 9. 技能系统深度分析与新技能创建指南
+
+本节详细分析技能系统的逻辑结构，以及如何创建一个新技能（复制现有技能并修改特效）。
+
+#### 9.1 技能系统核心逻辑
+
+##### 技能数据存储
+技能数据存储在多个位置：
+
+| 数据类型 | 存储位置 | 说明 |
+|---|---|---|
+| 技能属性数据 | `Skill.wz/{skillId}.img.xml` | 技能的伤害、MP消耗、冷却时间等 |
+| 技能名称描述 | `String.wz/Skill.img.xml` | 技能的名称和描述 |
+| 技能常量定义 | `constants/skills/*.java` | 技能ID的Java常量 |
+| 技能特效数据 | `Skill.wz/{skillId}.img.xml` | 技能的动画特效、音效等 |
+
+##### 技能ID规则
+技能ID遵循特定规则：
+- **格式**：`职业ID * 10000 + 技能编号`
+- **示例**：战士一转技能 `1100000` = 110（战士ID）* 10000 + 0（技能编号）
+- **转职阶段**：通过技能ID的千位数区分转职阶段
+
+##### 技能加载流程
+1. **SkillFactory.loadAllSkills()**：从 `Skill.wz/` 目录加载所有技能数据
+2. **SkillFactory.loadFromData()**：解析每个技能的XML数据
+3. **StatEffect.loadSkillEffectFromData()**：加载技能效果数据
+4. **技能缓存**：加载后的技能存储在 `skills` Map中
+
+##### 技能特效结构
+技能特效在WZ文件中包含以下节点：
+
+```xml
+<imgdir name="{skillId}">
+  <imgdir name="effect">      <!-- 技能特效动画 -->
+    <canvas name="0">...</canvas>
+    <canvas name="1">...</canvas>
+  </imgdir>
+  <imgdir name="hit">         <!-- 命中特效 -->
+    <canvas name="0">...</canvas>
+  </imgdir>
+  <imgdir name="action">      <!-- 角色动作 -->
+    <string name="0" value="alert2"/>
+  </imgdir>
+  <canvas name="icon">        <!-- 技能图标 -->
+  </canvas>
+  <imgdir name="level">       <!-- 各等级属性 -->
+    <imgdir name="1">
+      <int name="damage" value="105"/>
+      <int name="mpCon" value="12"/>
+    </imgdir>
+  </imgdir>
+</imgdir>
+```
+
+#### 9.2 创建新技能的完整流程
+
+以创建一个新技能为例，假设我们要复制战士一转技能 `1100000`（铁体）并修改特效。
+
+##### 第一步：复制技能WZ数据
+1. **复制技能文件**：将 `Skill.wz/110.img.xml` 复制为 `Skill.wz/999.img.xml`（或其他未使用的ID）
+2. **修改技能ID**：在复制的文件中，将所有技能ID从 `1100000` 修改为 `9990000`
+3. **修改技能属性**：调整伤害、MP消耗、冷却时间等参数
+4. **修改技能特效**：替换 `effect`、`hit` 等节点中的动画数据
+
+##### 第二步：添加技能名称
+在 `String.wz/Skill.img.xml` 中添加新技能的名称和描述：
+
+```xml
+<imgdir name="9990000">
+  <string name="name" value="新技能名称"/>
+  <string name="desc" value="[最高等级：20]技能描述"/>
+  <string name="h1" value="等级1效果描述"/>
+  <string name="h20" value="等级20效果描述"/>
+</imgdir>
+```
+
+##### 第三步：添加技能常量
+在 `constants/skills/` 目录下创建新文件或修改现有文件：
+
+```java
+package org.gms.constants.skills;
+
+public class NewSkill {
+    public static final int NEW_SKILL_1 = 9990000;
+    public static final int NEW_SKILL_2 = 9990001;
+}
+```
+
+##### 第四步：更新技能工厂
+如果需要特殊处理，在 `SkillFactory.java` 中添加新技能的特殊逻辑：
+
+```java
+case NewSkill.NEW_SKILL_1:
+    isBuff = true; // 或 false
+    break;
+```
+
+##### 第五步：更新技能学习脚本
+更新NPC脚本或任务脚本，让玩家可以学习新技能：
+
+```javascript
+cm.teachSkill(9990000, 0, 20, -1); // 学习技能，等级0-20
+```
+
+#### 9.3 修改特效的具体方法
+
+##### 替换技能特效
+1. **获取特效资源**：从其他技能或资源包中获取特效动画
+2. **修改effect节点**：替换 `Skill.wz/{skillId}.img.xml` 中的 `effect` 节点
+3. **修改hit节点**：替换命中特效
+4. **调整动画参数**：修改 `delay`、`origin` 等参数
+
+##### 特效资源格式
+特效资源使用Canvas格式，包含多帧动画：
+
+```xml
+<imgdir name="effect">
+  <canvas name="0" width="100" height="100">
+    <vector name="origin" x="50" y="50"/>
+    <int name="delay" value="100"/>
+  </canvas>
+  <canvas name="1" width="120" height="120">
+    <vector name="origin" x="60" y="60"/>
+    <int name="delay" value="100"/>
+  </canvas>
+</imgdir>
+```
+
+##### 特效参数说明
+- **width/height**：特效图片尺寸
+- **origin**：特效中心点坐标
+- **delay**：帧延迟（毫秒）
+- **z**：图层深度
+
+#### 9.4 技能系统修改文件汇总
+
+| 操作 | 必须修改的文件/位置 |
+|---|---|
+| 创建新技能数据 | `Skill.wz/{newSkillId}.img.xml` |
+| 添加技能名称 | `String.wz/Skill.img.xml` |
+| 添加技能常量 | `constants/skills/NewSkill.java` |
+| 更新技能工厂（可选） | `SkillFactory.java` |
+| 更新学习脚本 | 相关NPC或任务脚本 |
+| 更新技能UI（可选） | 客户端技能UI文件 |
+
+#### 9.5 注意事项
+
+##### 技能ID选择
+1. **避免冲突**：确保新技能ID不与现有技能冲突
+2. **ID范围**：建议使用 `999xxxx` 等未使用的范围
+3. **职业匹配**：如果技能属于特定职业，确保ID符合职业ID规则
+
+##### 特效兼容性
+1. **客户端支持**：确保客户端支持新特效的格式
+2. **性能考虑**：特效动画帧数不宜过多，避免性能问题
+3. **资源大小**：特效文件大小应适中，避免加载缓慢
+
+##### 平衡性调整
+1. **伤害数值**：根据游戏平衡性调整技能伤害
+2. **MP消耗**：合理设置MP消耗
+3. **冷却时间**：设置适当的冷却时间
+4. **学习条件**：设置合理的等级和前置技能要求
+
+#### 9.6 可行性评估
+
+##### 优势
+1. **数据驱动**：技能数据通过WZ文件配置，修改方便
+2. **模块化设计**：技能系统相对独立，修改影响范围小
+3. **脚本支持**：技能学习通过脚本实现，灵活度高
+
+##### 挑战
+1. **特效制作**：需要制作或获取新的特效资源
+2. **客户端兼容**：需要确保客户端支持新技能特效
+3. **平衡性测试**：需要充分测试技能平衡性
+
+##### 建议流程
+1. **选择基础技能**：选择一个现有技能作为模板
+2. **复制修改数据**：复制技能数据并修改必要参数
+3. **制作特效资源**：制作或获取新的特效资源
+4. **添加到系统**：按照上述流程添加到游戏中
+5. **测试调整**：充分测试并调整技能参数
+
+> **注意：** 创建新技能需要修改WZ文件和脚本文件，建议在测试环境中进行，充分验证后再部署到生产环境。
+
 ## 技术特点
 
 ### 1. 高性能架构
