@@ -531,6 +531,11 @@ function refineItems(refineType) {
         }
 
         while (true) {
+            // 限制 itemqty 不超过 30000，避免超出 short 范围
+            if (refineQty > 3000) {
+                refineQty = 3000;
+            }
+
             itemqty = refineQty * 10;
 
             var fee = getRefineFee(refineFees[refineType][(itemid % 100) | 0] * refineQty);
