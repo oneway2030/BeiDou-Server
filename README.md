@@ -669,6 +669,230 @@ BOSS 副本通过事件脚本控制，位于 `gms-server/scripts/event/`：
 
 > **注意：** 大多数新增内容不需要修改 Java 代码。`LifeFactory`、`ItemInformationProvider`、`MonsterInformationProvider` 会自动读取新的 WZ 数据和数据库记录。只有在需要新的 Java 逻辑（如特殊 BOSS 行为、新的物品效果类型）时才需要修改 Java 代码。
 
+### 8. 角色系统深度分析与新职业添加指南
+
+本节详细分析角色系统的逻辑结构，以及如何添加新职业（以暗影双刀为例）。
+
+#### 8.1 角色系统核心逻辑
+
+##### 职业定义
+职业在 `client/Job.java` 枚举中定义，每个职业有唯一的ID和名称。职业ID的规则如下：
+
+| 职业系列 | ID范围 | 说明 |
+|---|---|---|
+| 冒险家 | 0-599 | 初心者、战士、魔法师、弓箭手、飞侠、海盗 |
+| 骑士团 | 1000-1999 | 魂骑士、炎术士、风灵使者、夜行者、奇袭者 |
+| 战神 | 2000-2199 | 战神系列职业 |
+| 龙神 | 2200-2299 | 龙神系列职业 |
+
+##### 职业分支规则
+每个职业系列分为多个分支，通过职业ID的十位数区分：
+- **战士系**：100（战士）→ 110（剑客）→ 111（勇士）→ 112（英雄）
+- **魔法师系**：200（魔法师）→ 210（火毒法师）→ 211（火毒巫师）→ 212（火毒魔导士）
+- **弓箭手系**：300（弓箭手）→ 310（猎人）→ 311（射手）→ 312（神射手）
+- **飞侠系**：400（飞侠）→ 410（刺客）→ 411（无影人）→ 412（隐士）
+- **海盗系**：500（海盗）→ 510（拳手）→ 511（斗士）→ 512（冲锋队长）
+
+##### 角色创建流程
+1. **客户端发送创建请求**：包含职业、外观、属性等信息
+2. **服务端验证**：检查职业ID、属性值、物品等
+3. **创建角色对象**：使用 `CharacterFactory` 和 `CharacterFactoryRecipe`
+4. **初始化角色数据**：设置初始属性、装备、技能
+5. **保存到数据库**：插入 `characters` 表
+
+##### 技能系统
+- **技能常量**：定义在 `constants/skills/` 目录下，每个职业一个文件
+- **技能数据**：存储在 `Skill.wz/` 目录下，按职业ID分组
+- **技能加载**：`SkillFactory` 从WZ文件读取技能数据
+- **技能学习**：通过NPC脚本或任务奖励学习技能
+
+#### 8.2 添加新职业（暗影双刀）的完整流程
+
+##### 第一步：在Job枚举中添加新职业
+在 `client/Job.java` 中添加双刀职业的枚举值：
+
+```java
+// 飞侠系 - 双刀分支
+DUALBLADE_1(430, I18nUtil.getMessage("job.name.430")),  // 见习刀客
+DUALBLADE_2(431, I18nUtil.getMessage("job.name.431")),  // 双刀客
+DUALBLADE_3(432, I18nUtil.getMessage("job.name.432")),  // 双刀侠
+DUALBLADE_4(433, I18nUtil.getMessage("job.name.433")),  // 血刀
+DUALBLADE_5(434, I18nUtil.getMessage("job.name.434")),  // 暗影双刀
+```
+
+##### 第二步：创建技能常量文件
+在 `constants/skills/` 目录下创建 `DualBlade.java`：
+
+```java
+package org.gms.constants.skills;
+
+public class DualBlade {
+    // 一转技能
+    public static final int KATARA_MASTERY = 4300000;
+    public static final int SHARPNESS = 4300001;
+    public static final int FLASH_JUMP = 4301000;
+    public static final int FATAL_BLOW = 4301001;
+    public static final int SLASH_STORM = 4301002;
+    
+    // 二转技能
+    public static final int DUAL_BLADE_MASTERY = 4310000;
+    public static final int HASTE = 4311000;
+    public static final int UPPER_STAB = 4311001;
+    public static final int FKAIRO_SLASH = 4311002;
+    
+    // 三转技能
+    public static final int ADVANCED_BLADE_MASTERY = 4320000;
+    public static final int BLOODY_STORM = 4331000;
+    public static final int MIRROR_IMAGE = 4331002;
+    public static final int DEAD_OWL = 4331003;
+    
+    // 四转技能
+    public static final int EXPERT_BLADE_MASTERY = 4340000;
+    public static final int BLADE_FURY = 4341000;
+    public static final int PHANTOM_BLOW = 4341001;
+    public static final int ASURA = 4341002;
+}
+```
+
+##### 第三步：添加技能WZ数据
+在 `Skill.wz/` 目录下创建双刀职业的技能文件：
+- `430.img.xml` - 一转技能数据
+- `431.img.xml` - 二转技能数据
+- `432.img.xml` - 三转技能数据
+- `433.img.xml` - 三转技能数据
+- `434.img.xml` - 四转技能数据
+
+每个文件包含技能的详细数据，如伤害、MP消耗、冷却时间等。
+
+##### 第四步：创建角色创建器
+在 `client/creator/` 目录下创建 `DualBladeCreator.java`：
+
+```java
+package org.gms.client.creator.veteran;
+
+import org.gms.client.Client;
+import org.gms.client.Job;
+import org.gms.client.creator.CharacterFactory;
+import org.gms.client.creator.CharacterFactoryRecipe;
+import org.gms.client.inventory.InventoryType;
+import org.gms.client.inventory.Item;
+import org.gms.constants.id.ItemId;
+import org.gms.constants.id.MapId;
+import org.gms.server.ItemInformationProvider;
+
+public class DualBladeCreator extends CharacterFactory {
+    private static final int[] equips = {ItemId.BROWN_BATTLEDORE, ItemId.RED_JUNGAO, 
+            ItemId.BROWN_BATTLEDORE_PANTS, ItemId.RED_JUNGAO_PANTS, ItemId.BRONZE_CHAIN_BOOTS};
+    private static final int[] weapons = {ItemId.KATARA, ItemId.SHORT_SWORD};
+    private static final int[] startingHpMp = {794, 407};
+
+    private static CharacterFactoryRecipe createRecipe(Job job, int level, int map, 
+            int top, int bottom, int shoes, int weapon) {
+        CharacterFactoryRecipe recipe = new CharacterFactoryRecipe(job, level, map, 
+                top, bottom, shoes, weapon);
+        ItemInformationProvider ii = ItemInformationProvider.getInstance();
+
+        recipe.setDex(25);
+        recipe.setRemainingAp(133);
+        recipe.setRemainingSp(61);
+
+        recipe.setMaxHp(startingHpMp[0]);
+        recipe.setMaxMp(startingHpMp[1]);
+
+        recipe.setMeso(100000);
+
+        for (int i = 1; i < weapons.length; i++) {
+            giveEquipment(recipe, ii, weapons[i]);
+        }
+
+        giveItem(recipe, ItemId.SUBI_THROWING_STARS, 500, InventoryType.USE);
+        giveItem(recipe, ItemId.WHITE_POTION, 100, InventoryType.USE);
+        giveItem(recipe, ItemId.BLUE_POTION, 100, InventoryType.USE);
+        giveItem(recipe, ItemId.RELAXER, 1, InventoryType.SETUP);
+
+        return recipe;
+    }
+
+    private static void giveEquipment(CharacterFactoryRecipe recipe, 
+            ItemInformationProvider ii, int equipid) {
+        Item nEquip = ii.getEquipById(equipid);
+        recipe.addStartingEquipment(nEquip);
+    }
+
+    private static void giveItem(CharacterFactoryRecipe recipe, int itemid, 
+            int quantity, InventoryType itemType) {
+        recipe.addStartingItem(itemid, quantity, itemType);
+    }
+
+    public static int createCharacter(Client c, String name, int face, int hair, 
+            int skin, int gender, int improveSp) {
+        return createNewCharacter(c, name, face, hair, skin, gender, 
+                createRecipe(Job.DUALBLADE_1, 30, MapId.KERNING_CITY, 
+                equips[gender], equips[2 + gender], equips[4], weapons[0]));
+    }
+}
+```
+
+##### 第五步：添加装备数据
+1. **武器数据**：在 `Character.wz/Weapon/` 目录下添加双刀武器数据
+2. **装备名称**：在 `String.wz/Eqp.img.xml` 中添加装备名称和描述
+3. **装备需求**：设置职业需求 `reqJob` 为双刀职业ID
+
+##### 第六步：更新转职脚本
+更新快速转职脚本 `scripts-zh-CN/BeiDouSpecial/快速转职.js`，添加双刀职业的转职逻辑：
+
+```javascript
+430: [//见习刀客 - 二转
+    [
+        {job_id: 431, name: "双刀客", level: 30, js: ""},
+        {id: 4310000, max_Level: 20},
+        {id: 4311001, max_Level: 20},
+        {id: 4311002, max_Level: 20},
+        {id: 4311003, max_Level: 20}
+    ]
+],
+```
+
+##### 第七步：更新其他脚本
+1. **NPC脚本**：更新转职NPC脚本，支持双刀职业
+2. **任务脚本**：更新相关任务脚本，支持双刀职业
+3. **物品脚本**：更新物品使用脚本，支持双刀武器
+
+#### 8.3 添加新职业的可行性评估
+
+##### 优势
+1. **系统架构支持**：项目采用数据驱动的设计，大部分数据通过WZ文件和数据库配置
+2. **脚本灵活性**：转职逻辑通过JavaScript脚本实现，易于修改和扩展
+3. **模块化设计**：角色创建、技能学习等模块相对独立
+
+##### 挑战
+1. **技能数据获取**：需要从其他MapleStory版本获取双刀职业的技能WZ数据
+2. **多文件修改**：需要修改Java代码、WZ文件、脚本文件等多个位置
+3. **平衡性调整**：需要调整双刀职业的技能伤害、MP消耗等参数
+4. **客户端兼容**：需要确保客户端支持双刀职业的图形和动画
+
+##### 建议流程
+1. **获取技能数据**：从MapleStory其他版本（如CMS、TMS）获取双刀技能WZ数据
+2. **逐步实现**：先实现基础功能（职业定义、技能学习），再完善细节（转职任务、平衡性）
+3. **充分测试**：测试双刀职业的所有技能、转职流程、装备使用等
+4. **文档记录**：记录所有修改的文件和配置，便于维护
+
+#### 8.4 修改文件汇总表
+
+| 操作 | 必须修改的文件/位置 |
+|---|---|
+| 添加职业定义 | `Job.java` |
+| 添加技能常量 | `constants/skills/DualBlade.java` |
+| 添加技能数据 | `Skill.wz/430.img.xml` 等 |
+| 添加角色创建器 | `client/creator/veteran/DualBladeCreator.java` |
+| 添加装备数据 | `Character.wz/Weapon/` 等 |
+| 添加装备名称 | `String.wz/Eqp.img.xml` |
+| 更新转职脚本 | `scripts-zh-CN/BeiDouSpecial/快速转职.js` |
+| 更新NPC脚本 | 相关NPC脚本文件 |
+| 更新任务脚本 | 相关任务脚本文件 |
+
+> **注意：** 添加新职业是一个复杂的过程，需要修改多个文件。建议在开发分支上进行，充分测试后再合并到主分支。
+
 ## 技术特点
 
 ### 1. 高性能架构
