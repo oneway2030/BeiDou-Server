@@ -9258,7 +9258,7 @@ public class Character extends AbstractCharacterObject {
     }
 
     public void increaseEquipExp(int expGain) {
-        if (allowExpGain) {     // thanks Vcoc for suggesting equip EXP gain conditionally
+        if (allowExpGain || isGM()) {     // GM角色的装备经验不受!exp命令影响
             if (expGain < 0) {
                 expGain = Integer.MAX_VALUE;
             }
