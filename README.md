@@ -1278,3 +1278,161 @@ web中所有的图片均需要联网获取，感谢 https://maplestory.io 提供
 # Wiki
 发现很多同学的问题基本在Wiki中都有答案，欢迎大家去看看。另外如果发现Wiki中没有的问题，欢迎提issue，或直接补充。已将Wiki开放为所有人都可以编辑。  
 [Wiki地址](https://github.com/BeiDouMS/BeiDou-Server/wiki)
+
+---
+
+# 创建新技能教程：复制强化圣龙(2321003)给龙骑士职业
+
+## 前置知识
+
+- **技能ID规则**：`职业ID * 10000 + 技能编号`，例如主教四转 `232 * 10000 + 1003 = 2321003`
+- **龙骑士(DragonKnight)职业ID**：`131`（三转），现有技能ID范围 `1310000 ~ 1311008`
+- **强化圣龙**：技能ID `2321003`，属于主教(Bishop)四转技能
+
+## 第一步：确定新技能ID
+
+现有龙骑士技能最大ID是 `1311008`，新技能ID建议使用 **`1311009`**。
+
+| 属性 | 值 |
+|------|-----|
+| 新技能ID | `1311009` |
+| 原技能ID | `2321003`（强化圣龙） |
+| 职业 | 龙骑士(DragonKnight) |
+| 常量名 | `DRAGON_BREATH`（自定义） |
+
+## 第二步：复制并修改技能WZ数据文件
+
+**文件**：`gms-server/wz/Skill.wz/232.img.xml`
+
+这个文件是单行XML，包含所有232系（主教）技能数据。需要：
+
+1. **提取2321003的完整数据块** — 从 `<imgdir name="2321003">` 到对应的 `</imgdir>`
+2. **修改技能ID** — 将所有 `2321003` 替换为 `1311009`
+3. **修改所属文件** — 将数据放到 `gms-server/wz/Skill.wz/131.img.xml`（龙骑士技能文件）中
+
+具体操作：
+
+```bash
+# 1. 在 232.img.xml 中找到 2321003 的数据块（从 <imgdir name="2321003"> 到下一个同级 </imgdir>）
+# 2. 复制该数据块
+# 3. 打开 131.img.xml，在 </imgdir> 结束标签前粘贴
+# 4. 将粘贴内容中所有 "2321003" 替换为 "1311009"
+```
+
+需要修改的数据节点：
+
+| 节点 | 说明 | 修改内容 |
+|------|------|---------|
+| `imgdir name="2321003"` | 技能根节点 | 改为 `1311009` |
+| `imgdir name="level"` 内各等级 | 技能属性 | 根据需要调整 `damage`、`mpCon`、`time` 等 |
+| `imgdir name="req"` | 前置技能需求 | 修改为龙骑士的前置技能ID |
+| `imgdir name="summon"` | 召唤兽动画 | 替换为新的召唤兽动画数据 |
+| `imgdir name="effect"` | 技能特效 | 替换为新的特效动画数据 |
+
+## 第三步：修改技能名称/描述文件
+
+### 3.1 英文版 String.wz
+
+**文件**：`gms-server/wz/String.wz/Skill.img.xml`
+
+在这个文件中添加新技能的名称和描述：
+
+```xml
+<imgdir name="1311009">
+  <string name="desc" value="[最高等级：30]Summon a dragon to fight for you.最多攻击6个敌人"/>
+  <string name="h1" value="MP Cost: 13, Attack: 255, Duration: 55sec"/>
+  <!-- 每个等级的描述 h1 ~ h30 -->
+</imgdir>
+```
+
+### 3.2 中文版 String.wz
+
+**文件**：`gms-server/wz-zh-CN/String.wz/Skill.img.xml`
+
+```xml
+<imgdir name="1311009">
+  <string name="desc" value="[最高等级：30]召唤圣龙为你战斗，最多攻击6个敌人"/>
+  <string name="h1" value="消耗MP 13，基本攻击力 255，持续时间 55秒"/>
+  <!-- 每个等级的描述 h1 ~ h30 -->
+</imgdir>
+```
+
+## 第四步：修改Java技能常量
+
+**文件**：`gms-server/src/main/java/org/gms/constants/skills/DragonKnight.java`
+
+添加新技能常量：
+
+```java
+public class DragonKnight {
+    // ... 现有技能 ...
+    public static final int DRAGON_BLOOD = 1311008;
+    public static final int DRAGON_BREATH = 1311009;  // 新增：龙息（复制自强化圣龙）
+}
+```
+
+## 第五步：处理技能特殊逻辑（如需要）
+
+以下文件中可能有针对 `2321003` 的特殊逻辑，需要检查并为新技能添加对应处理：
+
+| 文件 | 说明 | 操作 |
+|------|------|------|
+| `StatEffect.java` | 技能效果处理 | 搜索 `2321003` 或 `BAHAMUT`，为 `1311009` 添加相同逻辑 |
+| `Character.java` | 角色技能管理 | 搜索 `BAHAMUT`，检查是否有特殊处理 |
+| `SummonDamageHandler.java` | 召唤兽伤害处理 | 搜索 `2321003`，为新技能添加白名单 |
+
+```bash
+# 在 gms-server/src 目录下搜索所有引用 2321003 的地方
+grep -rn "2321003" gms-server/src/
+grep -rn "BAHAMUT" gms-server/src/
+```
+
+## 第六步：替换技能特效和BGM
+
+技能特效数据内嵌在 `Skill.wz/*.img.xml` 的技能数据中，主要包含：
+
+| 数据节点 | 说明 | 替换方式 |
+|---------|------|---------|
+| `<imgdir name="effect">` | 技能释放特效动画（Canvas帧数据） | 替换为龙骑士风格的特效帧 |
+| `<imgdir name="hit">` | 命中特效 | 替换为新的命中动画 |
+| `<imgdir name="summon">` | 召唤兽动画（summoned/fly/stand/attack1/die） | 替换为龙骑士的龙动画 |
+
+**特效替换方法**：
+1. 从其他龙骑士技能（如 `DRAGON_ROAR = 1311006`）的动画数据中提取特效
+2. 或从 `Effect.wz/Summon.img.xml` 中查找合适的龙动画
+3. 替换对应节点的 Canvas 帧数据
+
+**BGM替换**：
+- BGM数据在 `Sound.wz/Skill.img.xml` 中，搜索 `2321003` 查找原技能音效
+- 替换为新的音效ID
+
+## 第七步：客户端资源（如需要）
+
+客户端的技能资源通常打包在 WZ 文件中，如果客户端也需要显示新技能：
+
+1. 确保客户端的 `Skill.wz` 中有对应 `131.img` 的数据
+2. 技能图标（icon）、特效动画需要客户端支持
+3. 如果是纯服务端修改（不改客户端），客户端可能无法显示新特效
+
+## 第八步：测试
+
+1. 启动服务端
+2. 使用GM命令或脚本为角色添加新技能：
+   ```
+   !sp 1311009 30
+   ```
+3. 测试技能释放、伤害计算、召唤兽行为
+4. 检查服务端日志是否有异常
+
+## 完整文件修改清单
+
+| 文件 | 操作 | 优先级 |
+|------|------|--------|
+| `gms-server/wz/Skill.wz/131.img.xml` | 添加新技能数据 | **必须** |
+| `gms-server/wz/String.wz/Skill.img.xml` | 添加技能名称描述 | **必须** |
+| `gms-server/wz-zh-CN/String.wz/Skill.img.xml` | 添加中文技能名称描述 | **必须** |
+| `gms-server/src/.../skills/DragonKnight.java` | 添加技能常量 | **必须** |
+| `gms-server/src/.../StatEffect.java` | 添加技能效果逻辑 | 按需 |
+| `gms-server/src/.../Character.java` | 检查特殊处理 | 按需 |
+| `gms-server/src/.../SummonDamageHandler.java` | 添加召唤兽白名单 | 按需 |
+| `gms-server/wz/Sound.wz/Skill.img.xml` | 替换技能音效 | 按需 |
