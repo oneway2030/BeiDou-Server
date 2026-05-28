@@ -35,6 +35,9 @@ function action(mode, type, selection) {
             text += " #s4111006# #L1##r二段跳#n#l\r\n";
             text += " \r\n";
             text += " \r\n";
+            text += " #s2321003# #L5##r强化圣龙#n#l\r\n";
+            text += " \r\n";
+            text += " \r\n";
             text += "#L2#删除二段跳#n#l\r\n";
             if (count > 0) {
                 text += " \r\n";
@@ -71,6 +74,9 @@ function doSelect(selection) {
             break;
         case 4://回声
             getKill(1005)
+            break;
+        case 5://强化圣龙（玛瑙龙光效）
+            getKill(2321003)
             break;
         default:
             cm.dispose();
