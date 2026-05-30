@@ -35,6 +35,7 @@ var 继承装备材料 = {
     鞋子: [1072239, 1072732, 1072737],
     腰带: [1132115, 1132296, 1132211, 1132212, 1132213, 1132214],
     披风: [
+        1102871, // 愤怒的扎昆披风
         1102471, 1102472, 1102473, 1102474, 1102475, // 诺巴材料：赫里希安精锐
         1102476, 1102477, 1102478, 1102479, 1102480  // 暴君材料：诺巴
     ]
@@ -455,7 +456,7 @@ var 披风_诺巴 = [
             {id: 1102471, qty: 1, tip: "(继承该装备洗练和星级)"},
             {id: 4001101, qty: 200, tip: "（月妙的年糕）"},
             {id: 4000175, qty: 10, tip: "（皮亚奴斯模型）"},
-            {id: 1002926, qty: 1, tip: "（暴力熊帽）"},
+            {id: 1002926, qty: 1, tip: "（暴力熊帽）", altIds: [1003023, 1003024]},
             {id: 4001241, qty: 1, tip: "（暴力熊足）"},
             {id: 4001261, qty: 50, tip: "（蝙蝠魔的皮碎片）"},
             {id: 2040728, qty: 50, tip: "（蝙蝠魔的鞋子力量卷轴30%）"},
@@ -470,7 +471,7 @@ var 披风_诺巴 = [
             {id: 1102472, qty: 1, tip: "(继承该装备洗练和星级)"},
             {id: 4001101, qty: 200, tip: "（月妙的年糕）"},
             {id: 4000175, qty: 10, tip: "（皮亚奴斯模型）"},
-            {id: 1002926, qty: 1, tip: "（暴力熊帽）"},
+            {id: 1002926, qty: 1, tip: "（暴力熊帽）", altIds: [1003023, 1003024]},
             {id: 4001241, qty: 1, tip: "（暴力熊足）"},
             {id: 4001261, qty: 50, tip: "（蝙蝠魔的皮碎片）"},
             {id: 2040729, qty: 50, tip: "（蝙蝠魔的鞋子智力卷轴30%）"},
@@ -485,7 +486,7 @@ var 披风_诺巴 = [
             {id: 1102473, qty: 1, tip: "(继承该装备洗练和星级)"},
             {id: 4001101, qty: 200, tip: "（月妙的年糕）"},
             {id: 4000175, qty: 10, tip: "（皮亚奴斯模型）"},
-            {id: 1002926, qty: 1, tip: "（暴力熊帽）"},
+            {id: 1002926, qty: 1, tip: "（暴力熊帽）", altIds: [1003023, 1003024]},
             {id: 4001241, qty: 1, tip: "（暴力熊足）"},
             {id: 4001261, qty: 50, tip: "（蝙蝠魔的皮碎片）"},
             {id: 2040731, qty: 50, tip: "（蝙蝠魔的鞋子敏捷卷轴30%）"},
@@ -500,7 +501,7 @@ var 披风_诺巴 = [
             {id: 1102474, qty: 1, tip: "(继承该装备洗练和星级)"},
             {id: 4001101, qty: 200, tip: "（月妙的年糕）"},
             {id: 4000175, qty: 10, tip: "（皮亚奴斯模型）"},
-            {id: 1002926, qty: 1, tip: "（暴力熊帽）"},
+            {id: 1002926, qty: 1, tip: "（暴力熊帽）", altIds: [1003023, 1003024]},
             {id: 4001241, qty: 1, tip: "（暴力熊足）"},
             {id: 4001261, qty: 50, tip: "（蝙蝠魔的皮碎片）"},
             {id: 2040730, qty: 50, tip: "（蝙蝠魔的鞋子幸运卷轴30%）"},
@@ -515,7 +516,7 @@ var 披风_诺巴 = [
             {id: 1102475, qty: 1, tip: "(继承该装备洗练和星级)"},
             {id: 4001101, qty: 200, tip: "（月妙的年糕）"},
             {id: 4000175, qty: 10, tip: "（皮亚奴斯模型）"},
-            {id: 1002926, qty: 1, tip: "（暴力熊帽）"},
+            {id: 1002926, qty: 1, tip: "（暴力熊帽）", altIds: [1003023, 1003024]},
             {id: 4001241, qty: 1, tip: "（暴力熊足）"},
             {id: 4001261, qty: 50, tip: "（蝙蝠魔的皮碎片）"},
             {id: 2040728, qty: 25, tip: "（蝙蝠魔的鞋子力量卷轴30%）"},
@@ -969,6 +970,21 @@ function 获取新装备并继承属性(targetId, needItem) {
 }
 
 /**
+ * 从 need 的主 id 和 altIds 中，找到背包里实际持有的那个 id
+ * @param {object} need - needItems 中的一项，可能含 altIds: [id, ...]
+ * @returns {number|null} 实际持有的材料 id，找不到返回 null
+ */
+function findMatchingMaterialId(need) {
+    if (cm.getItemQuantity(need.id) >= need.qty) return need.id;
+    if (need.altIds) {
+        for (var i = 0; i < need.altIds.length; i++) {
+            if (cm.getItemQuantity(need.altIds[i]) >= need.qty) return need.altIds[i];
+        }
+    }
+    return null;
+}
+
+/**
  * 全量检查所有材料是否满足（仅检查，不扣除）
  * @param {object} player - 玩家对象
  * @param {array} lackItems - 缺失材料列表（输出参数）
@@ -1001,9 +1017,12 @@ function checkAllMaterials(player, lackItems) {
                     allSatisfied = false;
                 }
             } else {
-                const haveQty = cm.getItemQuantity(need.id);
-                if (haveQty < need.qty) {
-                    lackItems.push(`#t${need.id}#（缺少：${need.qty - haveQty}）`);
+                const matchedId = findMatchingMaterialId(need);
+                if (matchedId === null) {
+                    const displayName = need.altIds
+                        ? `#t${need.id}# / #t${need.altIds[0]}# / ...`
+                        : `#t${need.id}#`;
+                    lackItems.push(`${displayName}（缺少：${need.qty}）`);
                     allSatisfied = false;
                 }
             }
@@ -1029,7 +1048,10 @@ function deductAllMaterials(player) {
         } else {
             // 扣除普通物品（武器材料在属性继承时移除，此处无需处理）
             if (!isNeedEquip(need.id)) {
-                cm.gainItem(need.id, -need.qty);
+                const matchedId = findMatchingMaterialId(need);
+                if (matchedId !== null) {
+                    cm.gainItem(matchedId, -need.qty);
+                }
             }
         }
     });

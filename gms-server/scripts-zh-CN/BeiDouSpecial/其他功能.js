@@ -25,6 +25,7 @@ function action(mode, type, selection) {
         text += " \r\n";
         text += `#r#L0#【${节日str}】节日礼物#l\r\n\r\n`;
         text += "#b#L2#常用指令查询#l\r\n\r\n";
+        text += "#b#L3#快三赌博#l\r\n\r\n";
         // text += "#b#L1#领取公测测试礼包（正式开服无该礼包）#l\t\r\n\r\n";
         // text += "#b#L3#测试期间道具领取#l\t\r\n\r\n";
         cm.sendSimple(text);
