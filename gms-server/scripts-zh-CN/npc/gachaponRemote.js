@@ -48,7 +48,7 @@ function action(mode, type, selection) {
         if (status == 0 && cm.haveItem(ticketId)) {
             if (cm.canHold(1302000) && cm.canHold(2000000) && cm.canHold(3010001) && cm.canHold(4000000)) { // One free slot in every inventory.
                 cm.gainItem(ticketId, -1);
-                cm.doGachapon();
+                cm.doRemoteGachapon(cm.getNpc());
 
             } else {
                 cm.sendOk("请确保你的#r装备、消耗、设置#k和#r其他#k物品栏中至少有一个空位。");

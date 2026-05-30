@@ -38,6 +38,8 @@ public class GachaponService {
     private GachaponRewardPoolMapper gachaponRewardPoolMapper;
     @Autowired
     private GachaponRewardMapper gachaponRewardMapper;
+    @Autowired
+    private PlayerGachaponStatsService playerGachaponStatsService;
 
 
     private static final HashMap<Integer, List<GachaponRewardDO>> poolRewardsCache = new HashMap<>();
@@ -202,6 +204,10 @@ public class GachaponService {
     }
 
     public void doGachapon(Character player, int gachaponId) {
+        doGachapon(player, gachaponId, true);
+    }
+    
+    public void doGachapon(Character player, int gachaponId, boolean isGachapon) {
         rLock.lock();
         try {
             List<GachaponRewardPoolDO> pools = getActivePools(gachaponId); // 已按ID排序
@@ -242,6 +248,13 @@ public class GachaponService {
                 target = pools.getFirst();
             }
             doReward(player, target);
+            
+            // 记录抽奖次数
+            if (isGachapon) {
+                playerGachaponStatsService.incrementGachaponCount(player.getId(), player.getName());
+            } else {
+                playerGachaponStatsService.incrementRemoteGachaponCount(player.getId(), player.getName());
+            }
         } finally {
             rLock.unlock();
         }
@@ -284,5 +297,52 @@ public class GachaponService {
             poolRewardsCache.put(poolId, poolRewards);
             return poolRewards;
         }
+    }
+    
+    /**
+     * 保底抽奖
+     * @param player 玩家
+     * @param poolId 奖池ID
+     * @param guaranteedCount 保底次数（每多少次抽一次保底）
+     * @return 是否成功
+     */
+    public boolean doGuaranteedGachapon(Character player, int poolId, int guaranteedCount) {
+        // 检查是否有足够的抽奖次数
+        int totalCount = playerGachaponStatsService.getTotalCount(player.getId());
+        if (totalCount < guaranteedCount) {
+            player.message("抽奖次数不足，无法进行保底抽奖！");
+            return false;
+        }
+        
+        // 获取奖池奖励
+        List<GachaponRewardDO> poolRewards = getPoolRewards(poolId);
+        if (poolRewards.isEmpty()) {
+            player.message("保底奖池为空，请联系管理员");
+            log.error("保底奖池为空，奖池id:{} 抽奖人:[{}] {}", poolId, player.getId(), player.getName());
+            return false;
+        }
+        
+        // 随机获取一件奖励
+        int random = Randomizer.nextInt(poolRewards.size());
+        GachaponRewardDO reward = poolRewards.get(random);
+        
+        // 发放奖励
+        Item itemGained = player.getAbstractPlayerInteraction().gainItem(reward.getItemId(), reward.getQuantity(), true, true);
+        if (itemGained == null) {
+            player.message("背包空间不足！");
+            return false;
+        }
+        
+        // 扣除抽奖次数
+        boolean success = playerGachaponStatsService.deductTotalCount(player.getId(), guaranteedCount);
+        if (!success) {
+            player.message("扣除抽奖次数失败！");
+            return false;
+        }
+        
+        String gachaponMessage = I18nUtil.getMessage("GachaMessage.message1", player.getMap().getMapName(), reward.getQuantity(), ItemInformationProvider.getInstance().getName(reward.getItemId()));
+        player.dropMessage(gachaponMessage);
+        
+        return true;
     }
 }

@@ -47,6 +47,7 @@ import org.gms.net.server.world.Party;
 import org.gms.net.server.world.PartyCharacter;
 import org.gms.server.maps.*;
 import org.gms.service.GachaponService;
+import org.gms.service.PlayerGachaponStatsService;
 import org.gms.util.packets.WeddingPackets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,6 +91,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     private int itemId;
     private List<PartyCharacter> otherParty;
     private static final GachaponService gachaponService = ServerManager.getApplicationContext().getBean(GachaponService.class);
+    private static final PlayerGachaponStatsService playerGachaponStatsService = ServerManager.getApplicationContext().getBean(PlayerGachaponStatsService.class);
 
     private final Map<Integer, String> npcDefaultTalks = new HashMap<>();
     @Getter
@@ -445,6 +447,26 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public void doGachapon() {
         gachaponService.doGachapon(getPlayer(), npc);
+    }
+    
+    public void doRemoteGachapon(int gachaponId) {
+        gachaponService.doGachapon(getPlayer(), gachaponId, false);
+    }
+    
+    public int getTotalGachaponCount() {
+        return playerGachaponStatsService.getTotalCount(getPlayer().getId());
+    }
+    
+    public int getGachaponCount() {
+        return playerGachaponStatsService.getGachaponCount(getPlayer().getId());
+    }
+    
+    public int getRemoteGachaponCount() {
+        return playerGachaponStatsService.getRemoteGachaponCount(getPlayer().getId());
+    }
+    
+    public void doGuaranteedGachapon(int poolId, int guaranteedCount) {
+        gachaponService.doGuaranteedGachapon(getPlayer(), poolId, guaranteedCount);
     }
 
     // public void doGachapon() {

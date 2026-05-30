@@ -77,7 +77,7 @@ function action(mode, type, selection) {
         text += " \r\n";
         text += "#L13#" + icon + "额外仓库#l\t#L14#删除道具#l\t#L15#查询掉落#l\t#L16#其他功能#l\r\n";
         text += " \r\n";
-        text += "#L19#" + icon + "卷轴分解#l\t#L21#副本兑换#l\t#L20#拍卖行#l\r\n";
+        text += "#L19#" + icon + "卷轴分解#l\t#L21#副本兑换#l\t#L22#抽奖保底#l\t#L20#拍卖行#l\r\n";
         text += " \r\n";
         if (cm.getPlayer().isGM()) {
             text += "\r\n";
@@ -170,6 +170,9 @@ function doSelect(selection) {
             break;
         case 21://副本兑换
             openNpc("副本相关/副本兑换");
+            break;
+        case 22://副本兑换
+            openNpc("抽奖保底");
             break;
         case 999://新人福利
             openNpc("新人福利");
