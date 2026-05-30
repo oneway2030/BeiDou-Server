@@ -228,15 +228,11 @@ public class Fishing {
     }
 
     public void unregisterFisherPlayer(Character chr) {
-        Iterator<WeakReference<Character>> iterator = fishingCharacter.iterator();
-        while (iterator.hasNext()) {
-            WeakReference<Character> ref = iterator.next();
+        fishingCharacter.removeIf(ref -> {
             Character c = ref.get();
-            if (c == null || c.equals(chr)) {
-                iterator.remove();
-//                    log.info("玩家{}已从钓鱼列表注销", chr == null ? "null" : chr.getName());
-            }
-        }
+            return c == null || c.equals(chr);
+        });
+        log.info("玩家{}已从钓鱼列表注销", chr.getName());
     }
 
     private boolean hasValidBait(Character chr) {
