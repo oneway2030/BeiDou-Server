@@ -334,22 +334,23 @@ public class Fishing {
             return;
         }
 
-        List<Character> validFishers = new ArrayList<>();
-        // CopyOnWriteArrayList本身线程安全，无需额外同步
-        Iterator<WeakReference<Character>> iterator = fishingCharacter.iterator();
-        while (iterator.hasNext()) {
-            WeakReference<Character> ref = iterator.next();
+        // 使用 removeIf 清理无效玩家（CopyOnWriteArrayList 支持此操作）
+        fishingCharacter.removeIf(ref -> {
             Character chr = ref.get();
-            if (chr == null || !isValidFisherPlayer(chr)) {
-                iterator.remove();
+            boolean shouldRemove = chr == null || !isValidFisherPlayer(chr);
+            if (shouldRemove) {
                 log.info("清理无效钓鱼玩家：{}", chr == null ? "null" : chr.getName());
-                continue;
             }
-            validFishers.add(chr);
-        }
-        for (Character chr : validFishers) {
-            doFishing(chr);
-        }
+            return shouldRemove;
+        });
+
+        // 遍历有效玩家执行钓鱼
+        fishingCharacter.forEach(ref -> {
+            Character chr = ref.get();
+            if (chr != null) {
+                doFishing(chr);
+            }
+        });
     }
 
     public void doFishing(Character chr) {
