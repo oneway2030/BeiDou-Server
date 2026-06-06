@@ -141,9 +141,8 @@ public class SessionCoordinator {
 
         try {
             final HostHwid knownHwid = hostHwidCache.getEntry(remoteHost);
+            // 只检查HWID是否已在线，不再限制同一IP的登录会话数量
             if (knownHwid != null && onlineRemoteHwids.contains(knownHwid.hwid())) {
-                return false;
-            } else if (loginRemoteHosts.containsKey(remoteHost)) {
                 return false;
             }
 
@@ -180,16 +179,14 @@ public class SessionCoordinator {
     }
 
     public AntiMulticlientResult attemptLoginSession(Client client, Hwid hwid, int accountId, boolean routineCheck) {
-        //TODO 这里原来的多开校验不太好容易造成集合有缓存，用户无法登陆
-//        if (!GameConfig.getServerBoolean("deterred_multi_client")) {
-//            client.setHwid(hwid);
-//            return AntiMulticlientResult.SUCCESS;
-//        }
         String remoteHost = getSessionRemoteHost(client);
-        log.info("进行登陆会话逻辑 ip:" + remoteHost + " accountId=" + accountId);
+        String realIp = getRealIp(remoteHost);
+        log.info("【登录会话】开始处理登录 IP: {}, 账号ID: {}", realIp, accountId);
+        
         try {
-            //校验多开
+            // 校验多开（管理员账号ID=1跳过检查）
             if (accountId != 1 && isMultiOpen(remoteHost)) {
+                log.warn("【登录会话】账号ID: {} 登录被拒绝，多开超限", accountId);
                 return AntiMulticlientResult.REMOTE_REACHED_LIMIT; // 超过限制，拒绝登录
             }
             InitializationResult initResult = sessionInit.initialize(remoteHost);
@@ -217,11 +214,15 @@ public class SessionCoordinator {
 
     public void cacheMultiOpenId(Client client, int accountId) {
         String remoteHost = getSessionRemoteHost(client);
-        // 新增：记录当前账号到用户的登录列表中
-        Set<Integer> accountSet = userAccountMap.computeIfAbsent(getRealIp(remoteHost), k -> ConcurrentHashMap.newKeySet());
-        // 2. 显式判断：若accountId不在集合中，则添加
+        String realIp = getRealIp(remoteHost);
+        // 记录当前账号到用户的登录列表中
+        Set<Integer> accountSet = userAccountMap.computeIfAbsent(realIp, k -> ConcurrentHashMap.newKeySet());
+        // 若accountId不在集合中，则添加
         if (!accountSet.contains(accountId)) {
             accountSet.add(accountId);
+            log.info("【多开记录】IP: {}, 账号ID: {} 已添加到多开列表，当前该IP下账号数: {}", realIp, accountId, accountSet.size());
+        } else {
+            log.warn("【多开记录】IP: {}, 账号ID: {} 已在列表中，跳过添加", realIp, accountId);
         }
     }
 
@@ -230,29 +231,39 @@ public class SessionCoordinator {
      */
     public boolean isMultiOpen(String remoteHost) {
         try {
-            int maxAllowed = GameConfig.getServerInt("max_accounts_per_user");
-            log.info("白名单校验 最大多开数量=" + maxAllowed);
-            if (maxAllowed <= 0) {
-                log.info("白名单校验返回 maxAllowed=" + maxAllowed);
-                return false;
-            }
             String ip = getRealIp(remoteHost);
-            String whiteIp = GameConfig.getServerString("multi_open_whitelist_ip");
-            // 步骤2：检查IP是否在白名单中，若在则不校验多开
-            if (ip != null && ip.equals(whiteIp)) {
-                log.info("在白名单中直接跳过");
+            int maxAllowed = GameConfig.getServerInt("max_accounts_per_user");
+            
+            log.info("【多开校验】开始校验 IP: {}, 配置的最大多开数: {}", ip, maxAllowed);
+            
+            // 检查是否启用了多开限制
+            if (maxAllowed <= 0) {
+                log.info("【多开校验】多开限制未启用 (max_accounts_per_user <= 0)，跳过校验");
                 return false;
             }
+            
+            // 检查IP是否在白名单中
+            String whiteIp = GameConfig.getServerString("multi_open_whitelist_ip");
+            log.info("【多开校验】白名单IP: {}", whiteIp);
+            
+            if (ip != null && ip.equals(whiteIp)) {
+                log.info("【多开校验】IP: {} 在白名单中，跳过多开校验", ip);
+                return false;
+            }
+            
+            // 检查该IP下已登录的账号数量
             Set<Integer> existingAccounts = userAccountMap.getOrDefault(ip, Collections.emptySet());
+            log.info("【多开校验】IP: {} 当前已登录账号数: {}, 允许的最大数: {}", ip, existingAccounts.size(), maxAllowed);
+            
             if (existingAccounts.size() >= maxAllowed) {
-                log.info("用户多开超过最大限制 ip:" + ip + " 用户已开启数量=" + existingAccounts.size());
+                log.warn("【多开校验】IP: {} 多开超过最大限制！已开启: {} 个, 限制: {} 个", 
+                         ip, existingAccounts.size(), maxAllowed);
                 return true;
             } else {
-                log.info("校验多开用户 ip:" + ip + " 已开账号数量=" + existingAccounts.size());
-                log.info("校验多开用户 总账号=" + userAccountMap);
+                log.info("【多开校验】IP: {} 多开检查通过，可继续登录", ip);
             }
         } catch (Exception e) {
-            log.error("Failed to check whether multi-open is enabled", e);
+            log.error("【多开校验】校验时发生异常: ", e);
         }
         return false;
     }
@@ -383,10 +394,17 @@ public class SessionCoordinator {
         String ip = getRealIp(remoteHost);
         Set<Integer> userAccounts = userAccountMap.get(ip);
         if (userAccounts != null) {
-            userAccounts.remove(accountId);
+            boolean removed = userAccounts.remove(accountId);
+            if (removed) {
+                log.info("【多开清理】IP: {}, 账号ID: {} 已从多开列表移除，剩余账号数: {}", 
+                         ip, accountId, userAccounts.size());
+            }
             if (userAccounts.isEmpty()) {
                 userAccountMap.remove(ip); // 为空时移除键，节省内存
+                log.info("【多开清理】IP: {} 的账号列表已清空，移除该IP记录", ip);
             }
+        } else {
+            log.warn("【多开清理】IP: {}, 账号ID: {} 未在多开列表中找到", ip, accountId);
         }
         if (immediately != null && immediately) {
             client.closeSession();
