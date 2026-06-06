@@ -25,7 +25,6 @@ function action(mode, type, selection) {
         text += " \r\n";
         text += `#r#L0#【${节日str}】节日礼物#l\r\n\r\n`;
         text += "#b#L2#常用指令查询#l\r\n\r\n";
-        // text += "#b#L3#快三赌博#l\r\n\r\n";
         // text += "#b#L1#领取公测测试礼包（正式开服无该礼包）#l\t\r\n\r\n";
         // text += "#b#L3#测试期间道具领取#l\t\r\n\r\n";
         cm.sendSimple(text);
@@ -64,23 +63,22 @@ function doSelect(selection) {
 
 var 枫叶奖励 = 4032133;
 var 枫叶数量 = 5;
-var 奖励_KEY = "补偿奖励_v7"
+var 奖励_KEY = "补偿奖励_v8"
 var meso_id = 9999999;
 var cash_id = 9999998;
-let 节日str = "回馈老玩家";
+let 节日str = "儿童节";
 
 var rewards = [
-    {id: cash_id, qty: 50000},//点卷
-    {id: meso_id, qty: 8000},
-    {id: 4032133, qty: 20},//红色钻石
-    {id: 4032133, qty: 20},//红色钻石
+    {id: cash_id, qty: 80000},//点卷
+    {id: meso_id, qty: 5000},
+    {id: 4032133, qty: 40},//红色钻石
     {id: 4260010, qty: 50},//低级强化宝石
-    {id: 4260009, qty: 10},//中级强化宝石
-    {id: 4039020, qty: 30},//金蛋
+    {id: 4260009, qty: 20},//中级强化宝石
+    {id: 4039020, qty: 50},//金蛋
     {id: 2029005, qty: 10},//三倍经验
     {id: 2029002, qty: 15},//双倍爆率
     {id: 2049116, qty: 20},//正向
-    {id: 2340001, qty: 30},//祝福
+    {id: 2340001, qty: 50},//祝福
 ];
 // const InventoryManipulator = Java.type('org.gms.client.inventory.manipulator.InventoryManipulator');
 // const ItemConstants = Java.type('org.gms.constants.inventory.ItemConstants');
@@ -114,7 +112,7 @@ function 发放奖励() {
             cm.gainItem(reward.id, qty);
         }
     });
-    sendEquipment(1702920, -1);
+    // sendEquipment(1702920, -1);
     cm.saveOrUpdateAccountExtendValue(奖励_KEY, "1");
     cm.sendOk("恭喜你领取成功");
     cm.getPlayer().sendAllWordNoticeNew(3, "节日礼物", `恭喜玩家【${cm.getPlayer().getName()}】领取【${节日str}】礼物! 祝大家节日快来，玩的开心~~`);

@@ -2,10 +2,10 @@
  * 就转涅槃(一键转生)
  */
 var needItemId = 4039020;
-var needItemCount = 50;
+var needItemCount = 30;
 var needItemId2 = 2049115;
 var needItemCount2 = 10;
-var meso = 20;
+var meso = 5;
 var needLevel = 250;
 var text
 //重生后的等级，由服务器字段控制 rebirth_level
