@@ -6,7 +6,7 @@
 var status = -1;
 var currentRound = 1; // 当前轮次
 const maxRounds = 10; // 最大轮次
-const CashPoint1Num = 500; // 点券奖励
+const CashPoint1Num = 1000; // 点券奖励
 const MesoNum = 20; // 金币奖励,单位W
 var selectedItemId = 0; // 当前任务道具ID
 var requiredItemCount = 0; // 当前任务所需道具数量

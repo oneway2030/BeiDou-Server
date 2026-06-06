@@ -79,6 +79,8 @@ function action(mode, type, selection) {
         text += " \r\n";
         text += "#L19#" + icon + "卷轴分解#l\t#L21#副本兑换#l\t#L22#抽奖保底#l\t#L20#拍卖行#l\r\n";
         text += " \r\n";
+        text += "#L23#" + icon + "战力排行#l\t#L24#怪物攻城#l\t#L25#理财#l\r\n";
+        text += " \r\n";
         if (cm.getPlayer().isGM()) {
             text += "\r\n";
             text += "\t\t\t\t#r=====以下内容仅GM可见=====\r\n";
@@ -101,9 +103,12 @@ function doSelect(selection) {
     switch (selection) {
         // 脚本移植注意编码改为UTF-8
         case 0://去自由
-            cm.getPlayer().saveLocationOnWarp();
-            cm.warp(910000000);
-            cm.dispose();
+            let x = cm.getPlayer().getPosition().getX();
+            let y = cm.getPlayer().getPosition().getY();
+            console.error("主菜单脚本错误===》:"+"X="+x+" "+y );
+            // cm.getPlayer().saveLocationOnWarp();
+            // cm.warp(910000000);
+            // cm.dispose();
             break;
         case 1://万能传送
             // openNpc("test/装备强化");
@@ -173,6 +178,15 @@ function doSelect(selection) {
             break;
         case 22://副本兑换
             openNpc("抽奖保底");
+            break;
+        case 23://战力系统
+            openNpc("战力系统");
+            break;
+        case 24://召唤怪物
+            openNpc("怪物攻城");
+            break;
+        case 25://召唤怪物
+            openNpc("召唤怪物");
             break;
         case 999://新人福利
             openNpc("新人福利");

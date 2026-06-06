@@ -51,6 +51,7 @@ import org.gms.server.life.*;
 import org.gms.server.maps.MapObject;
 import org.gms.server.maps.MapObjectType;
 import org.gms.server.maps.MapleMap;
+import org.gms.server.maps.Portal;
 import org.gms.server.partyquest.PartyQuest;
 import org.gms.server.partyquest.Pyramid;
 import org.gms.server.quest.Quest;
@@ -998,6 +999,8 @@ public class AbstractPlayerInteraction {
     }
 
     public void spawnMonster(int id, int x, int y) {
+        Portal portal = getPlayer().getMap().getPortal(1);
+
         Monster monster = LifeFactory.getMonster(id);
         monster.setPosition(new Point(x, y));
         getPlayer().getMap().spawnMonster(monster);

@@ -1,238 +1,321 @@
-var Icon = Array(
-    Array("警报器", "#fUI/Basic/BtClaim/disabled/0#"),
-    Array("奖杯", "#fUI/UIAchievement.img/achievement/pages/main/achievementForm/basic/difficultyIcon/unique#")
-);
-var txt, GDP, UDP;
-
-var TemporaryGroup = [-1,-2,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-15,-16,-17,-18,-19,-26,-27,-28,-29,-101,-102,-103,-104,-105,-106,-107,-108,-109,-110,-111,-112,-113,-114,-115,-116,-118,-119,-121,-127,-128];
-var NameGroup = ["帽子","脸视","眼饰","耳环","衣服","裤子","鞋子","手套","披风","盾牌","武器","戒指","戒指","戒指","戒指","项链","骑宠","鞍子","勋章","戒指","戒指","腰带","时帽","时脸","时眼","时耳","时衣","时裤","时鞋","时手","时披","时盾","时武","时戒","时戒","宠装","时戒","时戒","时骑","时鞍","时项","时戒","时戒"];
-var ThisRanking = [];
-var Equ = [];
-var ca = java.util.Calendar.getInstance();
-var hour = ca.get(java.util.Calendar.HOUR_OF_DAY); //获得小时
-var minute = ca.get(java.util.Calendar.MINUTE); //获得分钟
-var second = ca.get(java.util.Calendar.SECOND); //获得秒
 var status = 0;
+var rankingData = [];
+var equipData = [];
+
+// 装备位置数组（只统计这些位置，武器放第一个）
+var equipPositions = [-11, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -12, -13, -15, -16, -17, -18, -19, -26, -27, -28, -29, -101, -102, -103, -104, -105, -106, -107, -108, -109, -110, -111, -112, -113, -114, -115, -116, -118, -119, -121, -127, -128];
+
+// 装备位置对应的名称（武器放第一个）
+var equipNames = ["武器", "帽子", "脸饰", "眼饰", "耳环", "衣服", "裤子", "鞋子", "手套", "披风", "盾牌", "戒指1", "戒指2", "戒指3", "戒指4", "项链", "骑宠", "鞍子", "勋章", "戒指5", "戒指6", "腰带", "时帽", "时脸", "时眼", "时耳", "时衣", "时裤", "时鞋", "时手", "时披", "时盾", "时武", "时戒1", "时戒2", "宠装", "时戒3", "时戒4", "时骑", "时鞍", "时项", "时戒5", "时戒6"];
+
+// 职业ID到中文名称的映射
+var jobNames = {
+    0: "初心者",
+    100: "战士", 110: "剑客", 111: "勇士", 112: "英雄",
+    120: "准骑士", 121: "骑士", 122: "圣骑士",
+    130: "枪战士", 131: "狂战士", 132: "黑骑士",
+    200: "魔法师", 210: "火毒法师", 211: "火毒巫师",
+    220: "冰雷法师", 221: "冰雷巫师",
+    230: "牧师", 231: "祭祀", 232: "主教",
+    300: "弓箭手", 310: "猎人", 311: "射手", 312: "神射手",
+    320: "弩弓手", 321: "游侠", 322: "箭神",
+    400: "飞侠", 410: "刺客", 411: "无影人", 412: "隐士",
+    420: "侠客", 421: "独行客", 422: "侠盗",
+    500: "海盗", 510: "拳手", 511: "斗士", 512: "冲锋队长",
+    520: "火枪手", 521: "大副", 522: "船长",
+    1000: "战神", 1001: "战神", 1002: "战神",
+    1100: "龙神", 1101: "龙神", 1102: "龙神",
+    1200: "幻影", 1201: "幻影", 1202: "幻影",
+    2000: "夜光", 2001: "夜光", 2002: "夜光",
+    2100: "双弩", 2101: "双弩", 2102: "双弩",
+    2200: "恶魔猎手", 2201: "恶魔猎手", 2202: "恶魔猎手",
+    3000: "尖兵", 3001: "尖兵", 3002: "尖兵",
+    3100: "复仇者", 3101: "复仇者", 3102: "复仇者",
+    4000: "萌骑士", 4001: "萌骑士", 4002: "萌骑士",
+    4100: "炎术师", 4101: "炎术师", 4102: "炎术师",
+    4200: "风灵使者", 4201: "风灵使者", 4202: "风灵使者",
+    4300: "幻影神偷", 4301: "幻影神偷", 4302: "幻影神偷",
+    4500: "隐月", 4501: "隐月", 4502: "隐月"
+};
 
 function start() {
-    status = -1;
+    status = 0;
     action(1, 0, 0);
 }
 
 function action(mode, type, selection) {
     if (mode == -1) {
         cm.dispose();
-    } else {
-        if (status >= 0 && mode == 0) {
+        return;
+    }
+    
+    if (mode == 0) {
+        status--;
+        if (status < 0) {
             cm.dispose();
             return;
         }
-        if (mode == 1)
-            status++;
-        else
-            status--;
-        if (status == 0) {
-          var Num = 0;
-                for (i in TemporaryGroup) {
-                    var Equip = cm.getInventory(-1).getItem(TemporaryGroup[i]);
-                    if (Equip == null) continue;
-                    Num += RuinStat(Equip);
-                }
-	txt = "#L997#" + Icon[0][1] + " #r战力评分榜#k " + Icon[0][1] + "#l\r\n\r\n\r\n";
+    }
+    
+    if (mode == 1) {
+        status++;
+    }
+    
+    // 第一层：战力排行榜
+    if (status == 1) {
+        var txt = "\t\t\t\t\t#e#k欢迎来到#r[r战力排行榜]#k系统#n\t\t\t\t\r\n\r\n";
+        txt += "#d排名\t\t角色名\t\t战力评分\r\n";
+        txt += "------------------------------------\r\n";
+        
+        var data = cm.getCombatPowerRanking(50);
+        rankingData = parseRankingData(data);
+        
+        if (rankingData.length == 0) {
+            txt += "\r\n\t\t暂无玩家数据\r\n";
+            cm.sendOk(txt);
+            cm.dispose();
+            return;
+        }
 
-                txt += "#d[ #r#h ##d ]#b 最强战力评分 : #r" + Num + "\r\n";
-                for (i in TemporaryGroup) {
-                    var Equip = cm.getInventory(-1).getItem(TemporaryGroup[i]);
-                    if (i % 4 == 0) txt += "\r\n";
-                    if (Equip == null) {
-                        txt += "#L" + i + "##d" + NameGroup[i] + " #b" + format(" ", 7, ("0#l").toString());
-                    } else {
-                        txt += "#L" + i + "##d" + NameGroup[i] + " #b" + format(" ", 7, (RuinStat(Equip) + "#l").toString());
-                    }
-                }
-                txt += "\r\n\r\n";
-               /*
-	if ((!cm.getPlayer().isGM())&&(hour < 22)) {
-		var 角色id =cm.getPlayer().getId();
-		战力更新(Num,角色id);
-	}
-	*/
-                cm.sendSimple(txt);
-        } else if (status == 1) {
-	if(selection == 998){
-		cm.openNpc(9040004,"战力奖励"); 
-	}else if (selection == 997) {
-                    txt = "\t\t\t\t #d" + Icon[0][1] + " 排行中心 " + Icon[0][1] + "\r\n\r\n";
-                    txt += "#d　" + Icon[0][1] + " 职业 " + Icon[0][1] + "\t　" + Icon[0][1] + " 角色 " + Icon[0][1] + "\t　" + Icon[0][1] + " 评分 " + Icon[0][1] + "\r\n";
-                    ThisRanking = RuinKing();
-                    for (i in ThisRanking) {
-                        //txt += "　#L" + i + "#" + format(" ", 25, cm.getJobName(ThisRanking[i]['job'].toString()))+ "　";
-		txt += "　#L" + i + "#" + format(" ",25, cm.getJobName(ThisRanking[i]['job'].toString()));
-                        txt += format(" ", 25, ThisRanking[i]['name'].toString()) + "　";
-                        txt += ThisRanking[i]['max'] + "　";
-                        txt += "#l\r\n";
-                    }
+        for (var i = 0; i < rankingData.length; i++) {
+            var rank = i + 1;
 
-                    cm.sendSimple(txt);
-                } else {
-                    var Equip = cm.getInventory(-1).getItem(TemporaryGroup[selection]);
-                    if (Equip == null) {
-                        txt = "\r\n\r\n\t\t\t抱歉..该类型为空\r\n ";
-                    } else {
-                        txt = "#i" + Equip.getItemId() + "#\r\n";
-                        txt += "#d力量 : #r" + format(" ", 8, Equip.getStr().toString()) + " ";
-                        txt += "#d敏捷 : #r" + format(" ", 8, Equip.getDex().toString()) + " ";
-                        txt += "#d智力 : #r" + format(" ", 8, Equip.getInt().toString()) + "\r\n";
-
-                        txt += "#d运气 : #r" + format(" ", 8, Equip.getLuk().toString()) + " ";
-                        txt += "#d物攻 : #r" + format(" ", 8, Equip.getWatk().toString()) + " ";
-                        txt += "#d魔攻 : #r" + format(" ", 8, Equip.getMatk().toString()) + "\r\n";
-
-                        txt += "#d物防 : #r" + format(" ", 8, Equip.getWdef().toString()) + " ";
-	        txt += "#d魔防 : #r" + format(" ", 8, Equip.getMdef().toString()) + " ";
-                        txt += "#d可升 : #r" + format(" ", 8, Equip.getUpgradeSlots().toString()) + " \r\n";
-                        txt += "#d已升 : #r" + format(" ", 8, Equip.getLevel().toString()) + " ";
-                        //txt += "#d星级 : #r" + format(" ", 8, Equip.getEnhance().toString()) + "\r\n";
-                    }
-                    cm.sendOk(txt);
-                    cm.dispose();
-                }
-            }else if(status ==2){
-				GDP = selection;
-                var Num = 0;
-                Equ = RuinEquip(ThisRanking[selection]['id']);
-                for (i in Equ) {
-				//if (TemporaryGroup.indexOf(Equ[i]['position']) != -1) {
-                    Num += Equ[i]['max'];
-				
-                }
-                txt = "#d[ #r" + ThisRanking[selection]['name'] + "#d ]#b 最强战力评分 : #r" + Num + "\r\n";
-	
-                for (i in Equ) {
-		if (i % 4 == 0) txt += "\r\n";
-                    //Num += Equ[i]['max'];
-                    if (TemporaryGroup.indexOf(Equ[i]['position']) == -1) {
-                        txt += "#L" + i + "##d" + NameGroup[i] + " #b" + format(" ", 7, ("0#l").toString());
-                    } else {
-                        txt += "#L" + i + "##d" + NameGroup[TemporaryGroup.indexOf(Equ[i]['position'])] + " #b" + format(" ", 7, (Equ[i]['max'] + "#l").toString());
-                    }
-                }
-                txt += "\r\n\r\n";
-                cm.sendSimple(txt);
-				
-				
-			}else if(status ==3){
-				txt = "#i" + Equ[selection]['itemid'] + "#\r\n";
-              //  txt = "#i" + Equ[selection]['itemid'] + "#" + Equ[selection]['position'] + "\r\n";
-                txt += "#d力量 : #r" + format(" ", 8, (Equ[selection]['str']).toString()) + " ";
-                txt += "#d敏捷 : #r" + format(" ", 8, (Equ[selection]['dex']).toString()) + " ";
-                txt += "#d智力 : #r" + format(" ", 8, (Equ[selection]['int']).toString()) + "\r\n";
-
-                txt += "#d运气 : #r" + format(" ", 8, (Equ[selection]['luk']).toString()) + " ";
-                txt += "#d物攻 : #r" + format(" ", 8, (Equ[selection]['watk']).toString()) + " ";
-                txt += "#d魔攻 : #r" + format(" ", 8, (Equ[selection]['matk']).toString()) + "\r\n";
-
-				txt += "#d物防 : #r" + format(" ", 8, (Equ[selection]['wdef']).toString()) + " ";
-
-                txt += "#d魔防 : #r" + format(" ", 8, (Equ[selection]['mdef']).toString()) + " ";
-
-                txt += "#d可升 : #r" + format(" ", 8, (Equ[selection]['upgradeslots']).toString()) + "\r\n";
-                txt += "#d已升 : #r" + format(" ", 8, (Equ[selection]['level']).toString()) + " ";
-                //txt += "#d星级 : #r" + format(" ", 8, (Equ[selection]['enhance']).toString()) + "\r\n";
-                cm.sendOk(txt);
-                cm.dispose();
-				
-			} 
-
+            txt += "#L" + i + "#";
+            txt += "#d" + rank;  // 排名紫色
+            // 前9名多一个空格对齐
+            if (rank < 10) {
+                txt += "\t";
+            }
+            txt += "\t";  // 排名后2个制表符
+            txt += "#d" + rankingData[i].name + "#k" + "\t\t";  // 角色名紫色
+            txt += "#r" + rankingData[i].max + "#k";  // 战力值红色
+            txt += "#l\r\n";
+        }
+        
+        cm.sendSimple(txt);
+        
+    } else if (status == 2) {
+        // 第二层：玩家详情
+        var player = rankingData[selection];
+        if (!player) {
+            cm.sendOk("数据错误");
+            cm.dispose();
+            return;
+        }
+        
+        var txt = "#r" + player.name + "#k 的战力详情\r\n\r\n";
+        txt += "#d总战力评分 : #r" + player.max + "\r\n";
+        
+        // 获取职业名称（中文）
+        var jobName = "未知";
+        try {
+            if (player.job && !isNaN(player.job)) {
+                var jobId = parseInt(player.job);
+                jobName = jobNames[jobId] || "未知";
+            }
+        } catch (e) {
+            jobName = "未知";
+        }
+        txt += "#d职业 : #b" + jobName + "\r\n\r\n";
+        txt += "----------------------------\r\n\r\n";
+        
+        // 获取装备详情
+        var equipPowerMap = {};
+        var totalPower = 0;
+        equipData = [];
+        
+        var hasEquipList = [];      // 有评分可点击的装备
+        var noEquipList = [];       // 无评分不可点击的装备
+        
+        try {
+            var equipStr = cm.getCharacterEquipDetails(player.id);
+            var allEquip = parseEquipData(equipStr);
             
-			
+            // 按指定位置顺序填充
+            for (var posIndex = 0; posIndex < equipPositions.length; posIndex++) {
+                var pos = equipPositions[posIndex];
+                var foundEquip = null;
+                for (var j = 0; j < allEquip.length; j++) {
+                    if (allEquip[j].position == pos) {
+                        foundEquip = allEquip[j];
+                        break;
+                    }
+                }
+                equipData.push(foundEquip);
+                equipPowerMap[pos] = foundEquip ? (foundEquip.max || 0) : 0;
+                totalPower += equipPowerMap[pos];
+                
+                // 分类装备
+                var equipName = equipNames[posIndex];
+                var power = foundEquip ? (foundEquip.max || 0) : 0;
+                if (power > 0) {
+                    hasEquipList.push({name: equipName, power: power, dataIndex: posIndex});
+                } else {
+                    noEquipList.push({name: equipName, power: power});
+                }
+            }
+        } catch (e) {
+            // 忽略错误
+        }
+        
+        // 显示有评分的装备（可点击）
+        txt += "#d【已装备】\r\n";
+        txt += showEquipItems(hasEquipList, true);
+        
+        // 显示无评分的装备（不可点击）
+        txt += "\r\n#d【未装备】\r\n";
+        txt += showEquipItems(noEquipList, false);
+        
+        txt += "\r\n----------------------------\r\n\r\n";
+        txt += "#d装备战力总和 : #r" + totalPower + "\r\n";
+        txt += "#d角色基础战力 : #r" + (player.max - totalPower) + "\r\n";
+        txt += "\r\n#L0#返回排行榜#l";
+        
+        cm.sendSimple(txt);
+        
+    } else if (status == 3) {
+        if (selection == 0) {
+            status = 0;
+            action(1, 0, 0);
+        } else {
+            // 第三层：装备详细属性
+            var equip = equipData[selection - 1];
+            if (!equip) {
+                cm.sendOk("该位置没有装备");
+                cm.dispose();
+                return;
+            }
+            
+            var posIndex = equipPositions.indexOf(equip.position);
+            var equipName = posIndex >= 0 ? equipNames[posIndex] : "未知装备";
+            
+            var txt = equipName + " 属性详情\r\n\r\n";
+            txt += "#i" + equip.itemid + "#\r\n\r\n";
+            
+            txt += "#d力量 : #r" + (equip.str || 0) + "\r\n";
+            txt += "#d敏捷 : #r" + (equip.dex || 0) + "\r\n";
+            txt += "#d智力 : #r" + (equip.int_attr || 0) + "\r\n";
+            txt += "#d运气 : #r" + (equip.luk || 0) + "\r\n\r\n";
+            
+            txt += "#d物攻 : #r" + (equip.watk || 0) + "\r\n";
+            txt += "#d魔攻 : #r" + (equip.matk || 0) + "\r\n";
+            txt += "#d物防 : #r" + (equip.wdef || 0) + "\r\n";
+            txt += "#d魔防 : #r" + (equip.mdef || 0) + "\r\n\r\n";
+            
+            txt += "#d装备战力 : #r" + (equip.max || 0) + "\r\n";
+            
+            cm.sendOk(txt);
+            cm.dispose();
         }
     }
-	
+}
 
-
-function RuinEquip(id) {
-	 var rs = cm.sql_Select("SELECT chr.`name`, it.itemid, it.position, men.`str`, men.`dex` , men.`int`, men.`luk`, men.`watk`, men.`matk`, men.`mdef`, men.`wdef`, men.`upgradeslots`, men.`level`, SUM(men.`str`*10 + men.`dex`*10 + men.`int`*10 + men.`luk`*10 + men.`watk`*50 + men.`matk`*50  + men.`Mdef`+ men.`wdef` ) AS max FROM inventoryitems it, inventoryequipment men, characters chr WHERE (it.position < 0 AND it.inventoryitemid = men.inventoryitemid AND it.characterid = chr.id AND chr.id = '" + id + "') GROUP BY position DESC;");
-    var Container = [];
-    for (i in rs) {
-        var RankGroup = [];
-        RankGroup['name'] = rs.get(i).get("name");
-        RankGroup['itemid'] = rs.get(i).get("itemid");
-        RankGroup['position'] = rs.get(i).get("position");
-        RankGroup['str'] = rs.get(i).get("str");
-        RankGroup['dex'] = rs.get(i).get("dex");
-        RankGroup['int'] = rs.get(i).get("int");
-        RankGroup['luk'] = rs.get(i).get("luk");
-        RankGroup['watk'] = rs.get(i).get("watk");
-        RankGroup['matk'] = rs.get(i).get("matk");
-        RankGroup['wdef'] = rs.get(i).get("wdef");
-		RankGroup['mdef'] = rs.get(i).get("mdef");
-        RankGroup['upgradeslots'] = rs.get(i).get("upgradeslots");
-        RankGroup['level'] = rs.get(i).get("level");
-        RankGroup['max'] = rs.get(i).get("max");
-		//RankGroup['max']=RankGroup['str']+RankGroup['dex']+RankGroup['int']+RankGroup['luk'] +RankGroup['watk']+RankGroup['matk']+RankGroup['hp']+RankGroup['mp']+RankGroup['wdef']+RankGroup['upgradeslots']+RankGroup['level']+RankGroup['enhance']; 
-        Container.push(RankGroup);
+// 显示装备列表（一行3个，空格对齐）
+function showEquipItems(items, clickable) {
+    var txt = "";
+    var itemsPerRow = 3;
+    var maxNameLen = 0;
+    
+    // 找出最长的装备名
+    for (var i = 0; i < items.length; i++) {
+        maxNameLen = Math.max(maxNameLen, items[i].name.length);
     }
-    return Container;
-}
-
-function RuinKing() {
-	var rs = cm.sql_Select("SELECT DISTINCT chr.`name`, chr.`job`, chr.`id` , SUM(men.`str`*10 + men.`dex`*10 + men.`int`*10 + men.`luk`*10 + men.`watk`*50 + men.`matk`*50  + men.`wdef`+ men.`Mdef`) AS max FROM inventoryitems it, inventoryequipment men,  characters chr WHERE (it.position < 0 AND it.inventoryitemid = men.inventoryitemid AND chr.id = it.characterid AND chr.gm <= 0  ) GROUP BY id ORDER BY max DESC;");
-	
-    var Container = [];
-    for (i in rs) {
-        var RankGroup = [];
-        RankGroup['id'] = rs.get(i).get("id");
-        RankGroup['name'] = rs.get(i).get("name");
-        RankGroup['job'] = rs.get(i).get("job");
-		
-        RankGroup['max'] = rs.get(i).get("max");
-        Container.push(RankGroup);
+    // 至少保留5个字符宽度
+    maxNameLen = Math.max(maxNameLen, 5);
+    
+    for (var i = 0; i < items.length; i += itemsPerRow) {
+        var rowTxt = "";
+        for (var j = 0; j < itemsPerRow && (i + j) < items.length; j++) {
+            var item = items[i + j];
+            var name = item.name;
+            var power = item.power;
+            
+            // 装备名右填充空格
+            while (name.length < maxNameLen) {
+                name += " ";
+            }
+            
+            // 战力值左填充空格（固定6位）
+            var powerStr = String(power);
+            while (powerStr.length < 6) {
+                powerStr = " " + powerStr;
+            }
+            
+            if (clickable) {
+                rowTxt += "#L" + (item.dataIndex + 1) + "#";
+                rowTxt += "#r" + name + ":" + powerStr + "#k";
+                rowTxt += "#l";
+            } else {
+                rowTxt += "#d" + name + ":" + powerStr + "#k";
+            }
+            
+            if (j < itemsPerRow - 1 && (i + j + 1) < items.length) {
+                rowTxt += "  ";
+            }
+        }
+        txt += rowTxt + "\r\n";
     }
-    return Container;
+    
+    if (items.length == 0) {
+        txt += "    暂无\r\n";
+    }
+    
+    return txt;
 }
 
-function RuinStat(equip) {
-    return equip.getStr()*10 + equip.getDex()*10 + equip.getInt()*10 + equip.getLuk()*10 + equip.getWatk()*50 + equip.getMatk()*50+ equip.getMdef() + equip.getWdef();
-}
-
-
-var format = function FormatString(c, length, content) { //符号 位置 代码 - 文本类型 .toString()
-    var str = "";
-    var cs = "";
-    if (content.length > length) {
-        str = content;
-    } else {
-        for (var j = 0; j < length - content.getBytes("GB2312").length; j++) {
-            cs = cs + c;
+function parseRankingData(data) {
+    var container = [];
+    if (!data || data.length == 0) return container;
+    
+    var records = data.split(";");
+    for (var i = 0; i < records.length; i++) {
+        if (!records[i] || records[i].length == 0) continue;
+        var fields = records[i].split(",");
+        if (fields.length < 4) continue;
+        
+        try {
+            var entry = {};
+            entry['id'] = parseInt(fields[0]);
+            entry['name'] = fields[1] || "未知";
+            entry['job'] = parseInt(fields[2]);
+            entry['max'] = parseInt(fields[3]);
+            container.push(entry);
+        } catch (e) {
+            continue;
         }
     }
-    str = content + cs;
-    return str;
+    return container;
 }
 
-
-function 战力更新(times,uid){
-	var rs;
-		rs = cm.sql_Select("SELECT characterid, combat FROM bastrranking");
-	var 数值1 =0;
-	var 数值2 =0;
-		for (var i = 0; i < rs.size(); i++) {
-			if (rs[i].get("characterid") == uid) {	
-			数值1 = 1;	
-			if(rs[i].get("combat")<times){
-			数值2 = 1;		
-			}
-			
-			}
-		}
-	if(数值1==0){	
-	cm.sql_Insert("INSERT INTO bastrranking(id, characterid, combat) value(?,?,?)", null,uid,times);
-	}else{
-	if(数值2>0){	
-	cm.sql_Update("update bastrranking set combat = ?  where characterid = ?", times,uid);	
-	}
-	}
-	
+function parseEquipData(data) {
+    var container = [];
+    if (!data || data.length == 0) return container;
+    
+    var records = data.split(";");
+    for (var i = 0; i < records.length; i++) {
+        if (!records[i] || records[i].length == 0) continue;
+        var fields = records[i].split(",");
+        if (fields.length < 13) continue;
+        
+        try {
+            var equip = {};
+            equip['itemid'] = parseInt(fields[0]);
+            equip['position'] = parseInt(fields[1]);
+            equip['str'] = parseInt(fields[2]);
+            equip['dex'] = parseInt(fields[3]);
+            equip['int_attr'] = parseInt(fields[4]);
+            equip['luk'] = parseInt(fields[5]);
+            equip['watk'] = parseInt(fields[6]);
+            equip['matk'] = parseInt(fields[7]);
+            equip['wdef'] = parseInt(fields[8]);
+            equip['mdef'] = parseInt(fields[9]);
+            equip['upgradeslots'] = parseInt(fields[10]);
+            equip['level'] = parseInt(fields[11]);
+            equip['max'] = parseInt(fields[12]);
+            container.push(equip);
+        } catch (e) {
+            continue;
+        }
+    }
+    return container;
 }
-
