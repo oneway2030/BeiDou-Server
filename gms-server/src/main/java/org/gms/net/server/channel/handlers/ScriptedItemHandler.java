@@ -22,23 +22,35 @@
 package org.gms.net.server.channel.handlers;
 
 import org.gms.client.Client;
+import org.gms.client.Character;
 import org.gms.client.inventory.Item;
 import org.gms.client.inventory.manipulator.InventoryManipulator;
 import org.gms.constants.inventory.ItemConstants;
 import org.gms.net.AbstractPacketHandler;
 import org.gms.net.packet.InPacket;
+import org.gms.net.server.Server;
 import org.gms.scripting.AbstractPlayerInteraction;
 import org.gms.scripting.item.ItemScriptManager;
 import org.gms.server.ItemInformationProvider;
 import org.gms.server.ItemInformationProvider.ScriptedItem;
 import org.gms.util.PacketCreator;
 import org.gms.util.Randomizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
  * @author Jay Estrella
  */
 public final class ScriptedItemHandler extends AbstractPacketHandler {
+    // 道具使用冷却时间（毫秒），防止并发点击
+    private static final long ITEM_COOLDOWN = 1000;
+    // 记录玩家最后使用此道具的时间
+    private static final ConcurrentHashMap<Integer, Long> lastUsedTime = new ConcurrentHashMap<>();
+    private static final Logger log = LoggerFactory.getLogger(Server.class);
+
     @Override
     public final void handlePacket(InPacket p, Client c) {
         p.readInt(); // trash stamp, thanks RMZero213
@@ -68,8 +80,18 @@ public final class ScriptedItemHandler extends AbstractPacketHandler {
     }
 
     private void handleWorldQuest(Client c, int itemId, short itemSlot) {
+        // 0. 冷却检查：防止并发点击
+        Character player = c.getPlayer();
+        int charId = player.getId();
+        long currentTime = System.currentTimeMillis();
+        Long lastTime = lastUsedTime.get(charId);
+        if (lastTime != null && (currentTime - lastTime) < ITEM_COOLDOWN) {
+            // 冷却中，忽略此次请求
+            c.sendPacket(PacketCreator.enableActions());
+            return;
+        }
         // 1. 验证物品是否存在且可使用
-        Item item = c.getPlayer().getInventory(ItemConstants.getInventoryType(itemId)).getItem(itemSlot);
+        Item item = player.getInventory(ItemConstants.getInventoryType(itemId)).getItem(itemSlot);
         if (item == null || item.getItemId() != itemId || item.getQuantity() < 1) {
             return;
         }
@@ -102,19 +124,19 @@ public final class ScriptedItemHandler extends AbstractPacketHandler {
 
         // 5. 发放奖励并消耗道具
         if (rewardItemId != -1) {
+            lastUsedTime.put(charId, currentTime);
             // 检查背包空间
             if (InventoryManipulator.checkSpace(c, rewardItemId, (short) 1, "")) {
                 // 添加奖励物品
-                AbstractPlayerInteraction player = c.getAbstractPlayerInteraction();
-                player.gainItem(rewardItemId, (short) (short) 1);
-                //InventoryManipulator.addById(c, rewardItemId, (short) 1, "", -1);
+                AbstractPlayerInteraction absPlayer = c.getAbstractPlayerInteraction();
+                absPlayer.gainItem(rewardItemId, (short) 1);
                 // 消耗使用的道具
                 removeItem(c, itemId, itemSlot);
+                // 更新冷却时间（成功使用后）
                 // 发送提示消息
-                c.getPlayer().dropMessage(5, "获得了任务物品：" + ItemInformationProvider.getInstance().getName(rewardItemId));
+                player.dropMessage(5, "获得了任务物品：" + ItemInformationProvider.getInstance().getName(rewardItemId));
             } else {
-                c.getPlayer().dropMessage(1, "背包空间不足，无法获得物品！");
-
+                player.dropMessage(1, "背包空间不足，无法获得物品！");
                 c.sendPacket(PacketCreator.enableActions());
             }
         }
