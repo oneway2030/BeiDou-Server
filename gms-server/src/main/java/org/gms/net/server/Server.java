@@ -62,6 +62,7 @@ import org.gms.server.TimerManager;
 import org.gms.server.expeditions.ExpeditionBossLog;
 import org.gms.server.life.PlayerNPC;
 import org.gms.server.quest.Quest;
+import org.gms.server.timer.HuntTaskAutoPublisher;
 import org.gms.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -770,6 +771,9 @@ public class Server {
         tMan.start();
         tMan.register(tMan.purge(), MINUTES.toMillis(5));//Purging ftw...
         disconnectIdlesOnLoginTask();
+
+        // 启动狩猎任务自动发布器
+        HuntTaskAutoPublisher.getInstance().start();
 
         long timeLeft = getTimeLeftForNextHour();
         tMan.register(new CharacterDiseaseTask(), GameConfig.getServerLong("update_interval"), GameConfig.getServerLong("update_interval"));

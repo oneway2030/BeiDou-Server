@@ -289,6 +289,7 @@ public class CommandsExecutor {
         addCommand("reloadportals", 3, ReloadPortalsCommand.class);
         addCommand("reloadmap", 3, ReloadMapCommand.class);
         addCommand("reloadshops", 3, ReloadShopsCommand.class);
+        addCommand("reloadhunt", 3, ReloadHuntCommand.class);
         addCommand("hpmp", 3, HpMpCommand.class);
         addCommand("maxhpmp", 3, MaxHpMpCommand.class);
         addCommand("music", 3, MusicCommand.class);

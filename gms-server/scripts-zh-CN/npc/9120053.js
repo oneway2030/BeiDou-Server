@@ -1,4 +1,5 @@
 var timeLimit = 1;
+var dailyLimit = 20; // 每日挑战次数限制
 // 集中配置挑战所需道具信息，后续修改ID/数量/产出地直接改这里
 var needItemId = 4001254;    // 所需道具ID
 var needItemNum = 1;         // 所需道具数量
@@ -9,7 +10,9 @@ function start() {
     if (playerMap == 802000801) {
         cm.sendYesNo("你想#r离开#k这个地方？但是出去后无法返回战场...");
     } else if (playerMap == 802000800) {
-        cm.sendYesNo(`  想挑战BOSS#b布雷兹首脑#k和欧碧池...哦不，#b欧碧拉#k吗？\r\n需要${needItemNum}个#v${needItemId}##t${needItemId}##k方可进入（该道具可在${itemSource}产出）`);
+        var used = cm.getAccountExtendValue("布雷兹首脑_" + cm.getPlayer().getId(), true);
+        used = (used == null || used === "") ? 0 : parseInt(used);
+        cm.sendYesNo(`  想挑战BOSS#b布雷兹首脑#k和欧碧池...哦不，#b欧碧拉#k吗？\r\n需要${needItemNum}个#v${needItemId}##t${needItemId}##k方可进入（该道具可在${itemSource}产出）\r\n#b（当日最多挑战${dailyLimit}次，当前已经挑战${used}次）#k`);
     } else if (playerMap == 802000802) {
         cm.sendYesNo("这里的脉冲阵列很难突破...\r\n但是...支付100W金币，便能直接通过。");
     } else if (playerMap == 802000803 && cm.getMap(802000803).countMonster(9400296) > 0) {
@@ -77,6 +80,17 @@ function action(mode, type, selection) {
                     cm.sendOk("队伍里有人不在,无法进入");
                     cm.dispose();
                 } else {
+                    // 【次数限制】检查所有队员每日挑战次数
+                    for (var i = 0; i < party.getPartyMembers().size(); i++) {
+                        var chr = party.getPartyMembers().get(i).getPlayer();
+                        var used = cm.getAccountExtendValue("布雷兹首脑_" + chr.getId(), true);
+                        used = (used == null || used === "") ? 0 : parseInt(used);
+                        if (used >= dailyLimit) {
+                            cm.sendOk(chr.getName() + "今日挑战次数已用尽！(每日" + dailyLimit + "次)");
+                            cm.dispose();
+                            return;
+                        }
+                    }
                     // 所有组队规则验证通过，消耗道具
                     cm.gainItem(needItemId, -needItemNum);
                     // 判断是否需要重置6个副本地图
@@ -98,6 +112,14 @@ function action(mode, type, selection) {
                     }
                     // 传送队伍进入初始地图
                     cm.warpParty(802000801, 0);
+                    // 记录所有队员挑战次数
+                    var members = player.getPartyMembersOnSameMap();
+                    for (var i = 0; i < members.size(); i++) {
+                        var mid = members.get(i).getId();
+                        var used = cm.getAccountExtendValue("布雷兹首脑_" + mid, true);
+                        used = (used == null || used === "") ? 0 : parseInt(used);
+                        cm.saveOrUpdateAccountExtendValue("布雷兹首脑_" + mid, String(used + 1), true);
+                    }
                     return true;
                 }
             } else {

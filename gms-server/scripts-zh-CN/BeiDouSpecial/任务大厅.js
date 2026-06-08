@@ -47,7 +47,9 @@ function action(mode, type, selection) {
         text += "#L1#主线任务#l\t\t\t";
         text += "#L2#血衣合成#l\t\r\n\r\n";
         text += "#L3#怪物卡戒#l\t\t\t";
-        text += "#L4#世界任务#l\t\r\n\r\n";
+        text += "#L4#世界任务#l\t\t\t";
+        text += "#L5#跑环#l\t\r\n\r\n";
+        text += "#L6#狩猎#l\t\r\n\r\n";
         cm.sendSimple(text);
     } else if (status === 1) {
         doSelect(selection);
@@ -59,19 +61,25 @@ function action(mode, type, selection) {
 function doSelect(selection) {
     switch (selection) {
         case 0:
-            openNpc("每日任务");
+            openNpc("任务/每日任务");
             break;
         case 1:
-            openNpc("主线任务");
+            openNpc("任务/主线任务");
             break;
         case 2:
-            openNpc("血衣合成");  //明珠港怪物卡戒指NPC
+            openNpc("任务/血衣合成");  //明珠港怪物卡戒指NPC
             break;
         case 3:
-            openNpc("2006");
+            openNpc("任务/2006");
             break;
         case 4:
-            openNpc("世界任务");
+            openNpc("任务/世界任务");
+            break;
+        case 5:
+            openNpc("任务/跑环");
+            break;
+        case 6:
+            openNpc("任务/狩猎");
             break;
         default:
             cm.sendOk("该功能暂不支持，敬请期待！");

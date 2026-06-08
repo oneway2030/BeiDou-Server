@@ -1,4 +1,4 @@
-var timeLimit = 2;
+var timeLimit = 20;
 function enter(pi) {
 	if (pi.getPlayerCount(541020800) <= 0) {//BOSS地图无人
 		var player = pi.getPlayer();
@@ -22,22 +22,30 @@ function enter(pi) {
 						cause = chr.getName() + "没完成前置任务获得<扳手>,无法进入";
 						break;
 					}
-					//if (chr.getBossLog(0, "挑战克雷塞尔") >= timeLimit) {  //次数限制暂无法使用
-					//	canGoIn = false;
-					//	cause = chr.getName() + "玩家的挑战次数不足,无法进入";
-					//	break;
-					//}
+					var used = pi.getAccountExtendValue("挑战克雷塞尔_" + chr.getId(), true);
+					used = (used == null || used === "") ? 0 : parseInt(used);
+					if (used >= timeLimit) {
+						canGoIn = false;
+						cause = chr.getName() + "今日挑战次数已用尽！(每日" + timeLimit + "次)";
+						break;
+					}
 				}
 				if (canGoIn) {
 					var krexMap = pi.getMap(541020800);
 					krexMap.resetFully();
 					pi.playPortalSound();
 					pi.warpParty(541020800, 0);
-					members = player.getPartyMembersOnSameMap();
-					//for (var i = 0; i < members.size(); i++) {   //次数限制暂无法使用
-					//	members.get(i).setBossLog(0, "挑战克雷塞尔");
-					//}
-					return true;
+				members = player.getPartyMembersOnSameMap();
+				for (var i = 0; i < members.size(); i++) {
+					var mid = members.get(i).getId();
+					var used = pi.getAccountExtendValue("挑战克雷塞尔_" + mid, true);
+					used = (used == null || used === "") ? 0 : parseInt(used);
+					pi.saveOrUpdateAccountExtendValue("挑战克雷塞尔_" + mid, String(used + 1), true);
+				}
+				var leaderUsed = pi.getAccountExtendValue("挑战克雷塞尔_" + player.getId(), true);
+				leaderUsed = (leaderUsed == null || leaderUsed === "") ? 0 : parseInt(leaderUsed);
+				pi.playerMessage(5, "今日已进入" + leaderUsed + "次，最多进入" + timeLimit + "次");
+				return true;
 				} else {
 					pi.playerMessage(5, cause); return false;
 				}

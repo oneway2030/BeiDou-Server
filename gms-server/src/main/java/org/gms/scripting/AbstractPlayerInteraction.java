@@ -999,8 +999,6 @@ public class AbstractPlayerInteraction {
     }
 
     public void spawnMonster(int id, int x, int y) {
-        Portal portal = getPlayer().getMap().getPortal(1);
-
         Monster monster = LifeFactory.getMonster(id);
         monster.setPosition(new Point(x, y));
         getPlayer().getMap().spawnMonster(monster);

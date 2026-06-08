@@ -90,6 +90,11 @@ public final class UseItemHandler extends AbstractPacketHandler {
         if (handleCureItems(chr, c, slot, itemId)) {
             return;
         }
+        //处理怪物卡片（手动使用，加入怪物图鉴）
+        if (ItemId.isMonsterCard(itemId)) {
+            handleMonsterCard(chr, c, slot, itemId);
+            return;
+        }
         //处理城镇卷轴
         if (ItemConstants.isTownScroll(itemId)) {
             handleTownScroll(chr, c, slot, itemId);
@@ -145,6 +150,14 @@ public final class UseItemHandler extends AbstractPacketHandler {
             default:
                 return false;
         }
+    }
+
+    /**
+     * 处理怪物卡片（拾取后在背包中，玩家手动点击使用，加入怪物图鉴）
+     */
+    private void handleMonsterCard(Character chr, Client c, short slot, int itemId) {
+        chr.getMonsterBook().addCard(c, itemId);
+        removeItem(c, slot);
     }
 
     /**

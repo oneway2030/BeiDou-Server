@@ -79,7 +79,7 @@ function action(mode, type, selection) {
         text += " \r\n";
         text += "#L19#" + icon + "卷轴分解#l\t#L21#副本兑换#l\t#L22#抽奖保底#l\t#L20#拍卖行#l\r\n";
         text += " \r\n";
-        text += "#L23#" + icon + "战力排行#l\t#L24#怪物攻城#l\t#L25#理财#l\r\n";
+        text += "#L23#" + icon + "战力排行#l\t#L24#怪物攻城#l\t#L25#共同富裕#l\t#L26#理财#l\r\n";
         text += " \r\n";
         if (cm.getPlayer().isGM()) {
             text += "\r\n";
@@ -103,12 +103,9 @@ function doSelect(selection) {
     switch (selection) {
         // 脚本移植注意编码改为UTF-8
         case 0://去自由
-            let x = cm.getPlayer().getPosition().getX();
-            let y = cm.getPlayer().getPosition().getY();
-            console.error("主菜单脚本错误===》:"+"X="+x+" "+y );
-            // cm.getPlayer().saveLocationOnWarp();
-            // cm.warp(910000000);
-            // cm.dispose();
+            cm.getPlayer().saveLocationOnWarp();
+            cm.warp(910000000);
+            cm.dispose();
             break;
         case 1://万能传送
             // openNpc("test/装备强化");
@@ -182,11 +179,17 @@ function doSelect(selection) {
         case 23://战力系统
             openNpc("战力系统");
             break;
-        case 24://召唤怪物
-            openNpc("怪物攻城");
+        case 24://怪物攻城
+            cm.sendOk("该功能还未完成，敬请期待！");
+            cm.dispose();
+            // openNpc("怪物攻城");
             break;
-        case 25://召唤怪物
-            openNpc("召唤怪物");
+        case 25://共同富裕
+            openNpc("共同富裕");
+            break;
+        case 26://冒险炒股
+            // openNpc("召唤怪物");
+            openNpc("金融/冒险炒股");
             break;
         case 999://新人福利
             openNpc("新人福利");

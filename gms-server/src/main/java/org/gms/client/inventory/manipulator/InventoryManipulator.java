@@ -194,7 +194,8 @@ public class InventoryManipulator {
     private static boolean addFromDropInternal(Client c, Character chr, InventoryType type, Inventory inv, Item item, boolean show, int petId) {
         ItemInformationProvider ii = ItemInformationProvider.getInstance();
         int itemid = item.getItemId();
-        if (ii.isPickupRestricted(itemid) && chr.haveItemWithId(itemid, true)) {
+        // 怪物卡片不限制唯一性，允许拾取多张
+        if (ii.isPickupRestricted(itemid) && !ItemId.isMonsterCard(itemid) && chr.haveItemWithId(itemid, true)) {
             c.sendPacket(PacketCreator.getInventoryFull());
             c.sendPacket(PacketCreator.showItemUnavailable());
             return false;
@@ -297,7 +298,8 @@ public class InventoryManipulator {
         Character chr = c.getPlayer();
         Inventory inv = chr.getInventory(type);
 
-        if (ii.isPickupRestricted(itemid)) {
+        // 怪物卡片不限制唯一性，允许拾取多张
+        if (ii.isPickupRestricted(itemid) && !ItemId.isMonsterCard(itemid)) {
             if (haveItemWithId(inv, itemid)) {
                 return false;
             } else if (ItemConstants.isEquipment(itemid) && haveItemWithId(chr.getInventory(InventoryType.EQUIPPED), itemid)) {
@@ -352,7 +354,8 @@ public class InventoryManipulator {
         Character chr = c.getPlayer();
         Inventory inv = chr.getInventory(type);
 
-        if (ii.isPickupRestricted(itemid)) {
+        // 怪物卡片不限制唯一性，允许拾取多张
+        if (ii.isPickupRestricted(itemid) && !ItemId.isMonsterCard(itemid)) {
             if (haveItemWithId(inv, itemid)) {
                 return 0;
             } else if (ItemConstants.isEquipment(itemid) && haveItemWithId(chr.getInventory(InventoryType.EQUIPPED), itemid)) {

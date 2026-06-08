@@ -46,7 +46,6 @@ import org.gms.net.server.guild.GuildPackets;
 import org.gms.net.server.world.Party;
 import org.gms.net.server.world.PartyCharacter;
 import org.gms.server.maps.*;
-import org.gms.service.CombatPowerService;
 import org.gms.service.GachaponService;
 import org.gms.service.PlayerGachaponStatsService;
 import org.gms.util.packets.WeddingPackets;
@@ -93,7 +92,6 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     private List<PartyCharacter> otherParty;
     private static final GachaponService gachaponService = ServerManager.getApplicationContext().getBean(GachaponService.class);
     private static final PlayerGachaponStatsService playerGachaponStatsService = ServerManager.getApplicationContext().getBean(PlayerGachaponStatsService.class);
-    private static final CombatPowerService combatPowerService = ServerManager.getApplicationContext().getBean(CombatPowerService.class);
 
     private final Map<Integer, String> npcDefaultTalks = new HashMap<>();
     @Getter
@@ -450,23 +448,23 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     public void doGachapon() {
         gachaponService.doGachapon(getPlayer(), npc);
     }
-    
+
     public void doRemoteGachapon(int gachaponId) {
         gachaponService.doGachapon(getPlayer(), gachaponId, false);
     }
-    
+
     public int getTotalGachaponCount() {
         return playerGachaponStatsService.getTotalCount(getPlayer().getId());
     }
-    
+
     public int getGachaponCount() {
         return playerGachaponStatsService.getGachaponCount(getPlayer().getId());
     }
-    
+
     public int getRemoteGachaponCount() {
         return playerGachaponStatsService.getRemoteGachaponCount(getPlayer().getId());
     }
-    
+
     public void doGuaranteedGachapon(int poolId, int guaranteedCount) {
         gachaponService.doGuaranteedGachapon(getPlayer(), poolId, guaranteedCount);
     }
@@ -1663,69 +1661,6 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
             }
         }
         gainExp(rewardExp);
-    }
-
-    // ==================== 战力系统相关方法 ====================
-
-    /**
-     * 获取角色当前战力评分
-     * @return 战力评分
-     */
-    public int getCombatPower() {
-        return combatPowerService.getCharacterCombatPower(getPlayer().getId());
-    }
-
-    /**
-     * 获取战力排行榜
-     * @param limit 返回数量
-     * @return 排行榜JSON字符串
-     */
-    public String getCombatPowerRanking(int limit) {
-        var rankingList = combatPowerService.getCombatPowerRanking(limit);
-        StringBuilder sb = new StringBuilder();
-        for (var item : rankingList) {
-            sb.append(item.getCharacterId()).append(",")
-              .append(item.getCharacterName()).append(",")
-              .append(item.getJobId()).append(",")
-              .append(item.getCombatPower() != null ? item.getCombatPower().intValue() : 0)
-              .append(";");
-        }
-        return sb.toString();
-    }
-
-    /**
-     * 获取指定角色的装备战力详情
-     * @param characterId 角色ID
-     * @return 装备详情JSON字符串
-     */
-    public String getCharacterEquipDetails(int characterId) {
-        var equipList = combatPowerService.getCharacterEquipDetails(characterId);
-        StringBuilder sb = new StringBuilder();
-        for (var item : equipList) {
-            sb.append(item.getItemid()).append(",")
-              .append(item.getPosition()).append(",")
-              .append(item.getStr() != null ? item.getStr() : 0).append(",")
-              .append(item.getDex() != null ? item.getDex() : 0).append(",")
-              .append(item.getIntAttr() != null ? item.getIntAttr() : 0).append(",")
-              .append(item.getLuk() != null ? item.getLuk() : 0).append(",")
-              .append(item.getWatk() != null ? item.getWatk() : 0).append(",")
-              .append(item.getMatk() != null ? item.getMatk() : 0).append(",")
-              .append(item.getWdef() != null ? item.getWdef() : 0).append(",")
-              .append(item.getMdef() != null ? item.getMdef() : 0).append(",")
-              .append(item.getUpgradeSlots() != null ? item.getUpgradeSlots() : 0).append(",")
-              .append(item.getLevel() != null ? item.getLevel() : 0).append(",")
-              .append(item.getCombatPower() != null ? item.getCombatPower().intValue() : 0)
-              .append(";");
-        }
-        return sb.toString();
-    }
-
-    /**
-     * 更新角色战力记录
-     * @param combatPower 战力值
-     */
-    public void updateCombatPowerRanking(int combatPower) {
-        combatPowerService.updateCombatPower(getPlayer().getId(), combatPower);
     }
 
 }

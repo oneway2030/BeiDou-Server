@@ -69,6 +69,7 @@ import org.gms.server.life.NPC;
 import org.gms.server.life.PlayerNPC;
 import org.gms.server.life.SpawnPoint;
 import org.gms.server.partyquest.CarnivalFactory;
+import org.gms.server.timer.HuntTaskAutoPublisher;
 import org.gms.server.partyquest.CarnivalFactory.MCSkill;
 import org.gms.server.partyquest.GuardianSpawnPoint;
 import org.gms.util.PacketCreator;
@@ -1547,6 +1548,9 @@ public class MapleMap {
                         }
                         dropFromMonster(dropOwner, monster, false);
                     }
+
+                    // 检测狩猎BOSS任务
+                    HuntTaskAutoPublisher.getInstance().onMonsterKilled(monster.getId(), chr);
 
                     if (monster.hasBossHPBar()) {
                         for (Character mc : this.getAllPlayers()) {

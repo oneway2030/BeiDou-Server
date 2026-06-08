@@ -33,8 +33,20 @@ const exped = ExpeditionType.BALROG_NORMAL;
 var expedName = "蝙蝠怪巴洛古";
 var expedBoss = "巴洛古";
 var expedMap = "蝙蝠怪的墓地";
+var dailyMaxEntry = 50;
 
 var list = "你想做什么？#b\r\n\r\n#L1#查看当前远征队成员#l\r\n#L2#开始战斗！#l\r\n#L3#退出远征队#l";
+
+
+function getDailyEntryCount(charId) {
+    var used = cm.getAccountExtendValue("巴洛古远征_" + charId, true);
+    return (used == null || used === "") ? 0 : parseInt(used);
+}
+
+function incrementDailyEntry(charId) {
+    var used = getDailyEntryCount(charId);
+    cm.saveOrUpdateAccountExtendValue("巴洛古远征_" + charId, String(used + 1), true);
+}
 
 function start() {
     action(1, 0, 0);
@@ -66,7 +78,8 @@ function action(mode, type, selection) {
                     cm.sendOk("你的远征已经在进行中，对于那些仍在战斗中的人，让我们为那些勇敢的灵魂祈祷吧。");
                     cm.dispose();
                 } else {
-                    cm.sendSimple(list);
+                    var dailyCount = getDailyEntryCount(player.getId());
+                    cm.sendSimple(list + "\r\n\r\n#r今日已进入" + dailyCount + "次，最多进入" + dailyMaxEntry + "次#k");
                     status = 2;
                 }
             } else if (expedition.isRegistering()) { //If the expedition is registering
@@ -79,9 +92,16 @@ function action(mode, type, selection) {
                 }
             } else if (expedition.isInProgress()) { //Only if the expedition is in progress
                 if (expedition.contains(player)) { //If you're registered, warp you in
+                    var dailyCount = getDailyEntryCount(player.getId());
+                    if (dailyCount >= dailyMaxEntry) {
+                        cm.sendOk("今日已进入" + dailyCount + "次，最多进入" + dailyMaxEntry + "次");
+                        cm.dispose();
+                        return;
+                    }
                     var eim = em.getInstance(expedName + player.getClient().getChannel());
                     if (eim.getIntProperty("canJoin") == 1) {
                         eim.registerPlayer(player);
+                        incrementDailyEntry(player.getId());
                     } else {
                         cm.sendOk("你的远征队已经开始对抗" + expedBoss + "的战斗。让我们为这些勇敢的灵魂祈祷。");
                     }
@@ -145,6 +165,12 @@ function action(mode, type, selection) {
                 cm.sendSimple(text);
                 status = 6;
             } else if (selection == 2) {
+                var dailyCount = getDailyEntryCount(player.getId());
+                if (dailyCount >= dailyMaxEntry) {
+                    cm.sendOk("今日已进入" + dailyCount + "次，最多进入" + dailyMaxEntry + "次");
+                    cm.dispose();
+                    return;
+                }
                 var min = exped.getMinSize();
                 min = 1;
                 var size = expedition.getMemberList().size();
@@ -179,6 +205,11 @@ function action(mode, type, selection) {
                 return;
             }
 
+            var expedMembers = expedition.getMemberList();
+            for (var i = 0; i < expedMembers.size(); i++) {
+                incrementDailyEntry(expedMembers.get(i).getKey());
+            }
+
             cm.dispose();
 
         } else if (status == 6) {
@@ -188,7 +219,8 @@ function action(mode, type, selection) {
                 cm.sendOk("你已经从远征中禁止了 " + banned.getValue() + "。");
                 cm.dispose();
             } else {
-                cm.sendSimple(list);
+                var dailyCount = getDailyEntryCount(player.getId());
+                cm.sendSimple(list + "\r\n\r\n#r今日已进入" + dailyCount + "次，最多进入" + dailyMaxEntry + "次#k");
                 status = 2;
             }
         } else if (status == 10) {

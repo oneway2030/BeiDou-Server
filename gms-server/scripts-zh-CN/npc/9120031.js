@@ -1,11 +1,14 @@
 var timeLimit = 1;
+var dailyLimit = 20; // 每日挑战次数限制
 // 配置道具信息（集中管理，后续修改更方便）
 var needItemId = 4001254; // 所需道具ID
 var needItemNum = 1;      // 所需道具数量
 var itemSource = "贝尔加莫特"; // 道具产出地
 
 function start() {
-    cm.sendYesNo(`你想挑战BOSS都纳斯吗？\r\n#r挑战都纳斯需要${needItemNum}个#v${needItemId}##t${needItemId}##k#r！\r\n该道具可在${itemSource}产出！`);
+    var used = cm.getAccountExtendValue("都纳斯_" + cm.getPlayer().getId(), true);
+    used = (used == null || used === "") ? 0 : parseInt(used);
+    cm.sendYesNo(`你想挑战BOSS都纳斯吗？\r\n#r挑战都纳斯需要${needItemNum}个#v${needItemId}##t${needItemId}##k#r！\r\n该道具可在${itemSource}产出！\r\n#b（当日最多挑战${dailyLimit}次，当前已经挑战${used}次）#k`);
 }
 
 function action(mode, type, selection) {
@@ -38,6 +41,17 @@ function action(mode, type, selection) {
                         cm.sendOk("队伍里有人不在,无法进入");
                         cm.dispose();
                     }
+                    // 【次数限制】检查所有队员每日挑战次数
+                    for (var i = 0; i < members.size(); i++) {
+                        var chr = members.get(i).getPlayer();
+                        var used = cm.getAccountExtendValue("都纳斯_" + chr.getId(), true);
+                        used = (used == null || used === "") ? 0 : parseInt(used);
+                        if (used >= dailyLimit) {
+                            cm.sendOk(chr.getName() + "今日挑战次数已用尽！(每日" + dailyLimit + "次)");
+                            cm.dispose();
+                            return;
+                        }
+                    }
                     // 【道具消耗】所有组队规则验证通过，消耗道具（最后一步验证后消耗，避免误扣）
                     cm.gainItem(needItemId, -needItemNum);
                     var canGoIn = true;
@@ -46,9 +60,25 @@ function action(mode, type, selection) {
                         var Map1 = cm.getMap(802000410);
                         Map1.resetFully();
                         cm.warpParty(802000410, 0);
+                        // 记录所有队员挑战次数
+                        members = player.getPartyMembersOnSameMap();
+                        for (var i = 0; i < members.size(); i++) {
+                            var mid = members.get(i).getId();
+                            var used = cm.getAccountExtendValue("都纳斯_" + mid, true);
+                            used = (used == null || used === "") ? 0 : parseInt(used);
+                            cm.saveOrUpdateAccountExtendValue("都纳斯_" + mid, String(used + 1), true);
+                        }
                         return true;
                     } else if (canGoIn && cm.getPlayerCount(802000410) > 0) { //地图中有人的话就不重置
                         cm.warpParty(802000410, 0);
+                        // 记录所有队员挑战次数
+                        members = player.getPartyMembersOnSameMap();
+                        for (var i = 0; i < members.size(); i++) {
+                            var mid = members.get(i).getId();
+                            var used = cm.getAccountExtendValue("都纳斯_" + mid, true);
+                            used = (used == null || used === "") ? 0 : parseInt(used);
+                            cm.saveOrUpdateAccountExtendValue("都纳斯_" + mid, String(used + 1), true);
+                        }
                         return true;
                     } else {
                         cm.sendOk(cause);

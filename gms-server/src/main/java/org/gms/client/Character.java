@@ -2004,6 +2004,10 @@ public class Character extends AbstractCharacterObject {
         if (itemId / 1000000 != 2) {// 检查物品ID是否属于消耗品类（假设ID以2开头）
             return false; // 非消耗品直接返回不处理
         }
+        // 怪物卡片不自动消耗，拾取后进入背包，由玩家手动点击使用
+        if (ItemId.isMonsterCard(itemId)) {
+            return false;
+        }
         ItemInformationProvider ii = ItemInformationProvider.getInstance();// 获取物品信息提供器实例
         if (!ii.isConsumeOnPickup(itemId)) {// 检查该物品是否标记为"拾取后立即使用"
             return false; // 无需立即使用则返回
@@ -2032,10 +2036,6 @@ public class Character extends AbstractCharacterObject {
             }
         } else {
             ii.getItemEffect(itemId).applyTo(this);// 非队伍道具直接对自身生效
-        }
-
-        if (itemId / 10000 == 238) {// 特殊处理怪物卡片收集（ID格式238xxxx）
-            this.getMonsterBook().addCard(client, itemId); // 添加到怪物图鉴
         }
         return true; // 成功执行消耗操作
     }
@@ -2075,7 +2075,7 @@ public class Character extends AbstractCharacterObject {
                 Item mItem = mapitem.getItem();
                 boolean hasSpaceInventory = true;
                 ItemInformationProvider ii = ItemInformationProvider.getInstance();
-                if (ItemId.isNxCard(mapitem.getItemId()) || mapitem.getMeso() > 0 || ii.isConsumeOnPickup(mapitem.getItemId()) || (hasSpaceInventory = InventoryManipulator.checkSpace(client, mapitem.getItemId(), mItem.getQuantity(), mItem.getOwner()))) {
+                if (ItemId.isNxCard(mapitem.getItemId()) || mapitem.getMeso() > 0 || (ii.isConsumeOnPickup(mapitem.getItemId()) && !ItemId.isMonsterCard(mapitem.getItemId())) || (hasSpaceInventory = InventoryManipulator.checkSpace(client, mapitem.getItemId(), mItem.getQuantity(), mItem.getOwner()))) {
                     int mapId = this.getMapId();
 
                     if ((MapId.isSelfLootableOnly(mapId))) {//happyville trees and guild PQ
