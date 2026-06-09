@@ -1,4 +1,4 @@
-var timeLimit = 20;
+var timeLimit = 200000;
 function enter(pi) {
 	if (pi.getPlayerCount(541020800) <= 0) {//BOSS地图无人
 		var player = pi.getPlayer();
@@ -42,9 +42,9 @@ function enter(pi) {
 					used = (used == null || used === "") ? 0 : parseInt(used);
 					pi.saveOrUpdateAccountExtendValue("挑战克雷塞尔_" + mid, String(used + 1), true);
 				}
-				var leaderUsed = pi.getAccountExtendValue("挑战克雷塞尔_" + player.getId(), true);
-				leaderUsed = (leaderUsed == null || leaderUsed === "") ? 0 : parseInt(leaderUsed);
-				pi.playerMessage(5, "今日已进入" + leaderUsed + "次，最多进入" + timeLimit + "次");
+				// var leaderUsed = pi.getAccountExtendValue("挑战克雷塞尔_" + player.getId(), true);
+				// leaderUsed = (leaderUsed == null || leaderUsed === "") ? 0 : parseInt(leaderUsed);
+				// pi.playerMessage(5, "今日已进入" + leaderUsed + "次，最多进入" + timeLimit + "次");
 				return true;
 				} else {
 					pi.playerMessage(5, cause); return false;
