@@ -13,9 +13,8 @@ var itemSet = Array(
     Array(4032171, 5),//蓝色魔石
     Array(4260009, 5),//强化宝石
     Array(4260010, 1),//强化宝石碎片
-    Array(5211048, 5),//双倍
-    Array(2029002, 5),//双爆
-    Array(2029005, 10),//三倍
+    Array(5211048, 30),//双倍
+    Array(2029002, 30),//双爆
     Array(4251200, 50),//五彩下
     Array(4251201, 250),//五彩中
     Array(4251202, 500),//五彩高
@@ -34,6 +33,7 @@ var item;
 var cost;
 var qty;
 var co;
+var TimeUnit = Java.type('java.util.concurrent.TimeUnit');
 
 function start() {
     action(1, 0, 0);
@@ -77,10 +77,15 @@ function action(mode, type, selection) {
         } else {
             if (cm.canHold(item, qty)) {
                 cm.consumptionPqPoints(cost);
-                cm.gainItem(item, qty);
+                if (item == 5211048) {
+                    var expireTime = TimeUnit.MINUTES.toMillis(240);
+                    cm.gainItem(item, qty, false, true, expireTime);
+                } else {
+                    cm.gainItem(item, qty);
+                }
                 cm.sendOk("兑换成功。");
                 cm.getPlayer().sendAllWordNoticeNew(6, "副本兑换", `恭喜玩家${cm.getPlayer().getName()}兑换了一个【${cm.getPlayer().getItemName(item)}】!`);
-            }else {
+            } else {
                 cm.sendOk("背包空间不足。");
             }
         }

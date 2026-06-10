@@ -1588,7 +1588,7 @@ function levelGiveReward() {
         rewardText += `  #v${task[3][i][0]}# x${task[3][i][1]}\r\n\r\n`;
     }
     // 固定金币：每轮300W
-    var fixedMeso = 3000000;
+    var fixedMeso = 5000000;
     cm.gainMeso(fixedMeso);
     rewardText += `  #k金币：+${fixedMeso}#k\r\n`;
 

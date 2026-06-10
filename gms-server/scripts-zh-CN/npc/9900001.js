@@ -89,6 +89,7 @@ function action(mode, type, selection) {
             text += "#L101#UI查询#l\t#L102#GM商店集合#l\r\n";
             text += "#L103#一键删除道具#l\t#L104#一键刷道具#l\r\n";
             text += "#L105#有状态脚本示例#l\t #L106#NextLevel脚本示例#l";
+            text += "#L108#加1000积分#l\t\r\n\r\n";
         }
         cm.sendSimple(text);
     } else if (status === 1) {
@@ -218,6 +219,11 @@ function doSelect(selection) {
             break;
         case 107:
             openNpc("设置血蓝")
+            break;
+        case 108:
+            cm.addPqPoints(1000);
+            cm.sendOk("添加成功");
+            cm.dispose();
             break;
         case 1000:
             // openNpc("砸卷次数");

@@ -667,10 +667,9 @@ function action(mode, type, selection) {
         text += "#L5#武器#l\t\r\n\r\n";
         text += "#L9#腰带#l\t\r\n\r\n";
         text += "#L7#披风#l\t\r\n\r\n";
-        text += "#L11##r合成属性恢复#k#l\t（未继承星级/洗练时使用）\r\n\r\n";
+        text += "#L10#项链制作#l\t\r\n\r\n";
         text += "\r\n\r\n\t#r以下还未实现#k\t\r\n\r\n";
         text += "#L8#手套#l\t\r\n\r\n";
-        text += "#L10#项链#l\t\r\n\r\n";
         cm.sendSimple(text);
     } else if (status === 1) {
         doSelect(selection);
@@ -739,6 +738,9 @@ function doSelect(selection) {
         case 9:
             选择的制作列表 = 腰带;
             展示物品制作列表();
+            break;
+        case 10:
+            openNpc("装备制作/项链制作");
             break;
         case 11:
             openNpc("装备制作/装备制作补偿");

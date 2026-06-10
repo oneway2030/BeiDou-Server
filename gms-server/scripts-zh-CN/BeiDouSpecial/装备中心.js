@@ -48,7 +48,7 @@ function action(mode, type, selection) {
         text += "#L2#装备制作#l\t\r\n\r\n";
         text += "#L4#星级强化#l\t\r\n\r\n";
         text += "#L5#装备分解#l\t\r\n\r\n";
-        text += "#L6#老的装备制作#l\t\r\n\r\n";
+        // text += "#L6#老的装备制作#l\t\r\n\r\n";
         cm.sendSimple(text);
     } else if (status === 1) {
         doSelect(selection);
