@@ -8,7 +8,7 @@ var meso_id = 9999999;
 var cash_id = 9999998;
 var goldScale = 10000;
 var needItems = [
-    {id: 4021010, qty: 10},
+    {id: 4021010, qty: 1},
     {id: meso_id, qty: 5000},
     {id: cash_id, qty: 30000},
 ];
@@ -203,12 +203,8 @@ function do强化() {
         equip.setDex(equip.getDex() + 每次强化属性增加值);
         equip.setInt(equip.getInt() + 每次强化属性增加值);
         equip.setLuk(equip.getLuk() + 每次强化属性增加值);
-        equip.setHp(equip.getHp() + 每次强化属性增加值);
-        equip.setMp(equip.getMp() + 每次强化属性增加值);
         equip.setWatk(equip.getWatk() + 每次强化属性增加值);
         equip.setMatk(equip.getMatk() + 每次强化属性增加值);
-        equip.setWdef(equip.getWdef() + 每次强化属性增加值);
-        equip.setMdef(equip.getMdef() + 每次强化属性增加值);
         equip.setExpandAttribute1(currentLevel + 1);
 
         player.equipChanged();

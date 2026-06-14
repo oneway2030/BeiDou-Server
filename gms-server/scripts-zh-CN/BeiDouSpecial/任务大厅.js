@@ -70,7 +70,7 @@ function doSelect(selection) {
             openNpc("任务/血衣合成");  //明珠港怪物卡戒指NPC
             break;
         case 3:
-            openNpc("任务/2006");
+            openNpc("2006");
             break;
         case 4:
             openNpc("任务/世界任务");
